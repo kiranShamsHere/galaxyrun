@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 96" fill="none">
+  <defs><linearGradient id="lunar" x1="36" y1="15" x2="78" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#E1D5BE"/><stop offset="1" stop-color="#8B94A0"/></linearGradient><clipPath id="moon"><circle cx="60" cy="48" r="31"/></clipPath></defs>
+  <ellipse cx="60" cy="48" rx="48" ry="17" stroke="#8DA8C7" stroke-opacity=".7" transform="rotate(-15 60 48)"/>
+  <circle cx="60" cy="48" r="31" fill="url(#lunar)" stroke="#F2E9D8" stroke-width="1.4"/>
+  <g clip-path="url(#moon)" fill="#717D8A" fill-opacity=".5"><circle cx="48" cy="36" r="7"/><circle cx="72" cy="54" r="10"/><circle cx="43" cy="61" r="4"/><circle cx="72" cy="31" r="3.5"/><circle cx="55" cy="72" r="2.5"/></g>
+  <path d="M60 10v76M23 48h74" stroke="#F2E9D8" stroke-opacity=".22"/>
+  <circle cx="18" cy="26" r="2" fill="#D9AA72"/><circle cx="99" cy="69" r="1.5" fill="#D9AA72"/>
+</svg>

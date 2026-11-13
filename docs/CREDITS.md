@@ -33,9 +33,10 @@ Check each package's license in `node_modules` before the final submission and f
 
 | Item | Source | License or permission |
 | --- | --- | --- |
-| _none yet_ | | |
+| Galaxy Run wordmark, Earth/Moon/Mars scenario emblems, spacecraft illustration, and distinct Pathfinder/Voyager/Atlas icons | Original SVG artwork created for this project in `public/assets/` | Original project assets |
+| Launch cue | Original short sound synthesized for this project in `public/assets/launch-cue.wav` | Original project asset |
 
-Our own artwork is drawn in code. Any NASA image must be credited here with its source link. No NASA logos, no mission badges, no copyrighted music.
+The interface uses system fonts and has no downloaded image, sound, or font assets. Any NASA image must be credited here with its source link. No NASA logos, no NASA mission badges, and no copyrighted music.
 
 ## Inspiration (no code or art copied)
 

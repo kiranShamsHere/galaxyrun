@@ -6,7 +6,7 @@
 
 A browser game for the NASA Space Apps Challenge 2026, built for the official challenge *Space Mission Design Game*.
 
-![Status](https://img.shields.io/badge/status-setup%20only-fbbf24)
+![Status](https://img.shields.io/badge/status-MVP%20in%20progress-a6f26b)
 ![React](https://img.shields.io/badge/React-19-61dafb)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6)
 ![License](https://img.shields.io/badge/license-MIT-2dd4bf)
@@ -15,7 +15,7 @@ A browser game for the NASA Space Apps Challenge 2026, built for the official ch
 
 </div>
 
-> **Project status:** this repository currently contains the project setup only (tooling, folders, CI and docs). The game is built during the hackathon on November 14 and 15, 2026. Anything marked "planned" below is not built yet. This README will be updated as features land.
+> **Project status:** the first playable loop is in progress. The working project deadline is December 15, 2026. The repository includes three mission scenarios, Easy and Normal modes, spacecraft hardware and propulsion choices, live resource totals, engine-generated design feedback, fuel/delta-v checks, mission-duration/deadline trade-offs, orbit and launcher choices, a seeded mission run, a flight timeline and a score report. The UI uses original local artwork, an optional launch cue, a first-mission guide, and contextual technical definitions. Keyboard and reduced-motion support are implemented; accessibility audits remain. Design saving/sharing, cooperative mode, and public deployment are still to come. See [the development checklist](docs/DEVELOPMENT_CHECKLIST.md) for the full proposal status.
 
 ---
 
@@ -51,19 +51,27 @@ The numbers above are an example of the format, not real game output.
 5. **Learn** from the mission report, which ties every result to a design choice.
 6. **Improve** the design and try again, or share it.
 
-Random events use a seed, so the same design with the same seed always gives the same result.
+Random events use a seed, so the same design with the same seed always gives the same result. A funding cut can reduce active observation time and science return during a run.
 
 ## Features
 
-Planned for the first playable version:
+Implemented in the current foundation:
 
-- [ ] Three scenarios: Earth Observer, Moon Mapper, Mars Scout
-- [ ] Easy and Normal difficulty
-- [ ] Designer screen with a live dashboard (mass, power, cost, data, time)
-- [ ] Flight timeline with seeded random events
-- [ ] Mission report with cause, effect and fix for each result
-- [ ] Short guided tutorial and tooltips for every term
-- [ ] Public link that works on laptop and tablet
+- [x] Three scenario choices: Earth Observer, Moon Mapper, Mars Scout
+- [x] Easy and Normal difficulty with distinct allowances, hints, and event rates
+- [x] Spacecraft bus and science instrument selection
+- [x] Live mass, power, parts and launch cost, data and science totals
+- [x] Propulsion choice, propellant slider, and rocket-equation delta-v check
+- [x] Mission-duration slider with deadline and operations-cost trade-offs
+- [x] Design feedback with a cause, effect and fix for each resource check
+- [x] Orbit selection, circular period estimate, and simplified launch capacity check
+- [x] Seeded flight events, including budget cuts, with a mission timeline, score breakdown and event explanations
+- [x] One-click starter flight, reopenable first-mission guide, and keyboard-operable technical term help
+- [x] Original scenario, orbiter, logo, and launch-vehicle artwork; optional launch sound
+
+Next for the first playable version:
+
+- [ ] Responsive public link that works on laptop and tablet
 
 Planned if time allows:
 
@@ -139,12 +147,12 @@ Planned and optional: Three.js with React Three Fiber for a 3D view, Supabase fo
 ```text
 galaxyrun/
   src/
-    engine/   Pure TypeScript rules, events, scoring and the reason builder
-    data/     JSON catalogs: scenarios, parts, launch vehicles, NASA constants
+    engine/   Pure TypeScript rules, evaluation, events, scoring and reasons
+    data/     Scenario and spacecraft part catalogs, launch vehicles, NASA constants
     ui/       React screens and components
     learn/    Tutorial text, tooltips and concept cards
-    store.ts  Zustand store (placeholder for now)
-    App.tsx   App entry (setup check page for now)
+    store.ts  Zustand mission design state
+    App.tsx   Mission selection, spacecraft designer and live dashboard
   docs/       Credits, AI use note, submission checklist, screenshots
   .github/    CI workflow and pull request template
 ```

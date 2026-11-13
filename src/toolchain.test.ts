@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string'
 import { z } from 'zod'
-import { useSetupStore } from './store.ts'
+import { useMissionStore } from './store.ts'
 
-// These tests only check that the toolchain is wired correctly.
-// Real engine tests go in src/engine on build day.
+// Engine formula and deterministic simulation tests live beside the pure engine modules.
 describe('toolchain smoke test', () => {
   it('runs TypeScript tests with Vitest', () => {
     expect(1 + 1).toBe(2)
@@ -22,9 +21,16 @@ describe('toolchain smoke test', () => {
     expect(Part.safeParse({ id: 'x', massKg: -1 }).success).toBe(false)
   })
 
-  it('updates the Zustand store', () => {
-    useSetupStore.setState({ clicks: 0 })
-    useSetupStore.getState().ping()
-    expect(useSetupStore.getState().clicks).toBe(1)
+  it('updates the mission design in the Zustand store', () => {
+    useMissionStore.getState().selectBus('compact-bus')
+    expect(useMissionStore.getState().design.busId).toBe('compact-bus')
+    useMissionStore.setState({
+      design: {
+        ...useMissionStore.getState().design,
+        instrumentIds: ['climate-camera', 'thermal-imager', 'spectrometer', 'radar-sounder'],
+      },
+    })
+    useMissionStore.getState().toggleInstrument('multispectral-mapper')
+    expect(useMissionStore.getState().design.instrumentIds).toContain('multispectral-mapper')
   })
 })

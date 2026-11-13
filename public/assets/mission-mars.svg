@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 96" fill="none">
+  <defs><linearGradient id="mars" x1="39" y1="16" x2="80" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#D9936C"/><stop offset="1" stop-color="#803F3C"/></linearGradient><clipPath id="planet"><circle cx="60" cy="48" r="31"/></clipPath></defs>
+  <ellipse cx="60" cy="48" rx="47" ry="16" stroke="#8DA8C7" stroke-opacity=".7" transform="rotate(17 60 48)"/>
+  <circle cx="60" cy="48" r="31" fill="url(#mars)" stroke="#E8C4AA" stroke-width="1.4"/>
+  <g clip-path="url(#planet)" fill="#542F37" fill-opacity=".55"><path d="m34 34 13-6 11 5 5 8-8 4-8-3-7 7-9-3 3-12Zm31 18 10-6 12 5 5 9-9 7-14-2-4-13ZM48 67l8-5 7 7-4 9-9 1-2-12Z"/></g>
+  <path d="M60 10v76M23 48h74" stroke="#F3DFD1" stroke-opacity=".22"/>
+  <circle cx="22" cy="68" r="2" fill="#D9AA72"/><circle cx="98" cy="25" r="1.5" fill="#D9AA72"/>
+</svg>
