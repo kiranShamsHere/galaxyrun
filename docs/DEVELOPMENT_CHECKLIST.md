@@ -35,7 +35,7 @@ Check an item only when its implementation is present and usable. Development co
 - [ ] Verify every formula against the proposal's worked examples.
 - [x] Add unit tests for orbit period, rocket equation, downlink, design budgets, risk estimates, mission return, scoring, and seeded-repeatability behavior.
 - [ ] State each model simplification in the tutorial or nearby UI.
-- [ ] Keep every rule in the pure TypeScript engine, separate from React.
+- [x] Keep every rule in the pure TypeScript engine, separate from React.
 
 ## Accessibility and usability
 
@@ -76,7 +76,7 @@ Check an item only when its implementation is present and usable. Development co
 - [x] Record project-authored artwork and sound in `docs/CREDITS.md`.
 - [ ] Complete source links and retrieval dates for mission constants; verify library licenses before submission.
 - [ ] Keep `docs/AI_USE.md` current and replace reviewer placeholders before submission.
-- [ ] Update the README as features land.
+- [x] Update the README as features land.
 - [ ] Capture screenshots for the project page.
 - [ ] Prepare the proposal's demo artifact (short video or slide deck) and verify links.
 
