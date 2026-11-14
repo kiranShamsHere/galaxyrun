@@ -6,13 +6,17 @@ Keep this file up to date. The hackathon submission asks for every data source, 
 
 | What | Where it came from | Date retrieved | Used in |
 | --- | --- | --- | --- |
-| Earth and Mars gravitational parameters and Earth/Moon/Mars radii | NASA/JPL Solar System Dynamics physical parameters: https://ssd.jpl.nasa.gov/planets/phys_par.html; NASA Mars fact sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html; NASA/JPL satellite parameters: https://ssd.jpl.nasa.gov/sats/phys_par/ | 2026-11-13 | `src/data/missionConstants.ts` |
-| Venus mean/equatorial radius and GM | NASA/JPL Solar System Dynamics physical parameters: https://ssd.jpl.nasa.gov/planets/phys_par.html | 2026-11-14 | `src/data/missionConstants.ts` |
-| Solar irradiance at Earth, Mars and Venus | NASA Earth fact sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html; NASA Mars fact sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html; NASA Technical Report Server, Venus environment report: https://ntrs.nasa.gov/citations/20240000076 | 2026-11-14 | `src/data/catalog.ts` |
+| Mean planetary radii for Earth, Mars and Venus | NASA/JPL Solar System Dynamics physical parameters: https://ssd.jpl.nasa.gov/planets/phys_par.html | 2026-11-14 | `src/data/missionConstants.ts` |
+| Earth, Moon, Mars-system and Venus gravitational parameters (GM) | NASA/JPL Solar System Dynamics astrodynamic parameters, DE440 values: https://ssd.jpl.nasa.gov/astro_par.html | 2026-11-14 | `src/data/missionConstants.ts` |
+| Lunar mean radius and lunar gravity cross-check | NASA/JPL satellite physical parameters: https://ssd.jpl.nasa.gov/sats/phys_par/; NASA Moon fact sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html | 2026-11-14 | `src/data/missionConstants.ts` |
+| Solar irradiance at Earth, Moon, Mars and Venus | NASA NSSDC fact sheets: Earth https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html; Moon https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html; Mars https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html; Venus https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html. The game uses the fact-sheet values (1361.0, 1361.0, 586.2 and 2601.3 W/m², respectively). | 2026-11-14 | `src/data/catalog.ts`, `src/data/missionConstants.ts` |
 | Terra Earth observation mission | NASA Terra mission: https://terra.nasa.gov/about/mission | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
 | Lunar Reconnaissance Orbiter observations | NASA LRO mission: https://science.nasa.gov/mission/lro/ | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
 | Mars Reconnaissance Orbiter instruments | NASA MRO science instruments: https://science.nasa.gov/mission/mars-reconnaissance-orbiter/science-instruments/ | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
-| Venus Express science mission | ESA Venus Express: https://www.esa.int/Science_Exploration/Space_Science/Venus_Express | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
+| Magellan Venus radar-mapping mission | NASA Magellan mission: https://science.nasa.gov/mission/magellan/ | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
+| Venus Express science mission (previous Venus learning-card source; superseded by NASA Magellan) | ESA Venus Express: https://www.esa.int/Science_Exploration/Space_Science/Venus_Express | 2026-11-14 | Earlier project version |
+
+Previously cited for Venus irradiance and superseded by the directly comparable NASA NSSDC fact-sheet value: NASA Technical Reports Server, [Venus environment report](https://ntrs.nasa.gov/citations/20240000076). The game now uses 2601.3 W/m² from the Venus fact sheet above; the former 2614 W/m² input was removed.
 
 ## Challenge
 

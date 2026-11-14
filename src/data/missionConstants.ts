@@ -1,7 +1,7 @@
 /**
  * Rounded planetary constants used by Galaxy Run's simplified circular-orbit model.
  * Values are stored locally so a mission run does not depend on a network request.
- * Retrieval date: 2026-11-13.
+ * Retrieval date: 2026-11-14.
  */
 export const missionConstants = {
   earth: {
@@ -23,8 +23,8 @@ export const missionConstants = {
 } as const
 
 export const missionConstantSources = {
-  earthAndMars: 'https://ssd.jpl.nasa.gov/planets/phys_par.html',
-  marsFactSheet: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html',
-  moon: 'https://ssd.jpl.nasa.gov/sats/phys_par/',
-  venus: 'https://ssd.jpl.nasa.gov/planets/phys_par.html',
+  planetaryRadii: 'https://ssd.jpl.nasa.gov/planets/phys_par.html',
+  gravitationalParameters: 'https://ssd.jpl.nasa.gov/astro_par.html',
+  moonRadius: 'https://ssd.jpl.nasa.gov/sats/phys_par/',
+  moonFactSheet: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html',
 } as const

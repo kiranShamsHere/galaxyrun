@@ -1,6 +1,14 @@
 import type { LaunchVehicle, MissionScenario, SpacecraftPart } from '../engine/types.ts'
 import { missionConstants } from './missionConstants.ts'
 
+/** NASA NSSDC fact sheets for the scenario solar irradiance inputs. */
+export const solarIrradianceSources = {
+  earth: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html',
+  moon: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html',
+  mars: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html',
+  venus: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html',
+} as const
+
 export const scenarios: MissionScenario[] = [
   {
     id: 'earth-observer',
@@ -85,7 +93,7 @@ export const scenarios: MissionScenario[] = [
     environmentStress: 1.15,
     operationsCostMillionUsdPerDay: 0.24,
     downlinkRateMbps: 50,
-    solarIrradianceWPerM2: 2614,
+    solarIrradianceWPerM2: 2601.3,
     defaultSolarPanelAreaM2: 1.2,
     orbits: [
       { id: 'venus-300', name: 'Low cloud-top orbit', altitudeKm: 300, launchCapacityFactor: 1, contactMinutesPerDay: 15, thermalExposureFactor: 1.08, eclipseMinutesPerOrbit: 32 },

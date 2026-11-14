@@ -25,7 +25,6 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
         </a>
         <nav className="landing-nav" aria-label="Main navigation">
           <a href="#destinations">Missions</a>
-          <a href="#flight-plan">How to play</a>
           <button type="button" className="landing-nav-cta" onClick={onStart}>Enter mission control <span aria-hidden="true">↗</span></button>
         </nav>
       </header>
@@ -34,13 +33,13 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
         <section className="landing-hero" aria-labelledby="landing-title">
           <div className="landing-copy">
             <p className="eyebrow"><span className="status-pip" aria-hidden="true" /> FLIGHT PROGRAM <span>/</span> OPEN FOR PILOTS</p>
-            <h1 id="landing-title">Space is vast.<br />Your choices <span>matter.</span></h1>
-            <p className="landing-lede">Design a spacecraft, balance its limits, and send it somewhere worth exploring. Then see what your decisions mean once the mission is in motion.</p>
+            <h1 id="landing-title">Build it.<br />Send it. <span>Learn.</span></h1>
+            <p className="landing-lede">Make the calls. Watch the mission react.</p>
             <div className="landing-actions">
-              <button className="landing-primary" type="button" onClick={onStart}>Begin mission design <span aria-hidden="true">→</span></button>
-              <a className="landing-secondary" href="#destinations">Choose a destination <span aria-hidden="true">↓</span></a>
+              <button className="landing-primary" type="button" onClick={onStart}>Start a mission <span aria-hidden="true">→</span></button>
+              <a className="landing-secondary" href="#destinations">Pick a world <span aria-hidden="true">↓</span></a>
             </div>
-            <div className="landing-promise"><span aria-hidden="true">✳</span> No account. No wrong answers. Just better questions.</div>
+            <div className="landing-promise"><span aria-hidden="true">✳</span> One craft. Real trade-offs.</div>
           </div>
 
           <div className="landing-scene" role="img" aria-label="Illustration of a spacecraft above a planet's horizon">
@@ -56,8 +55,8 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
 
         <section className="destination-section" id="destinations" aria-labelledby="destinations-title">
           <div className="destination-heading">
-            <div><p className="eyebrow">PICK YOUR POINT OF VIEW</p><h2 id="destinations-title">Worlds to explore. Questions to answer.</h2></div>
-            <p>Choose the question your spacecraft will answer. You can change your destination any time in mission control.</p>
+            <div><p className="eyebrow">PICK YOUR POINT OF VIEW</p><h2 id="destinations-title">Choose your target.</h2></div>
+            <p>Pick a world. Change it anytime.</p>
           </div>
           <div className="destination-grid">
             {scenarios.map((scenario) => {
@@ -81,15 +80,6 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
           </div>
         </section>
 
-        <section className="flight-plan" id="flight-plan" aria-labelledby="flight-plan-title">
-          <div className="flight-plan-heading"><p className="eyebrow">A LITTLE SCIENCE. A LOT OF DISCOVERY.</p><h2 id="flight-plan-title">Every mission teaches you something.</h2></div>
-          <ol className="flight-steps">
-            <li><span>01</span><div><h3>Build with limits</h3><p>Choose instruments, propulsion, and a route. Every kilogram and watt has a job.</p></div></li>
-            <li><span>02</span><div><h3>Make the call</h3><p>Set your mission duration and budget. Trade what you can afford for what you want to learn.</p></div></li>
-            <li><span>03</span><div><h3>See what unfolds</h3><p>Fly the mission, follow its timeline, and use the debrief to improve your next design.</p></div></li>
-          </ol>
-          <button className="landing-bottom-cta" type="button" onClick={onStart}>Ready when you are <span aria-hidden="true">→</span></button>
-        </section>
       </main>
 
       <footer className="landing-footer"><span>GALAXY RUN <i>·</i> SPACE MISSION DESIGN GAME</span><span>BUILT FOR CURIOUS PILOTS <b aria-hidden="true">✳</b></span></footer>

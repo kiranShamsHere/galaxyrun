@@ -39,12 +39,14 @@ An item is checked only when the work exists in the project. Local implementatio
 - [x] Save and compare designs in browser localStorage.
 - [x] Create a compressed link that restores a validated design and seed.
 - [x] Keep a same-objective, same-difficulty, same-seed leaderboard on the current device.
-- [ ] A global cross-device leaderboard is not provided; the proposal allows an optional backend, and no service credentials/configuration are available.
+- [x] Add optional Supabase Realtime rooms for pilot presence and shared live design edits; configure the shared leaderboard table and row policies.
+- [ ] Create/configure the Supabase project, add deployment environment variables, and apply `supabase/migrations/202611140001_shared_game.sql`.
+- [ ] Add server-side validation before treating anonymous leaderboard scores as competitive or prize-eligible.
 
 ## Learning, report, and presentation
 
 - [x] Add NASA/ESA mission field notes for Terra, LRO, MRO, and Venus Express with direct source links.
-- [x] Provide a 2D orbit view as the documented alternative to a 3D renderer.
+- [x] Provide switchable 2D and CSS-perspective 3D-style orbit views with an interactive tilt control.
 - [x] Print or save the flight report through the browser’s PDF print flow.
 - [x] Add optional original sound, reduced-motion-aware animation, and per-run achievements.
 - [x] Prepare a six-slide project overview deck in the connected presentation session (within the proposal’s seven-slide maximum).

@@ -27,3 +27,24 @@ export function recordLocalScore(result: MissionSimulation) {
     // Results remain visible even when the browser blocks local storage.
   }
 }
+
+/** Updates the just-recorded flight after its optional learning check. */
+export function updateLatestLocalScore(result: MissionSimulation) {
+  try {
+    const scores = readLocalScores()
+    const matching = scores
+      .map((item, index) => ({ item, index }))
+      .filter(({ item }) => item.scenarioId === result.scenarioId && item.difficulty === result.difficulty && item.seed === result.seed)
+      .sort((a, b) => b.item.recordedAt.localeCompare(a.item.recordedAt))[0]
+    if (!matching) return recordLocalScore(result)
+    scores[matching.index] = {
+      ...scores[matching.index],
+      score: result.score,
+      grade: result.grade,
+      missionDurationDays: result.missionDurationDays,
+    }
+    localStorage.setItem(key, JSON.stringify(scores))
+  } catch {
+    // The report remains usable when the browser blocks local storage.
+  }
+}
