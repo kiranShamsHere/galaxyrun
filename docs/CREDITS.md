@@ -6,7 +6,13 @@ Keep this file up to date. The hackathon submission asks for every data source, 
 
 | What | Where it came from | Date retrieved | Used in |
 | --- | --- | --- | --- |
-| _example: Earth radius and gravitational constant_ | _NASA Planetary Fact Sheet, URL here_ | _date_ | _src/data/bodies.json_ |
+| Earth and Mars gravitational parameters and Earth/Moon/Mars radii | NASA/JPL Solar System Dynamics physical parameters: https://ssd.jpl.nasa.gov/planets/phys_par.html; NASA Mars fact sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html; NASA/JPL satellite parameters: https://ssd.jpl.nasa.gov/sats/phys_par/ | 2026-11-13 | `src/data/missionConstants.ts` |
+| Venus mean/equatorial radius and GM | NASA/JPL Solar System Dynamics physical parameters: https://ssd.jpl.nasa.gov/planets/phys_par.html | 2026-11-14 | `src/data/missionConstants.ts` |
+| Solar irradiance at Earth, Mars and Venus | NASA Earth fact sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html; NASA Mars fact sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html; NASA Technical Report Server, Venus environment report: https://ntrs.nasa.gov/citations/20240000076 | 2026-11-14 | `src/data/catalog.ts` |
+| Terra Earth observation mission | NASA Terra mission: https://terra.nasa.gov/about/mission | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
+| Lunar Reconnaissance Orbiter observations | NASA LRO mission: https://science.nasa.gov/mission/lro/ | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
+| Mars Reconnaissance Orbiter instruments | NASA MRO science instruments: https://science.nasa.gov/mission/mars-reconnaissance-orbiter/science-instruments/ | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
+| Venus Express science mission | ESA Venus Express: https://www.esa.int/Science_Exploration/Space_Science/Venus_Express | 2026-11-14 | `src/components/MissionLearningCards.tsx` |
 
 ## Challenge
 
@@ -17,23 +23,26 @@ Keep this file up to date. The hackathon submission asks for every data source, 
 | Library | Purpose | License |
 | --- | --- | --- |
 | React | User interface | MIT |
+| React DOM | Browser rendering | MIT |
 | Vite | Build tool and dev server | MIT |
+| `@vitejs/plugin-react` | React support in Vite | MIT |
+| `@tailwindcss/vite` | Tailwind integration for Vite | MIT |
 | TypeScript | Language | Apache 2.0 |
 | Tailwind CSS | Styling | MIT |
 | Zustand | State store | MIT |
-| Recharts | Charts | MIT |
 | Zod | Data validation | MIT |
 | lz-string | Share link compression | MIT |
 | Vitest | Testing | MIT |
 | oxlint | Linting | MIT |
+| `@types/node`, `@types/react`, `@types/react-dom` | Type declarations | MIT |
 
-Check each package's license in `node_modules` before the final submission and fix this table if anything differs.
+Direct dependency manifest licenses were checked against the installed package metadata on 2026-11-14. Transitive dependencies are not individually enumerated here.
 
 ## Images, fonts and sound
 
 | Item | Source | License or permission |
 | --- | --- | --- |
-| Galaxy Run wordmark, Earth/Moon/Mars scenario emblems, spacecraft illustration, and distinct Pathfinder/Voyager/Atlas icons | Original SVG artwork created for this project in `public/assets/` | Original project assets |
+| Galaxy Run wordmark, Earth/Moon/Mars/Venus scenario emblems, spacecraft illustration, and distinct Pathfinder/Voyager/Atlas icons | Original SVG artwork created for this project in `public/assets/` | Original project assets |
 | Launch cue | Original short sound synthesized for this project in `public/assets/launch-cue.wav` | Original project asset |
 
 The interface uses system fonts and has no downloaded image, sound, or font assets. Any NASA image must be credited here with its source link. No NASA logos, no NASA mission badges, and no copyrighted music.

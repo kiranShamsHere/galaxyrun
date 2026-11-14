@@ -4,179 +4,90 @@
 
 **Design a space mission. Launch it. Find out why it worked or failed.**
 
-A browser game for the NASA Space Apps Challenge 2026, built for the official challenge *Space Mission Design Game*.
+A browser game about balancing spacecraft choices and learning from their consequences.
 
-![Status](https://img.shields.io/badge/status-MVP%20in%20progress-a6f26b)
-![React](https://img.shields.io/badge/React-19-61dafb)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6)
-![License](https://img.shields.io/badge/license-MIT-2dd4bf)
-
-[Play the demo](#live-demo) · [How it works](#how-it-works) · [Run it locally](#run-it-locally) · [Tech stack](#tech-stack) · [Team](#team)
+[Play the game](#live-deployment) · [How it works](#how-it-works) · [Run locally](#run-locally) · [Development checklist](docs/DEVELOPMENT_CHECKLIST.md)
 
 </div>
 
-> **Project status:** the first playable loop is in progress. The working project deadline is December 15, 2026. The repository includes a responsive landing page, three mission scenarios, Easy and Normal modes, spacecraft hardware and propulsion choices, live resource totals, engine-generated design feedback, fuel/delta-v checks, mission-duration/deadline trade-offs, orbit and launcher choices, a seeded mission run, a flight timeline and a score report. The UI uses original local artwork, an optional launch cue, a first-mission guide, and contextual technical definitions. Keyboard and reduced-motion support are implemented; accessibility audits remain. Design saving/sharing and cooperative mode are still to come. See [the development checklist](docs/DEVELOPMENT_CHECKLIST.md) for the full proposal status.
-
----
-
-## The problem
-
-Designing a space mission means balancing mass, power, cost, data, orbit, fuel and time at once. Every choice pushes on the others. A better camera gives more science, but it also adds weight, uses more power, creates more data and costs more money.
-
-Most learning tools teach these ideas one at a time. A student can understand each concept and still not know how to make decisions for a whole mission. And when a game says "mission failed", it rarely says which decision caused it.
+> **Project deadline: December 15, 2026.** Hackathon kickoff scheduling is intentionally not part of this plan. The proposal’s implementable game features are in the project; manual tests and external submission steps are tracked in the development checklist.
 
 ## The idea
 
-Galaxy Run is a short game where you design a mission, fly it, and then read a report that explains the result in plain words.
+Galaxy Run turns mission design into a short, replayable systems exercise. Players choose an objective, build a spacecraft, check resources, fly a seeded mission, and review an explanation of the outcome.
 
-The core of it is the **why engine**. Every rule in the simulation returns two things: a number, and a reason with a cause, an effect and a fix. The interface never invents explanations. It only shows reasons the engine produced from the numbers in your run.
-
-So instead of a red bar, you get this kind of message:
-
-```text
-Not enough power.
-Cause:  your instruments need 335 W, the solar panels give 300 W.
-Effect: instruments would shut down during eclipse.
-Fix:    add a panel, or drop one instrument.
-```
-
-The numbers above are an example of the format, not real game output.
+The **why engine** is the center of the game. Each resource check describes its cause, effect, and possible fix. Flight reports connect seeded events and science return to the selected design.
 
 ## How it works
 
-1. **Choose** a mission scenario and a difficulty.
-2. **Design** the spacecraft: bus, instruments, launch vehicle and orbit. Live bars show mass, power, cost and data as you build.
-3. **Check** the design. Warnings explain themselves.
-4. **Simulate** the mission on a timeline with seeded random events.
-5. **Learn** from the mission report, which ties every result to a design choice.
-6. **Improve** the design and try again, or share it.
-
-Random events use a seed, so the same design with the same seed always gives the same result. A funding cut can reduce active observation time and science return during a run.
+1. Choose Earth, Moon, Mars, or Venus and set a difficulty or Sandbox mode.
+2. Select a bus, three to five science instruments, propulsion, propellant, launch vehicle, orbit, solar-panel area, development time, and mission length.
+3. Review live mass, power, eclipse battery, budget, data, science, and schedule estimates.
+4. Launch a seeded simulation and inspect the timeline, score, reasons, and awards.
+5. Revise, save, compare, or share the design. Shared links restore the design and replay seed.
 
 ## Features
 
-Implemented in the current foundation:
+- Four destination scenarios and an expanding spacecraft/instrument catalog.
+- Easy, Normal, and Hard settings, plus a resource-unbounded Sandbox practice mode.
+- Solar-array output and eclipse battery calculations alongside mass, cost, data, reliability, thermal risk, delta-v, and schedule checks.
+- Cause/effect/fix explanations and a seeded flight timeline.
+- Four-role pass-and-play crew review with approvals, a recorded trade-off, and collaboration scoring.
+- Device-local design saving, compressed share links, design comparison, same-seed flight board, and achievements.
+- NASA/ESA mission field notes, a 2D orbit visualization, and a browser print-to-PDF flight report.
+- Original project artwork, optional synthesized sound, first-flight help, contextual definitions, keyboard support, and reduced-motion handling.
 
-- [x] Three scenario choices: Earth Observer, Moon Mapper, Mars Scout
-- [x] Easy and Normal difficulty with distinct allowances, hints, and event rates
-- [x] Spacecraft bus and science instrument selection
-- [x] Live mass, power, parts and launch cost, data and science totals
-- [x] Propulsion choice, propellant slider, and rocket-equation delta-v check
-- [x] Mission-duration slider with deadline and operations-cost trade-offs
-- [x] Design feedback with a cause, effect and fix for each resource check
-- [x] Orbit selection, circular period estimate, and simplified launch capacity check
-- [x] Seeded flight events, including budget cuts, with a mission timeline, score breakdown and event explanations
-- [x] One-click starter flight, reopenable first-mission guide, and keyboard-operable technical term help
-- [x] Original scenario, orbiter, logo, and launch-vehicle artwork; optional launch sound
+## Live deployment
 
-Next for the first playable version:
+The project team reports that a Vercel deployment exists, but its production URL is not recorded in this repository. Add and verify the URL here before sharing the README or submitting the project. No public-link or no-login claim is made until that check is complete.
 
-- [ ] Responsive public link that works on laptop and tablet
+## Run locally
 
-Planned if time allows:
-
-- [ ] Cooperative mode for up to four players with team roles
-- [ ] Share a design through a link
-- [ ] Leaderboard
-- [ ] Downloadable PDF mission report
-- [ ] 3D spacecraft and orbit view
-- [ ] Sandbox mode and a Hard difficulty
-
-## Live demo
-
-Not published yet. The link will go here after the first deploy.
-
-## Screenshots
-
-Screenshots will be added to `docs/screenshots/` once the screens exist.
-
-## Run it locally
-
-You need [Node.js](https://nodejs.org/) 20 or newer (22 recommended) and Git.
+You need Node.js 20 or newer and Git.
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/galaxyrun.git
+git clone https://github.com/kiranShamsHere/galaxyrun.git
 cd galaxyrun
-
-# 2. Install dependencies
 npm install
-
-# 3. Start the dev server
 npm run dev
 ```
 
-Open the address that Vite prints, usually `http://localhost:5173`.
+Open the local address printed by Vite, usually `http://localhost:5173`.
 
-### Scripts
-
-| Command | What it does |
+| Command | Purpose |
 | --- | --- |
-| `npm run dev` | Start the dev server with hot reload |
-| `npm run build` | Type check and create a production build in `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm run test` | Run all tests once |
-| `npm run test:watch` | Run tests and re run on every change |
-| `npm run lint` | Check the code with oxlint |
-| `npm run typecheck` | Check types with TypeScript |
-| `npm run check` | Lint, type check, test and build in one go |
-
-Run `npm run check` before opening a pull request. The same checks run in GitHub Actions.
-
-## Tech stack
-
-| Tool | Why we use it |
-| --- | --- |
-| TypeScript | Catches mistakes such as mixing kilograms and grams, and lets the engine and the interface share types |
-| React | Component based screens that re render when the design changes, which live dashboard bars need |
-| Vite | Fast dev server, simple build, TypeScript works out of the box |
-| Tailwind CSS | Quick, consistent, responsive styling |
-| Zustand | A tiny store that holds the current mission design |
-| Pure TypeScript engine | No UI code, so it is easy to test, fair and easy to explain |
-| Vitest | Unit tests for every formula |
-| Zod | Checks the JSON catalogs when they load, so bad data fails early |
-| Recharts | Live power and data charts |
-| lz-string | Compresses a design into a share link, no backend needed |
-| Vercel | Free hosting with a preview link for every pull request |
-| GitHub Actions | Runs lint, types, tests and build on every push |
-
-Planned and optional: Three.js with React Three Fiber for a 3D view, Supabase for a leaderboard and online co op, jsPDF for the report download.
+| `npm run dev` | Start the development server |
+| `npm run check` | Run lint, typecheck, tests, and a production build |
+| `npm run test` | Run the formula and engine tests |
+| `npm run build` | Typecheck and build for production |
+| `npm run preview` | Preview the production build locally |
 
 ## Project structure
 
 ```text
-galaxyrun/
-  src/
-    engine/   Pure TypeScript rules, evaluation, events, scoring and reasons
-    data/     Scenario and spacecraft part catalogs, launch vehicles, NASA constants
-    ui/       React screens and components
-    learn/    Tutorial text, tooltips and concept cards
-    store.ts  Zustand mission design state
-    App.tsx   Mission selection, spacecraft designer and live dashboard
-  docs/       Credits, AI use note, submission checklist, screenshots
-  .github/    CI workflow and pull request template
+src/
+  components/  Landing page, game panels, field notes, and diagrams
+  data/        Mission constants, scenarios, spacecraft catalog, glossary
+  engine/      Pure mission calculations, evaluation, seeded simulation, tests
+  learn/       Learning notes
+  utils/       Browser design sharing and local score storage
+  App.tsx      Screen composition and mission interactions
+  store.ts     Mission design state
+public/assets/ Original SVG artwork and synthesized launch sound
+docs/          Credits, AI-use note, checklists, and project material
+.github/       CI workflow and contribution guidance
 ```
 
-## Data and credits
+## Data, assumptions, and credits
 
-The game will use real NASA values for planets and orbits, such as radii and gravitational constants. Each value will be stored in `src/data/` with its source and retrieval date, so the game does not depend on a live API during a demo.
+Planetary constants and irradiance values are stored locally with NASA/JPL sources and retrieval dates. Terra, Lunar Reconnaissance Orbiter, Mars Reconnaissance Orbiter, and Venus Express are used as learning references. Array efficiency, costs, masses, risk ratings, event rates, and launch allowances are simplified game assumptions; Galaxy Run is not a spacecraft engineering tool and is not affiliated with NASA or ESA.
 
-Every data source, image, library and tool is listed in [docs/CREDITS.md](docs/CREDITS.md). This project does not use NASA logos or mission badges.
+See [docs/CREDITS.md](docs/CREDITS.md) for sources, libraries, artwork, and sound. AI assistance is recorded in [docs/AI_USE.md](docs/AI_USE.md).
 
-## Use of AI
+## Verification and remaining handoff
 
-AI tools were used while planning this project. The exact use, including anything in the code, text or images, is listed in [docs/AI_USE.md](docs/AI_USE.md) and is also stated in the hackathon submission.
-
-## Contributing
-
-The team works with short branches and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Team
-
-Built by Kiran, Rimsha and Hadeed in the Universal Event of the NASA Space Apps Challenge 2026.
+`npm run check` currently passes, including 14 tests and a production build. Human playtesting, full keyboard and screen-reader reviews, final contrast review, deployment-link verification, teammate review, and event-site fields remain listed in [docs/DEVELOPMENT_CHECKLIST.md](docs/DEVELOPMENT_CHECKLIST.md) and [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md).
 
 ## License
 
 [MIT](LICENSE)
-
-This project was created for the NASA Space Apps Challenge. It is not affiliated with or endorsed by NASA.

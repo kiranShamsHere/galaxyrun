@@ -1,6 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FirstMissionGuide } from './components/FirstMissionGuide.tsx'
+import { DesignLibraryPanel } from './components/DesignLibraryPanel.tsx'
 import { LandingPage } from './components/LandingPage.tsx'
+import { OrbitDiagram } from './components/OrbitDiagram.tsx'
+import { MissionLearningCards } from './components/MissionLearningCards.tsx'
+import { LocalLeaderboard } from './components/LocalLeaderboard.tsx'
+import { TeamPanel } from './components/TeamPanel.tsx'
 import { TermTip } from './components/TermTip.tsx'
 import { launchVehicles, parts, propulsionSystems, scenarios } from './data/catalog.ts'
 import type { GlossaryTerm } from './data/glossary.ts'
@@ -9,12 +14,15 @@ import { calculateOrbitPeriodMinutes } from './engine/orbit.ts'
 import { simulateMission } from './engine/simulateMission.ts'
 import type { DesignEvaluation, MissionSimulation, Reason } from './engine/types.ts'
 import { useMissionStore } from './store.ts'
+import { readSharedDesign } from './utils/designLibrary.ts'
+import { recordLocalScore } from './utils/leaderboardStorage.ts'
 import { hasCompletedGuide, rememberGuideCompleted } from './utils/guideStorage.ts'
 
 const scenarioArtwork: Record<string, string> = {
   'earth-observer': '/assets/mission-earth.svg',
   'moon-mapper': '/assets/mission-moon.svg',
   'mars-scout': '/assets/mission-mars.svg',
+  'venus-cloud-watcher': '/assets/mission-venus.svg',
 }
 
 function Metric({
@@ -83,7 +91,7 @@ function DesignSummary({ evaluation }: { evaluation: DesignEvaluation }) {
   return (
     <section className="panel summary-panel" aria-labelledby="summary-title">
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
-        Design updated. Spacecraft mass {evaluation.massKg} of {evaluation.launchCapacityKg} kilograms including propellant. Delta-v {evaluation.deltaVMps} of {evaluation.requiredDeltaVMps} meters per second. Mission duration {evaluation.missionDurationDays} of {evaluation.missionDeadlineDays} days. Power use {evaluation.powerW} of {evaluation.powerAvailableW} watts. Cost {evaluation.costMillionUsd} of {evaluation.budgetMillionUsd} million dollars. Data collected {evaluation.dataGbPerDay} of {evaluation.dataLimitGbPerDay} gigabytes per day. Estimated mission reliability {evaluation.reliabilityPercent} percent and thermal risk {evaluation.thermalRiskPercent} percent.
+        Design updated. Spacecraft mass {evaluation.massKg} of {evaluation.launchCapacityKg} kilograms including propellant. Delta-v {evaluation.deltaVMps} of {evaluation.requiredDeltaVMps} meters per second. Total schedule {evaluation.scheduleDurationDays} of {evaluation.missionDeadlineDays} days, including {evaluation.developmentDurationDays} days of development and {evaluation.missionDurationDays} days of operations. Power use {evaluation.powerW} of {evaluation.powerAvailableW} watts. Eclipse battery {evaluation.eclipseEnergyRequiredWh} of {evaluation.batteryCapacityWh} watt hours. Cost {evaluation.costMillionUsd} of {evaluation.budgetMillionUsd} million dollars. Data collected {evaluation.dataGbPerDay} of {evaluation.dataLimitGbPerDay} gigabytes per day. Estimated mission reliability {evaluation.reliabilityPercent} percent and thermal risk {evaluation.thermalRiskPercent} percent.
       </p>
       <div className="section-heading">
         <div>
@@ -95,10 +103,11 @@ function DesignSummary({ evaluation }: { evaluation: DesignEvaluation }) {
       <div className="metric-grid">
         <Metric label="Spacecraft mass" current={evaluation.massKg} limit={evaluation.launchCapacityKg} unit="kg" display={evaluation.massKg.toLocaleString()} help="Spacecraft mass" />
         <Metric label="Power demand" current={evaluation.powerW} limit={evaluation.powerAvailableW} unit="W" display={evaluation.powerW.toLocaleString()} help="Power demand" />
+        <Metric label="Eclipse battery" current={evaluation.eclipseEnergyRequiredWh} limit={evaluation.batteryCapacityWh} unit="Wh" display={evaluation.eclipseEnergyRequiredWh.toLocaleString()} help="Eclipse battery" />
         <Metric label="Mission cost" current={evaluation.costMillionUsd} limit={evaluation.budgetMillionUsd} unit="M USD" display={`$${evaluation.costMillionUsd}`} help="Mission cost" />
         <Metric label="Daily data" current={evaluation.dataGbPerDay} limit={evaluation.dataLimitGbPerDay} unit="GB/day" display={`${evaluation.dataGbPerDay}`} help="Daily data" extraHelp="Downlink" />
         <Metric label="Delta-v" current={evaluation.deltaVMps} limit={evaluation.requiredDeltaVMps} unit="m/s" display={evaluation.deltaVMps.toLocaleString()} help="Delta-v" />
-        <Metric label="Mission time" current={evaluation.missionDurationDays} limit={evaluation.missionDeadlineDays} unit="days" display={`${evaluation.missionDurationDays}`} help="Mission time" />
+        <Metric label="Mission schedule" current={evaluation.scheduleDurationDays} limit={evaluation.missionDeadlineDays} unit="days" display={`${evaluation.scheduleDurationDays}`} help="Mission time" />
       </div>
       <div className="risk-summary" aria-label="Estimated system risk">
         <div className="risk-heading"><span>Estimated mission reliability<TermTip term="Mission reliability" /></span><strong>{evaluation.reliabilityPercent}%</strong></div>
@@ -124,6 +133,7 @@ function MissionReport({ result, onEdit }: { result: MissionSimulation; onEdit: 
     ['Efficiency', result.efficiencyScore],
     ['Reliability', result.reliabilityScore],
     ['Learning', result.learningScore],
+    ...(result.collaborationScore > 0 ? [['Collaboration', result.collaborationScore] as const] : []),
   ] as const
   const reportReasons = result.reasons.filter((reason) => reason.status !== 'ok')
 
@@ -143,12 +153,14 @@ function MissionReport({ result, onEdit }: { result: MissionSimulation; onEdit: 
       </div>
 
       <section className="panel mission-score-panel">
-        <div className="score-total"><span>FINAL SCORE</span><strong>{result.score}</strong><small>out of 100</small></div>
-        <div className="score-breakdown">
+      <div className="score-total"><span>{result.playMode === 'sandbox' ? 'PRACTICE SCORE' : 'FINAL SCORE'}</span><strong>{result.score}</strong><small>{result.playMode === 'sandbox' ? 'unranked · out of 100' : 'out of 100'}</small></div>
+      <div className="score-breakdown">
         <div className="section-heading"><div><p className="eyebrow">HOW THE MISSION SCORED</p><h2>Score breakdown</h2></div><span className="seed-label">{result.difficulty.toUpperCase()} · SEED {result.seed}<TermTip term="Seed" align="end" /></span></div>
           <div className="score-items">{scoreParts.map(([label, score]) => <div className="score-item" key={label}><span>{label}</span><b>{score}<small> / 100</small></b><i><em style={{ width: `${score}%` }} /></i></div>)}</div>
         </div>
       </section>
+      {result.achievements.length > 0 && <section className="panel achievement-panel" aria-label="Achievements earned"><p className="eyebrow">FLIGHT AWARDS</p><div>{result.achievements.map((achievement) => <span className="achievement-badge" key={achievement}>✦ {achievement}</span>)}</div></section>}
+      <LocalLeaderboard scenarioId={result.scenarioId} difficulty={result.difficulty} seed={result.seed} />
 
       <div className="report-columns">
         <section className="panel timeline-panel">
@@ -161,7 +173,7 @@ function MissionReport({ result, onEdit }: { result: MissionSimulation; onEdit: 
           {reportReasons.length > 0 ? <div className="reason-list">{reportReasons.map((reason) => <ReasonCard reason={reason} key={reason.id} />)}</div> : <div className="all-clear"><span>✦</span><b>All design checks are clear.</b><p>Try a different instrument mix to explore another trade-off.</p></div>}
         </section>
       </div>
-      <div className="report-actions"><p>Same design and seed replay the same events, so you can compare design changes fairly.</p><button className="launch-button edit-button" type="button" onClick={onEdit}>← Improve this design</button></div>
+      <div className="report-actions"><p>Same design and seed replay the same events, so you can compare design changes fairly.</p><button className="secondary-button" type="button" onClick={() => window.print()}>Print / save report as PDF</button><button className="launch-button edit-button" type="button" onClick={onEdit}>← Improve this design</button></div>
     </section>
   )
 }
@@ -171,6 +183,8 @@ export default function App() {
   const [missionResult, setMissionResult] = useState<MissionSimulation | null>(null)
   const [soundEnabled, setSoundEnabled] = useState(false)
   const [guideOpen, setGuideOpen] = useState(() => !hasCompletedGuide())
+  const [runSeed] = useState(() => readSharedDesign(window.location.search)?.seed ?? 2026)
+  const [teamScore, setTeamScore] = useState({ key: '', score: 0 })
   const reportWasOpen = useRef(false)
   const design = useMissionStore((state) => state.design)
   const selectScenario = useMissionStore((state) => state.selectScenario)
@@ -180,8 +194,13 @@ export default function App() {
   const selectPropulsionSystem = useMissionStore((state) => state.selectPropulsionSystem)
   const setPropellantMass = useMissionStore((state) => state.setPropellantMass)
   const setMissionDuration = useMissionStore((state) => state.setMissionDuration)
+  const setDevelopmentDuration = useMissionStore((state) => state.setDevelopmentDuration)
+  const setSolarPanelArea = useMissionStore((state) => state.setSolarPanelArea)
   const selectDifficulty = useMissionStore((state) => state.selectDifficulty)
+  const selectPlayMode = useMissionStore((state) => state.selectPlayMode)
+  const setTeamMode = useMissionStore((state) => state.setTeamMode)
   const toggleInstrument = useMissionStore((state) => state.toggleInstrument)
+  const replaceDesign = useMissionStore((state) => state.replaceDesign)
   const scenario = scenarios.find((item) => item.id === design.scenarioId) ?? scenarios[0]
   const orbit = scenario.orbits.find((item) => item.id === design.orbitId) ?? scenario.orbits[0]
   const launchVehicle = launchVehicles.find((item) => item.id === design.launchVehicleId) ?? launchVehicles[0]
@@ -193,15 +212,28 @@ export default function App() {
   const selectedCount = design.instrumentIds.length
   const designIssues = evaluation.reasons.filter((reason) => reason.status !== 'ok')
   const hardChecksClear = !evaluation.reasons.some((reason) => reason.status === 'fail')
+  const handleTeamScoreChange = useCallback((key: string, score: number) => setTeamScore({ key, score }), [])
+  const designKey = JSON.stringify(design)
+  const currentTeamScore = teamScore.key === designKey ? teamScore.score : 0
 
   function launchMission() {
-    setMissionResult(simulateMission(design, scenario, parts, launchVehicles, propulsionSystems, 2026))
+    const result = simulateMission(design, scenario, parts, launchVehicles, propulsionSystems, runSeed, currentTeamScore)
+    setMissionResult(result)
+    recordLocalScore(result)
     if (soundEnabled) {
       const launchCue = new Audio('/assets/launch-cue.wav')
       launchCue.volume = 0.3
       void launchCue.play().catch(() => undefined)
     }
   }
+
+  useEffect(() => {
+    const shared = readSharedDesign(window.location.search)
+    if (shared) {
+      replaceDesign(shared.design)
+      window.history.replaceState({}, '', `${window.location.pathname}${window.location.hash}`)
+    }
+  }, [replaceDesign])
 
   function dismissGuide() {
     rememberGuideCompleted()
@@ -264,7 +296,7 @@ export default function App() {
       {scenarios.map((item, index) => (
             <button key={item.id} className={`scenario-card ${item.id === scenario.id ? 'is-selected' : ''}`} onClick={() => selectScenario(item.id)} aria-pressed={item.id === scenario.id}>
               <span className="scenario-art" aria-hidden="true"><img src={scenarioArtwork[item.id]} width="120" height="96" alt="" decoding="async" /></span>
-              <span className="scenario-copy"><span className="scenario-kicker">{['01 / EARTH SYSTEMS', '02 / LUNAR EXPLORATION', '03 / DEEP SPACE'][index]}</span><strong>{item.name}</strong><small>{item.destination}</small></span>
+              <span className="scenario-copy"><span className="scenario-kicker">{`${String(index + 1).padStart(2, '0')} / ${item.bodyId.toUpperCase()} EXPLORATION`}</span><strong>{item.name}</strong><small>{item.destination}</small></span>
               <span className="selection-check" aria-hidden="true">✓</span>
             </button>
           ))}
@@ -281,9 +313,18 @@ export default function App() {
           <button type="button" className={`difficulty-option ${design.difficulty === 'normal' ? 'is-selected' : ''}`} onClick={() => selectDifficulty('normal')} aria-pressed={design.difficulty === 'normal'}>
             <b>Normal</b><small>Baseline limits · more events</small>
           </button>
+          <button type="button" className={`difficulty-option ${design.difficulty === 'hard' ? 'is-selected' : ''}`} onClick={() => selectDifficulty('hard')} aria-pressed={design.difficulty === 'hard'}>
+            <b>Hard</b><small>Tighter budget · hidden risks</small>
+          </button>
         </div>
       </section>
+      <div className="play-mode-row"><label htmlFor="play-mode">Flight mode</label><select id="play-mode" value={design.playMode} onChange={(event) => selectPlayMode(event.currentTarget.value as 'mission' | 'sandbox')}><option value="mission">Mission — resource checks gate launch</option><option value="sandbox">Sandbox — launch freely, learn from every limit</option></select><p>{design.playMode === 'sandbox' ? 'Sandbox runs ignore failed launch gates and are always unranked.' : 'Mission mode enforces the selected difficulty limits.'}</p></div>
       {design.difficulty === 'easy' && <p className="mode-hint"><span aria-hidden="true">✦</span> Coach tip: Leave spare mass and power capacity for unexpected events during flight.</p>}
+
+      <DesignLibraryPanel design={design} onLoad={(savedDesign) => replaceDesign(savedDesign)} />
+      <TeamPanel key={designKey} enabled={Boolean(design.teamMode)} resetKey={designKey} onToggle={setTeamMode} onScoreChange={handleTeamScoreChange} />
+      <OrbitDiagram scenario={scenario} orbit={orbit} />
+      <MissionLearningCards scenario={scenario} />
 
       <section className="quick-flight" aria-label="Quick start mission">
         <div className="quick-flight-mark" aria-hidden="true"><span>↗</span></div>
@@ -334,9 +375,17 @@ export default function App() {
               )
             })}
           </div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">04</span><div><h3>Solar array and eclipse battery</h3><p>More panel area makes power, but adds spacecraft mass and cost.</p></div></div>
+          <div className="propellant-control solar-array-control">
+            <label htmlFor="solar-panel-slider"><span>Solar-panel area</span><b>{evaluation.solarPanelAreaM2.toFixed(1)} m²</b></label>
+            <input id="solar-panel-slider" type="range" min="0.5" max="5" step="0.1" value={evaluation.solarPanelAreaM2} onChange={(event) => setSolarPanelArea(Number(event.currentTarget.value))} aria-valuetext={`${evaluation.solarPanelAreaM2.toFixed(1)} square metres, producing ${evaluation.powerAvailableW} watts`} />
+            <div className="slider-ends"><span>0.5 m²</span><span>5 m²</span></div>
+            <div className="solar-array-readouts"><span>Solar output <b>{evaluation.powerAvailableW} W</b></span><span>Battery through eclipse <b>{evaluation.eclipseEnergyRequiredWh} / {evaluation.batteryCapacityWh} Wh</b></span><span>Array mass and cost <b>{evaluation.solarArrayMassKg.toFixed(1)} kg · ${evaluation.solarArrayCostMillionUsd.toFixed(1)}M</b></span></div>
+            <p className="model-note">Output = panel area × sunlight at the destination × 28% assumed efficiency. Array mass, cost, and eclipse time are simplified game values.</p>
+          </div>
           <div className="planning-grid">
             <div className="planning-card">
-              <div className="subsection-heading instrument-heading"><span className="subsection-index">04</span><div><h3>Propellant load</h3><p>More fuel adds delta-v and launch mass at the same time.</p></div><TermTip term="Propellant" /><span className="optional-label">{evaluation.propellantMassKg} / {evaluation.maxPropellantKg} KG</span></div>
+              <div className="subsection-heading instrument-heading"><span className="subsection-index">05</span><div><h3>Propellant load</h3><p>More fuel adds delta-v and launch mass at the same time.</p></div><TermTip term="Propellant" /><span className="optional-label">{evaluation.propellantMassKg} / {evaluation.maxPropellantKg} KG</span></div>
               <div className="propellant-control">
                 <label htmlFor="propellant-slider"><span>Fuel mass<TermTip term="Propellant" /></span><b>{evaluation.propellantMassKg} kg</b></label>
                 <input id="propellant-slider" type="range" min="0" max={evaluation.maxPropellantKg} step="1" value={evaluation.propellantMassKg} onChange={(event) => setPropellantMass(Number(event.currentTarget.value))} aria-valuetext={`${evaluation.propellantMassKg} kilograms of propellant`} />
@@ -347,17 +396,20 @@ export default function App() {
             </div>
 
             <div className="planning-card">
-              <div className="subsection-heading instrument-heading"><span className="subsection-index">05</span><div><h3>Mission duration</h3><p>Longer missions return more science and cost more to operate.</p></div><TermTip term="Mission duration" /><span className="optional-label">{evaluation.missionDurationDays} / {evaluation.missionDeadlineDays} DAYS</span></div>
+              <div className="subsection-heading instrument-heading"><span className="subsection-index">06</span><div><h3>Mission schedule</h3><p>Development and operations both use the scenario’s available time.</p></div><TermTip term="Mission duration" /><span className="optional-label">{evaluation.scheduleDurationDays} / {evaluation.missionDeadlineDays} DAYS</span></div>
               <div className="mission-duration-control">
+                <label className="schedule-slider-label" htmlFor="development-slider">Development time <b>{evaluation.developmentDurationDays} days</b></label>
+                <input id="development-slider" type="range" min="5" max={Math.max(5, scenario.missionDeadlineDays - 30)} step="5" value={evaluation.developmentDurationDays} onChange={(event) => setDevelopmentDuration(Number(event.currentTarget.value))} aria-valuetext={`${evaluation.developmentDurationDays} development days`} />
                 <div className="duration-readout"><span>Operations cost<TermTip term="Operations cost" /></span><b>${evaluation.operationsCostMillionUsd.toFixed(1)}M</b></div>
-                <input type="range" min="30" max={scenario.missionDeadlineDays} step="1" value={evaluation.missionDurationDays} onChange={(event) => setMissionDuration(Number(event.currentTarget.value))} aria-label="Mission duration" aria-valuetext={`${evaluation.missionDurationDays} days, with ${evaluation.operationsCostMillionUsd.toFixed(1)} million dollars operations cost`} />
-                <div className="slider-ends"><span>30 days</span><span>Deadline {evaluation.missionDeadlineDays} days<TermTip term="Mission deadline" align="end" /></span></div>
+                <input type="range" min="30" max={Math.max(30, scenario.missionDeadlineDays - evaluation.developmentDurationDays)} step="1" value={evaluation.missionDurationDays} onChange={(event) => setMissionDuration(Number(event.currentTarget.value))} aria-label="Mission operations duration" aria-valuetext={`${evaluation.missionDurationDays} days, with ${evaluation.operationsCostMillionUsd.toFixed(1)} million dollars operations cost`} />
+                <div className="slider-ends"><span>30 days</span><span>Up to {scenario.missionDeadlineDays - evaluation.developmentDurationDays} ops days</span></div>
+                <p className="schedule-total">Total schedule <b>{evaluation.developmentDurationDays} development + {evaluation.missionDurationDays} operations = {evaluation.scheduleDurationDays} days</b> <TermTip term="Mission deadline" align="end" /></p>
                 <p className="model-note">Science and event rates scale with campaign length; this is an educational planning model.</p>
               </div>
             </div>
           </div>
 
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">06</span><div><h3>Mission orbit</h3><p>Altitude changes the orbit period and daily ground contact.</p></div><TermTip term="Orbit options" /></div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">07</span><div><h3>Mission orbit</h3><p>Altitude changes the orbit period and daily ground contact.</p></div><TermTip term="Orbit options" /></div>
           <div className="orbit-options">
             {scenario.orbits.map((item) => {
               const periodMinutes = calculateOrbitPeriodMinutes(item.altitudeKm, scenario.bodyRadiusKm, scenario.gravitationalParameterKm3PerSec2)
@@ -371,7 +423,7 @@ export default function App() {
             })}
           </div>
 
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">07</span><div><h3>Launch vehicle</h3><p>Payload capacity depends on destination and orbit.</p></div><TermTip term="Launch vehicle" /><TermTip term="Launch capacity" /></div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">08</span><div><h3>Launch vehicle</h3><p>Payload capacity depends on destination and orbit.</p></div><TermTip term="Launch vehicle" /><TermTip term="Launch capacity" /></div>
           <div className="launcher-options">
             {launchVehicles.map((vehicle) => {
               const capacityKg = Math.floor(vehicle.payloadCapacityKgByBody[scenario.bodyId] * orbit.launchCapacityFactor)
@@ -387,10 +439,10 @@ export default function App() {
             })}
           </div>
           <p className="catalog-note">Launch costs, payload allowances, and contact times are simplified game assumptions, not real vehicle specifications. Orbit period uses a circular-orbit estimate.</p>
-          <button className="launch-button" type="button" disabled={evaluation.reasons.some((reason) => reason.status === 'fail')} onClick={launchMission}>
+          <button className="launch-button" type="button" disabled={(evaluation.reasons.some((reason) => reason.status === 'fail') && design.playMode !== 'sandbox') || (Boolean(design.teamMode) && currentTeamScore < 85)} onClick={launchMission}>
             Launch mission <span aria-hidden="true">→</span>
           </button>
-          <p className="launch-hint">{evaluation.reasons.some((reason) => reason.status === 'fail') ? 'Resolve failed checks before launch.' : 'No hard limits exceeded. Ready for launch.'}</p>
+          <p className="launch-hint">{Boolean(design.teamMode) && currentTeamScore < 85 ? 'All four roles must approve and agree on a trade-off before launch.' : evaluation.reasons.some((reason) => reason.status === 'fail') && design.playMode !== 'sandbox' ? 'Resolve failed checks before launch.' : design.playMode === 'sandbox' ? 'Sandbox run ready. Limits are shown for learning.' : 'No hard limits exceeded. Ready for launch.'}</p>
         </section>
 
         <aside className="right-column">

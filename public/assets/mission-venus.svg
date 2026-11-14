@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 96" fill="none">
+  <defs><linearGradient id="venus" x1="35" y1="15" x2="82" y2="83" gradientUnits="userSpaceOnUse"><stop stop-color="#F1D493"/><stop offset=".52" stop-color="#B77753"/><stop offset="1" stop-color="#573B43"/></linearGradient><clipPath id="venus-disc"><circle cx="60" cy="48" r="31"/></clipPath></defs>
+  <ellipse cx="60" cy="48" rx="47" ry="17" stroke="#8DA8C7" stroke-opacity=".68" transform="rotate(-14 60 48)"/>
+  <circle cx="60" cy="48" r="31" fill="url(#venus)" stroke="#F4DDAA" stroke-width="1.4"/>
+  <g clip-path="url(#venus-disc)" stroke="#FFF0C4" stroke-opacity=".38" stroke-width="5"><path d="M24 34c18-9 35 13 59 2s30-4 40 2M24 49c20-11 36 12 60 0s28-4 40 1M25 66c21-8 36 11 61-1s28-1 40 4"/></g>
+  <circle cx="22" cy="68" r="2" fill="#D9AA72"/><circle cx="98" cy="25" r="1.5" fill="#D9AA72"/>
+</svg>

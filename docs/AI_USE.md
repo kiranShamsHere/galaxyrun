@@ -1,15 +1,15 @@
 # Use of AI
 
-The NASA Space Apps submission form asks where and how AI tools were used. Fill this in honestly and keep it current. Copy the final version into the form.
+The NASA Space Apps submission form asks where and how AI tools were used. This record is a draft for the team to review and copy into the form.
 
 Rules from the hackathon: AI generated images or video need a visible watermark, and AI generated code, text or data must be acknowledged.
 
 | Tool | What it was used for | Where (files or screens) | Reviewed and changed by |
 | --- | --- | --- | --- |
-| Claude (Anthropic) | Project planning, the project proposal document, the setup of this repository and its documentation templates | Proposal PDF, repository setup files, docs/ templates | _name of teammate who reviewed it_ |
-| OpenAI Codex | Implemented the mission designer, scenario and part catalog, resource evaluator, propulsion and delta-v model, original code-authored SVG artwork, synthesized launch cue, and styling with team-provided project guidance | `src/App.tsx`, `src/store.ts`, `src/data/catalog.ts`, `src/engine/`, `src/learn/fuel.md`, `src/index.css`, `public/assets/` | Team review pending |
+| Claude (Anthropic) | Project planning, the project proposal document, repository setup and documentation templates (as recorded by the project team) | Proposal PDF, repository setup files, `docs/` templates | Team review pending |
+| OpenAI Codex | Implemented and revised the mission designer, mission/part catalog, resource evaluator, power, propulsion and delta-v models, original code-authored SVG artwork, synthesized launch cue, learning cards, browser storage/share features, and project overview deck | `src/App.tsx`, `src/store.ts`, `src/data/`, `src/engine/`, `src/components/`, `src/utils/`, `src/index.css`, `public/assets/`, connected six-slide presentation | Team review pending |
 
-Add one row for every later use, for example code help, wording help or images.
+No AI-generated raster images or video were used. Review this record with the whole team before submission; do not replace pending review with an assumed reviewer name.
 
 ## Our policy
 

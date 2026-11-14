@@ -1,36 +1,39 @@
-# Submission checklist
+# Submission handoff checklist
 
-Project submission opens Saturday, November 14 at 9:00 AM and closes Sunday, November 15 at 11:59 PM, in the local time of the Team Owner (for Universal Event teams). Submission is final, so aim to finish with a buffer.
+This file captures items from the project proposal that require team members or the event submission site. The project’s working deadline is **December 15, 2026**. Hackathon kickoff timing and event scheduling are excluded per the project owner.
 
-The field list below comes from the 2025 guide. Recheck it against the 2026 Project Submission Guide.
+The project requirements may change in the official 2026 submission guide; check that guide before entering the final form. No entry has been submitted by this repository work.
 
 ## Before submitting
 
-- [ ] All three members are on the team's Members tab
-- [ ] All three registered for the same event (Universal Event)
-- [ ] The team chose the challenge "Space Mission Design Game"
-- [ ] The live link opens in a private window with no login
-- [ ] The GitHub repository is public and the README is up to date
-- [ ] Demo is ready: a video of up to 30 seconds or a slide deck of up to 7 slides, public link
-- [ ] `docs/CREDITS.md` lists every outside resource
-- [ ] `docs/AI_USE.md` is complete
+- [ ] Confirm all team members are registered on the same event team and selected the correct challenge.
+- [ ] Verify the production Vercel URL opens in a private window without login, then add it to README and the form.
+- [ ] Push the finished branch, complete teammate review, and merge the approved change.
+- [ ] Run a first-time player session and confirm it can be completed in under ten minutes.
+- [ ] Complete keyboard-only and screen-reader reviews; check contrast after final UI changes.
+- [ ] Capture current desktop and tablet screenshots for the project page.
+- [x] Draft a six-slide project overview deck within the proposal’s seven-slide limit.
+- [ ] Publish a public link for the deck or record a demo video of 30 seconds or less with English subtitles if needed.
+- [x] List NASA/ESA sources, software licenses, original artwork, and original sound in `docs/CREDITS.md`.
+- [x] Record AI use in `docs/AI_USE.md`.
+- [ ] Have the full team review and approve the AI-use note and project materials.
 
-## Form fields
+## Draft form fields
 
-- [ ] Project name: Galaxy Run
-- [ ] High level summary (what we built, how it answers the challenge, why it matters)
-- [ ] Link to project demo
-- [ ] Link to final project (live link and GitHub repository)
-- [ ] Detailed description (what it does, how it works, tools used)
-- [ ] NASA data used, and how
-- [ ] Space agency partner and other data, plus every code, text and image resource
-- [ ] Use of AI
-- [ ] Confirm the terms and that all work is original
-- [ ] Press Submit for Judging
+- [x] Project name: Galaxy Run.
+- [ ] High-level summary: prepare from the project overview in README.
+- [ ] Demo link: add the public presentation or video URL.
+- [ ] Project link: add the verified Vercel URL and GitHub repository URL.
+- [ ] Detailed description: describe the mission loop, engineering trade-offs, learning reasons, and use of seed-based replay.
+- [ ] NASA and other agency data: identify planetary constants, irradiance values, and NASA/ESA mission field notes; refer to `docs/CREDITS.md`.
+- [ ] Tools, code, text, and image resources: use the credits file and AI-use note.
+- [ ] AI use: copy the team-reviewed text from `docs/AI_USE.md`.
+- [ ] Team reviews the terms, confirms originality, and completes the submission form.
+- [ ] Team owner submits the project for judging.
 
-## Rules to remember
+## Rules to recheck against the official guide
 
-- All text in English (a video in another language needs English subtitles)
-- No NASA logos, no copyrighted music or images, no personal information
-- Images can be uploaded on the project page. Videos and documents must be linked
-- Save often and use the edit lock so two people do not overwrite each other
+- All submitted text is in English; add English subtitles if a demo includes other languages.
+- Do not use NASA logos, unlicensed music/images, or personal information.
+- Confirm public links work for reviewers and documents are shared with access enabled.
+- Follow the event site’s save/edit-lock process so teammates do not overwrite one another.

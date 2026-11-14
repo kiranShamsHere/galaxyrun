@@ -16,7 +16,7 @@ export function calculateRocketDeltaVMps(
   specificImpulseSeconds: number,
   startingMassKg: number,
   dryMassKg: number,
-  standardGravityMps2 = 9.80665,
+  standardGravityMps2 = 9.81,
 ) {
   return specificImpulseSeconds * standardGravityMps2 * Math.log(startingMassKg / dryMassKg)
 }

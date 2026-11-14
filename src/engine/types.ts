@@ -1,5 +1,6 @@
 export type Status = 'ok' | 'warn' | 'fail'
-export type Difficulty = 'easy' | 'normal'
+export type Difficulty = 'easy' | 'normal' | 'hard'
+export type PlayMode = 'mission' | 'sandbox'
 
 export type MissionScenario = {
   id: string
@@ -15,8 +16,9 @@ export type MissionScenario = {
   environmentStress: number
   operationsCostMillionUsdPerDay: number
   downlinkRateMbps: number
+  solarIrradianceWPerM2: number
+  defaultSolarPanelAreaM2: number
   orbits: OrbitOption[]
-  powerAvailableW: number
   budgetMillionUsd: number
 }
 
@@ -27,6 +29,7 @@ export type OrbitOption = {
   launchCapacityFactor: number
   contactMinutesPerDay: number
   thermalExposureFactor: number
+  eclipseMinutesPerOrbit: number
 }
 
 export type LaunchVehicle = {
@@ -61,6 +64,7 @@ export type SpacecraftPart = {
   scienceValue: number
   reliabilityPer30Days: number
   thermalTolerance: number
+  batteryCapacityWh?: number
   description: string
 }
 
@@ -71,9 +75,13 @@ export type MissionDesign = {
   orbitId: string
   propulsionId: string
   propellantMassKg: number
+  developmentDurationDays: number
   missionDurationDays: number
   difficulty: Difficulty
+  playMode: PlayMode
+  teamMode?: boolean
   instrumentIds: string[]
+  solarPanelAreaM2: number
 }
 
 export type Reason = {
@@ -82,6 +90,7 @@ export type Reason = {
   cause: string
   effect: string
   fix: string
+  scoreImpact?: number
 }
 
 export type DesignEvaluation = {
@@ -92,6 +101,11 @@ export type DesignEvaluation = {
   scienceValue: number
   launchCapacityKg: number
   powerAvailableW: number
+  batteryCapacityWh: number
+  eclipseEnergyRequiredWh: number
+  solarPanelAreaM2: number
+  solarArrayMassKg: number
+  solarArrayCostMillionUsd: number
   budgetMillionUsd: number
   dataLimitGbPerDay: number
   orbitAltitudeKm: number
@@ -105,6 +119,8 @@ export type DesignEvaluation = {
   specificImpulseSeconds: number
   maxPropellantKg: number
   missionDurationDays: number
+  developmentDurationDays: number
+  scheduleDurationDays: number
   missionDeadlineDays: number
   operationsCostMillionUsd: number
   reliabilityPercent: number
@@ -122,6 +138,10 @@ export type MissionTimelineEvent = {
 export type MissionSimulation = {
   seed: number
   difficulty: Difficulty
+  playMode: PlayMode
+  collaborationScore: number
+  scenarioId: string
+  achievements: string[]
   missionDurationDays: number
   success: boolean
   score: number

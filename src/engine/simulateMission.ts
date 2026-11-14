@@ -32,18 +32,20 @@ export function simulateMission(
   launchVehicles: LaunchVehicle[],
   propulsionSystems: PropulsionSystem[],
   seed: number,
+  collaborationScore = 0,
 ): MissionSimulation {
   const evaluation = evaluateDesign(design, scenario, catalog, launchVehicles, propulsionSystems)
   const random = createRandom(seed)
   const launchVehicleName = launchVehicles.find((vehicle) => vehicle.id === design.launchVehicleId)?.name ?? 'Launch vehicle'
-  const designFailed = evaluation.reasons.some((reason) => reason.status === 'fail')
+  const designFailed = design.playMode !== 'sandbox' && evaluation.reasons.some((reason) => reason.status === 'fail')
   const durationFactor = Math.min(evaluation.missionDurationDays / 60, 2)
-  const eventChance = (design.difficulty === 'easy' ? 0.1 : 0.2) * durationFactor
+  const eventChance = (design.difficulty === 'easy' ? 0.1 : design.difficulty === 'hard' ? 0.3 : 0.2) * durationFactor
   const delay = !designFailed && random() < eventChance
   const flare = !designFailed && random() < eventChance
   const instrumentFault = !designFailed && random() < eventChance
   const communicationsDropout = !designFailed && random() < eventChance
   const systemAnomaly = !designFailed && random() >= evaluation.reliabilityPercent / 100
+  const hiddenRisk = !designFailed && design.difficulty === 'hard' && random() < 0.12
   const budgetCut = !designFailed && random() < eventChance * 0.75
   const operationsFactor = budgetCut ? 0.8 : 1
 
@@ -69,7 +71,7 @@ export function simulateMission(
     })
     timeline.push({
       phase: '03 / OPERATIONS',
-      title: systemAnomaly ? 'Thermal system anomaly' : budgetCut ? 'Operations scaled back after funding cut' : flare ? 'Solar flare disrupted operations' : instrumentFault ? 'Instrument glitch detected' : 'Science instruments operating',
+      title: hiddenRisk ? 'Unforecast spacecraft fault' : systemAnomaly ? 'Thermal system anomaly' : budgetCut ? 'Operations scaled back after funding cut' : flare ? 'Solar flare disrupted operations' : instrumentFault ? 'Instrument glitch detected' : 'Science instruments operating',
       detail: flare
         ? 'A solar flare reduced useful observation time during this pass.'
         : systemAnomaly
@@ -79,7 +81,7 @@ export function simulateMission(
           : instrumentFault
           ? 'One instrument missed part of its observation window; the other payload continued.'
         : `The selected payload operated through the ${evaluation.missionDurationDays}-day observation plan.`,
-      status: flare || instrumentFault || systemAnomaly || budgetCut ? 'warn' : 'ok',
+      status: flare || instrumentFault || systemAnomaly || budgetCut || hiddenRisk ? 'warn' : 'ok',
     })
     timeline.push({
       phase: '04 / DOWNLINK',
@@ -98,7 +100,7 @@ export function simulateMission(
     : evaluation.dataLimitGbPerDay * evaluation.missionDurationDays
   const returnedGb = designFailed ? 0 : Math.min(collectedGb, linkCapacityGb)
   const dataRatio = collectedGb > 0 ? returnedGb / collectedGb : 0
-  const scienceFactor = (flare ? 0.85 : 1) * (instrumentFault ? 0.85 : 1) * (systemAnomaly ? 0.7 : 1)
+  const scienceFactor = (flare ? 0.85 : 1) * (instrumentFault ? 0.85 : 1) * (systemAnomaly ? 0.7 : 1) * (hiddenRisk ? 0.82 : 1)
   const scienceDelivered = Math.round(evaluation.scienceValue * operationsFactor * dataRatio * scienceFactor)
 
   if (!designFailed) {
@@ -118,12 +120,11 @@ export function simulateMission(
   ]
   const efficiencyScore = clampScore(100 - utilization.reduce((sum, value) => sum + value * 18, 0))
   const scienceScore = clampScore(scienceDelivered * 4)
-  const eventCount = Number(delay) + Number(flare) + Number(instrumentFault) + Number(communicationsDropout) + Number(systemAnomaly) + Number(budgetCut)
+  const eventCount = Number(delay) + Number(flare) + Number(instrumentFault) + Number(communicationsDropout) + Number(systemAnomaly) + Number(budgetCut) + Number(hiddenRisk)
   const reliabilityScore = clampScore(100 - eventCount * 12 - (designFailed ? 60 : 0))
   const learningScore = clampScore(100 - evaluation.reasons.filter((reason) => reason.status !== 'ok').length * 10)
-  const score = clampScore(
-    scienceScore * 0.35 + efficiencyScore * 0.25 + reliabilityScore * 0.25 + learningScore * 0.15,
-  )
+  const baseScore = scienceScore * 0.35 + efficiencyScore * 0.25 + reliabilityScore * 0.25 + learningScore * 0.15
+  const score = clampScore(design.teamMode ? baseScore * 0.9 + collaborationScore * 0.1 : baseScore)
 
   const eventReasons: Reason[] = []
   if (delay) {
@@ -174,11 +175,30 @@ export function simulateMission(
       fix: 'Keep an operations reserve or make the science plan resilient to reduced funding.',
     })
   }
+  if (hiddenRisk) {
+    eventReasons.push({
+      id: 'hidden-risk', status: 'warn',
+      cause: 'A Hard-mode contingency caused an unforecast spacecraft fault.',
+      effect: 'The fault shortened productive observation time in this run.',
+      fix: 'Keep reliability and schedule margin for risks that are not visible during design.',
+    })
+  }
   const reasons = [...evaluation.reasons, ...eventReasons]
+  const achievements = [
+    ...(!designFailed ? ['Orbit reached'] : []),
+    ...(returnedGb >= 10 ? ['First 10 GB home'] : []),
+    ...(design.difficulty === 'hard' && !designFailed ? ['Hard flight certified'] : []),
+    ...(design.teamMode && collaborationScore === 100 ? ['Crew in agreement'] : []),
+    ...(design.playMode === 'sandbox' ? ['Sandbox explorer'] : []),
+  ]
 
   return {
     seed,
     difficulty: design.difficulty,
+    playMode: design.playMode,
+    collaborationScore: design.teamMode ? clampScore(collaborationScore) : 0,
+    scenarioId: scenario.id,
+    achievements,
     missionDurationDays: evaluation.missionDurationDays,
     success: !designFailed && returnedGb > 0,
     score,

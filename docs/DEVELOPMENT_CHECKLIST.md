@@ -1,93 +1,76 @@
 # Galaxy Run development checklist
 
-This checklist maps the proposal's development requirements to the current code. The proposal's hackathon kickoff schedule is intentionally excluded from implementation planning. The team's working deadline is **December 15, 2026**, as set by the user.
+This checklist maps the project proposal to the current code and handoff state. The user asked us to ignore hackathon kickoff scheduling and use **December 15, 2026** as the working deadline. No event dates from the proposal are used here.
 
-Check an item only when its implementation is present and usable. Development completion is separate from final NASA submission, judging, and event administration.
+An item is checked only when the work exists in the project. Local implementation is distinct from manual playtests, deployment verification, team registration, and the external submission form.
 
-## MVP: complete playable mission loop
+## MVP: playable mission loop
 
-- [x] Add an accessible landing page that introduces the game, previews all three destinations, and enters the mission designer.
-- [x] Choose between Earth Observer, Moon Mapper, and Mars Scout.
-- [x] Configure a spacecraft bus and select three to five science instruments.
-- [x] Show live mass, power, mission cost, daily data, and science potential.
-- [x] Return resource reasons with a cause, effect, and fix.
-- [x] Choose an orbit and show its altitude and calculated circular-orbit period.
-- [x] Choose a launch vehicle and check its simplified payload capacity for the target and orbit.
-- [x] Calculate the simplified daily data return from downlink rate and contact time.
-- [x] Launch a mission, show a flight timeline, and calculate a weighted score.
-- [x] Use a seed so the same design and seed replay the same event pattern.
-- [x] Explain design and flight-event warnings in the report.
-- [x] Return from the report to improve the design and rerun it.
-- [x] Add Easy and Normal difficulty with different budgets, hints, and event rates.
-- [x] Add propulsion choices, adjustable propellant, launch-mass accounting, and a delta-v resource check.
-- [x] Include a hand-checkable rocket-equation example and describe the model simplifications.
-- [x] Add mission duration, scenario deadlines, and an operations-cost/science trade-off.
-- [x] Add thermal exposure and mission reliability estimates with visible educational assumptions; carry seeded system anomalies into science return and the report.
-- [x] Add seeded launch-delay, solar-flare, instrument-fault, communications-dropout, system-anomaly, and budget-cut events with timeline and debrief impacts.
-- [x] Add a skippable, reopenable first-mission guide and keyboard-operable contextual definitions for the technical terms used in the builder and report.
-- [ ] Verify a new player can finish a mission in under ten minutes (a one-click starter flight and first-mission guide are now available).
-- [ ] Test the interface and complete loop on desktop and tablet sizes.
-- [ ] Deploy a public link that opens without login.
+- [x] Landing page introduces the game, previews destinations, and enters mission design.
+- [x] Provide Earth, Moon, Mars, and Venus mission scenarios.
+- [x] Configure a bus and select three to five instruments from a growing catalog.
+- [x] Choose a scenario, difficulty, orbit, launcher, propulsion system, propellant, development time, mission duration, and panel area.
+- [x] Show live mass, solar power, eclipse battery, cost, data, science, and total schedule.
+- [x] Explain checks with a cause, effect, and fix.
+- [x] Calculate circular orbit period, ideal rocket-equation delta-v, solar output, eclipse energy, and downlink capacity.
+- [x] Launch a seeded run with timeline, score, debrief, event impacts, awards, and retry path.
+- [x] Same design and seed repeat the event sequence.
+- [x] Include skippable/reopenable first-flight guidance and a one-click starter flight.
+- [ ] Confirm a new player completes a mission in under ten minutes in a short human playtest.
+- [ ] Manually review the full flow at laptop and tablet sizes.
+- [ ] Verify the production URL opens without authentication. The repository has no Vercel project link or deployment URL recorded.
 
-## Mission data and scientific validity
+## Mission math, science, and fairness
 
-- [x] Verify rounded Earth, Moon, and Mars mean radii and gravitational parameters against NASA/JPL sources.
-- [x] Store rounded constants locally with source URLs and retrieval date in `src/data/missionConstants.ts`.
-- [ ] Verify every formula against the proposal's worked examples.
-- [x] Add unit tests for orbit period, rocket equation, downlink, design budgets, risk estimates, mission return, scoring, and seeded-repeatability behavior.
-- [ ] State each model simplification in the tutorial or nearby UI.
-- [x] Keep every rule in the pure TypeScript engine, separate from React.
+- [x] Store local planetary constants with primary source links and retrieval dates.
+- [x] Add NASA-sourced solar irradiance values for Earth, Mars, and Venus; Moon scenarios use the solar constant as a game input.
+- [x] Test the proposal examples: 620 km Earth orbit, 300 s Isp rocket equation, 0.8 m² solar panel, 50 Mbps for eight minutes, and eclipse battery energy.
+- [x] Keep deterministic rules in the pure TypeScript engine.
+- [x] Label hardware mass, costs, reliability, eclipse duration, solar-array efficiency, event rates, and mission targets as simplified game assumptions.
+- [x] Include difficulty-adjusted budgets/events, Hard-mode schedule pressure and contingencies, and Sandbox runs that show limits without blocking launch.
+- [x] Use the same objective and seed for the device-local challenge board.
+- [ ] Review the model assumptions with a knowledgeable human before presenting it as educational guidance.
 
-## Accessibility and usability
+## Collaboration and replay
 
-- [x] Add a skip-to-content link, clear page headings, and focus transfer to the report and back.
-- [x] Ensure selected controls and keyboard focus are visually distinct.
-- [x] Pair status colors with readable status words and explanations.
-- [x] Announce live resource totals to screen readers.
-- [x] Respect reduced-motion preferences.
-- [x] Use original local scenario, spacecraft, logo, and launch-vehicle artwork, plus an optional launch sound that starts off.
-- [ ] Audit all text and status colors against WCAG AA contrast ratios.
-- [ ] Complete a keyboard-only pass through the full mission flow.
-- [ ] Complete a screen-reader pass through the builder and report.
+- [x] Pass-and-play roles: systems lead, spacecraft engineer, science & communications, and mission planner.
+- [x] Require all four role approvals and a selected trade-off agreement before team launch.
+- [x] Include a collaboration score in team runs.
+- [x] Save and compare designs in browser localStorage.
+- [x] Create a compressed link that restores a validated design and seed.
+- [x] Keep a same-objective, same-difficulty, same-seed leaderboard on the current device.
+- [ ] A global cross-device leaderboard is not provided; the proposal allows an optional backend, and no service credentials/configuration are available.
 
-## Phase 2: should-have features
+## Learning, report, and presentation
 
-- [ ] Pass-and-play cooperative mode for up to four players with the proposed roles.
-- [ ] Add collaboration conflict/resolution scoring.
-- [ ] Save designs in browser localStorage.
-- [ ] Share designs through a compressed URL and replay them with the same seed.
-- [ ] Compare saved designs.
-- [ ] Add a leaderboard.
-- [ ] Add Hard difficulty.
-- [ ] Download a mission report as PDF.
-- [ ] Add a simple 3D spacecraft/orbit view, or document the 2D fallback if time is constrained.
+- [x] Add NASA/ESA mission field notes for Terra, LRO, MRO, and Venus Express with direct source links.
+- [x] Provide a 2D orbit view as the documented alternative to a 3D renderer.
+- [x] Print or save the flight report through the browser’s PDF print flow.
+- [x] Add optional original sound, reduced-motion-aware animation, and per-run achievements.
+- [x] Prepare a six-slide project overview deck in the connected presentation session (within the proposal’s seven-slide maximum).
+- [ ] Publish a shareable demo-deck/video link and capture clean screenshots for the submission page.
 
-## Phase 3: optional features from the proposal
+## Accessibility, quality, and project handoff
 
-- [ ] Competitive challenge on the same objective.
-- [ ] Sandbox mode.
-- [ ] More scenarios and a larger parts catalog.
-- [ ] Learning cards based on real NASA mission examples.
-- [ ] Sound, animation, and achievements.
+- [x] Use keyboard-operable controls, skip links, visible focus, page headings, status words, and report focus management.
+- [x] Respect reduced-motion preferences and provide screen-reader announcements for live resources.
+- [x] Add responsive layouts and semantic labels to new controls, comparison tables, orbit diagram, team approval, and leaderboard.
+- [ ] Complete a keyboard-only review of the entire flow.
+- [ ] Complete a screen-reader review of the builder, team approvals, and report.
+- [ ] Re-run WCAG AA contrast checks across all current and newly added screens; previous Lighthouse scores do not replace this audit.
+- [x] Keep project-authored artwork and synthesized sound credited in `docs/CREDITS.md`.
+- [x] Document NASA/ESA sources and direct software dependencies in `docs/CREDITS.md`.
+- [x] Verify each direct dependency license against its installed package metadata; transitive licenses still need the team’s submission-policy review.
+- [ ] Replace the pending reviewer status in `docs/AI_USE.md` after teammates review the work; do not guess reviewer names.
+- [ ] Add screenshots and the verified public deployment URL to README/submission materials.
+- [x] Keep all in-project copy in English and avoid NASA logos, personal information, and unlicensed music or images.
 
-## Project quality and handoff
+## Verification record
 
-- [x] Keep the engine independent from UI code.
-- [x] Make sure every warning shown in the UI comes from an engine reason.
-- [x] Record project-authored artwork and sound in `docs/CREDITS.md`.
-- [ ] Complete source links and retrieval dates for mission constants; verify library licenses before submission.
-- [ ] Keep `docs/AI_USE.md` current and replace reviewer placeholders before submission.
-- [x] Update the README as features land.
-- [ ] Capture screenshots for the project page.
-- [ ] Prepare the proposal's demo artifact (short video or slide deck) and verify links.
+- `npm run check` passes: lint, TypeScript, 14 formula/engine tests, and production build.
+- The CI workflow previously passed for the existing main-branch commit. This proposal-requirements branch still needs its own push/CI run.
+- Lighthouse results recorded in the earlier development checklist were from November 13 and are not a fresh audit of the added UI.
 
-### Lighthouse snapshot — November 13, 2026
+## Completion statement
 
-- Mobile profile (latest run): Performance 81, Accessibility 100, Best Practices 100, SEO 100.
-- Desktop profile (latest run): Performance 89, Accessibility 100, Best Practices 100, SEO 100.
-- The local runs found no remaining scored Accessibility, Best Practices, or SEO failures. Performance diagnostics still point to main-thread work and a small render-blocking stylesheet; lab scores varied between runs.
-- [ ] Complete the separate keyboard-only and screen-reader passes; the Lighthouse accessibility score does not replace those manual checks.
-
-## Development status
-
-The landing page, designer, resource checks, propulsion/fuel/delta-v controls, mission-duration budgeting, thermal/reliability estimates, seeded flight events including a budget cut, simplified orbit/launcher selection with distinct launcher icons, Easy/Normal modes, authored local assets, first-flight guide, quick-start flight, contextual term help, and report are implemented. The unchecked items above remain before all proposal development features are complete. Revisit this list after each project step and notify the user when every development item is complete.
+**The proposal’s implementable product requirements are now present in the local codebase.** The project is not ready to claim every PDF instruction is complete until the unchecked human and external handoff items above are finished. The schedule and kickoff rules are intentionally excluded per the user’s instruction; the working deadline remains December 15, 2026.

@@ -3,6 +3,7 @@ import { launchVehicles, parts, propulsionSystems, scenarios } from '../data/cat
 import { missionConstants } from '../data/missionConstants.ts'
 import { evaluateDesign } from './evaluateDesign.ts'
 import { calculateDownlinkCapacityGb, calculateOrbitPeriodMinutes, calculateRocketDeltaVMps } from './orbit.ts'
+import { calculateEclipseEnergyWh, calculateSolarPowerW } from './power.ts'
 import { simulateMission } from './simulateMission.ts'
 import type { MissionDesign } from './types.ts'
 
@@ -14,9 +15,12 @@ const defaultDesign: MissionDesign = {
   orbitId: 'earth-620',
   propulsionId: 'chemical-upper-stage',
   propellantMassKg: 65,
+  developmentDurationDays: 30,
   missionDurationDays: 60,
   difficulty: 'easy',
+  playMode: 'mission',
   instrumentIds: ['climate-camera', 'thermal-imager', 'spectrometer'],
+  solarPanelAreaM2: 1.5,
 }
 
 describe('mission formulas', () => {
@@ -24,19 +28,53 @@ describe('mission formulas', () => {
     expect(missionConstants.earth).toMatchObject({ meanRadiusKm: 6371, gravitationalParameterKm3PerSec2: 398600.4 })
     expect(missionConstants.moon).toMatchObject({ meanRadiusKm: 1737.4, gravitationalParameterKm3PerSec2: 4902.8 })
     expect(missionConstants.mars).toMatchObject({ meanRadiusKm: 3389.5, gravitationalParameterKm3PerSec2: 42828.4 })
-    expect(scenarios.map((scenario) => scenario.bodyRadiusKm)).toEqual([6371, 1737.4, 3389.5])
+    expect(missionConstants.venus).toMatchObject({ meanRadiusKm: 6051.8, gravitationalParameterKm3PerSec2: 324858.592 })
+    expect(scenarios.map((scenario) => scenario.bodyRadiusKm)).toEqual([6371, 1737.4, 3389.5, 6051.8])
   })
 
   it('computes a circular orbit period from gravitational parameter and orbital radius', () => {
     expect(calculateOrbitPeriodMinutes(400, 6371, 398600.4)).toBeCloseTo(92.4, 1)
+    expect(calculateOrbitPeriodMinutes(620, 6371, 398600.4)).toBeCloseTo(97, 0)
   })
 
   it('matches the hand-checkable ideal rocket equation example', () => {
-    expect(calculateRocketDeltaVMps(300, 500, 400)).toBeCloseTo(656.5, 1)
+    expect(calculateRocketDeltaVMps(300, 500, 400)).toBeCloseTo(656.7, 1)
   })
 
   it('converts a 50 Mbps, 48-minute contact window into decimal GB', () => {
     expect(calculateDownlinkCapacityGb(50, 48)).toBe(18)
+    expect(calculateDownlinkCapacityGb(50, 8)).toBe(3)
+  })
+
+  it('checks the solar-array and eclipse-battery examples from the proposal', () => {
+    expect(calculateSolarPowerW(0.8, 1361, 0.28)).toBeCloseTo(305, 0)
+    expect(calculateEclipseEnergyWh(400, 34)).toBeCloseTo(226.7, 1)
+  })
+
+  it('counts development and operations against the total scenario deadline', () => {
+    const design = { ...defaultDesign, developmentDurationDays: 70, missionDurationDays: 60 }
+    const evaluation = evaluateDesign(design, earth, parts, launchVehicles, propulsionSystems)
+    expect(evaluation.scheduleDurationDays).toBe(130)
+    expect(evaluation.reasons.find((reason) => reason.id === 'mission-deadline')?.status).toBe('fail')
+    expect(evaluation.reasons.find((reason) => reason.id === 'mission-deadline')?.cause).toContain('70 days')
+  })
+
+  it('uses stricter Hard limits and records team collaboration in scoring', () => {
+    const hard = evaluateDesign({ ...defaultDesign, difficulty: 'hard' }, earth, parts, launchVehicles, propulsionSystems)
+    const standard = evaluateDesign(defaultDesign, earth, parts, launchVehicles, propulsionSystems)
+    expect(hard.budgetMillionUsd).toBeLessThan(standard.budgetMillionUsd)
+    const teamRun = simulateMission({ ...defaultDesign, teamMode: true }, earth, parts, launchVehicles, propulsionSystems, 2026, 100)
+    const soloRun = simulateMission(defaultDesign, earth, parts, launchVehicles, propulsionSystems, 2026)
+    expect(teamRun.collaborationScore).toBe(100)
+    expect(teamRun.score).toBe(Math.round(soloRun.score * 0.9 + 10))
+    expect(teamRun.achievements).toContain('Crew in agreement')
+  })
+
+  it('lets Sandbox launch a design that fails a mission resource gate', () => {
+    const sandbox = { ...defaultDesign, playMode: 'sandbox' as const, propellantMassKg: 0 }
+    const result = simulateMission(sandbox, earth, parts, launchVehicles, propulsionSystems, 2026)
+    expect(result.success).toBe(true)
+    expect(result.achievements).toContain('Sandbox explorer')
   })
 
   it('evaluates component totals, caps, duration costs, orbit, and delta-v consistently', () => {
@@ -53,12 +91,13 @@ describe('mission formulas', () => {
     ) * 100)
     const thirtyDayReliability = systems.reduce((reliability, system) => reliability * system.reliabilityPer30Days, 1)
 
-    expect(evaluation.massKg).toBe(chosen.reduce((sum, part) => sum + part.massKg, propulsion.dryMassKg) + defaultDesign.propellantMassKg)
+    expect(evaluation.massKg).toBe(chosen.reduce((sum, part) => sum + part.massKg, propulsion.dryMassKg) + evaluation.solarArrayMassKg + defaultDesign.propellantMassKg)
     expect(evaluation.powerW).toBe(chosen.reduce((sum, part) => sum + part.powerW, propulsion.powerW))
-    expect(evaluation.costMillionUsd).toBe(chosen.reduce((sum, part) => sum + part.costMillionUsd, 0) + propulsion.costMillionUsd + 35 + 60 * earth.operationsCostMillionUsdPerDay)
+    expect(evaluation.costMillionUsd).toBe(chosen.reduce((sum, part) => sum + part.costMillionUsd, 0) + propulsion.costMillionUsd + 35 + evaluation.solarArrayCostMillionUsd + 60 * earth.operationsCostMillionUsdPerDay)
     expect(evaluation.scienceValue).toBe(Math.round(chosen.reduce((sum, part) => sum + part.scienceValue, 0) * 2 * 10) / 10)
     expect(evaluation.launchCapacityKg).toBe(Math.floor(520 * orbit.launchCapacityFactor))
-    expect(evaluation.powerAvailableW).toBe(Math.round(earth.powerAvailableW * easyFactor))
+    expect(evaluation.powerAvailableW).toBe(Math.round(defaultDesign.solarPanelAreaM2 * earth.solarIrradianceWPerM2 * 0.28))
+    expect(evaluation.eclipseEnergyRequiredWh).toBeCloseTo(evaluation.powerW * orbit.eclipseMinutesPerOrbit / 60, 1)
     expect(evaluation.dataLimitGbPerDay).toBe(Math.round(earth.downlinkRateMbps * Math.round(orbit.contactMinutesPerDay * easyFactor) * 60 / 8 / 1000 * 10) / 10)
     expect(evaluation.orbitPeriodMinutes).toBe(calculateOrbitPeriodMinutes(orbit.altitudeKm, earth.bodyRadiusKm, earth.gravitationalParameterKm3PerSec2))
     expect(evaluation.deltaVMps).toBe(Math.round(calculateRocketDeltaVMps(propulsion.specificImpulseSeconds, evaluation.massKg, evaluation.dryMassKg)))

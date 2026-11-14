@@ -4,6 +4,7 @@ const destinationArtwork: Record<string, { image: string; label: string; index: 
   'earth-observer': { image: '/assets/mission-earth.svg', label: 'Earth in low orbit', index: '01' },
   'moon-mapper': { image: '/assets/mission-moon.svg', label: 'The Moon on a polar survey orbit', index: '02' },
   'mars-scout': { image: '/assets/mission-mars.svg', label: 'Mars and its orbital path', index: '03' },
+  'venus-cloud-watcher': { image: '/assets/mission-venus.svg', label: 'Venus beneath cloud bands in orbit', index: '04' },
 }
 
 type LandingPageProps = {
@@ -55,7 +56,7 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
 
         <section className="destination-section" id="destinations" aria-labelledby="destinations-title">
           <div className="destination-heading">
-            <div><p className="eyebrow">PICK YOUR POINT OF VIEW</p><h2 id="destinations-title">Three worlds. Three reasons to go.</h2></div>
+            <div><p className="eyebrow">PICK YOUR POINT OF VIEW</p><h2 id="destinations-title">Worlds to explore. Questions to answer.</h2></div>
             <p>Choose the question your spacecraft will answer. You can change your destination any time in mission control.</p>
           </div>
           <div className="destination-grid">

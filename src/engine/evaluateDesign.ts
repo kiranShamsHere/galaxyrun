@@ -8,6 +8,7 @@ import type {
   SpacecraftPart,
 } from './types.ts'
 import { calculateDownlinkCapacityGb, calculateOrbitPeriodMinutes, calculateRocketDeltaVMps } from './orbit.ts'
+import { calculateEclipseEnergyWh, calculateSolarPowerW, solarArrayAssumptions } from './power.ts'
 
 export function evaluateDesign(
   design: MissionDesign,
@@ -20,6 +21,8 @@ export function evaluateDesign(
   const launchVehicle = launchVehicles.find((item) => item.id === design.launchVehicleId) ?? launchVehicles[0]
   const propulsion = propulsionSystems.find((item) => item.id === design.propulsionId) ?? propulsionSystems[0]
   const missionDurationDays = Math.max(1, design.missionDurationDays)
+  const developmentDurationDays = Math.max(1, design.developmentDurationDays)
+  const scheduleDurationDays = missionDurationDays + developmentDurationDays
   const selectedParts = [design.busId, ...design.instrumentIds]
     .map((id) => catalog.find((part) => part.id === id))
     .filter((part): part is SpacecraftPart => part !== undefined)
@@ -27,6 +30,7 @@ export function evaluateDesign(
     ...selectedParts.map((part) => ({ reliability: part.reliabilityPer30Days, thermalTolerance: part.thermalTolerance })),
     { reliability: propulsion.reliabilityPer30Days, thermalTolerance: propulsion.thermalTolerance },
   ]
+  const bus = selectedParts.find((part) => part.category === 'bus')
   const thirtyDayReliability = includedSystems.reduce((total, system) => total * system.reliability, 1)
   const averageThermalTolerance = includedSystems.length
     ? includedSystems.reduce((total, system) => total + system.thermalTolerance, 0) / includedSystems.length
@@ -39,17 +43,27 @@ export function evaluateDesign(
   )
 
   const payloadMassKg = selectedParts.reduce((total, part) => total + part.massKg, 0)
-  const dryMassKg = payloadMassKg + propulsion.dryMassKg
+  const solarPanelAreaM2 = Math.max(0.5, Math.min(5, design.solarPanelAreaM2))
+  const solarArrayMassKg = solarPanelAreaM2 * solarArrayAssumptions.structuralMassKgPerM2
+  const solarArrayCostMillionUsd = solarPanelAreaM2 * solarArrayAssumptions.costMillionUsdPerM2
+  const dryMassKg = payloadMassKg + propulsion.dryMassKg + solarArrayMassKg
   const propellantMassKg = Math.max(0, Math.min(design.propellantMassKg, propulsion.maxPropellantKg))
   const massKg = dryMassKg + propellantMassKg
   const powerW = selectedParts.reduce((total, part) => total + part.powerW, propulsion.powerW)
+  const powerAvailableW = Math.round(calculateSolarPowerW(
+    solarPanelAreaM2,
+    scenario.solarIrradianceWPerM2,
+    solarArrayAssumptions.efficiency,
+  ))
+  const batteryCapacityWh = bus?.batteryCapacityWh ?? 0
+  const eclipseEnergyRequiredWh = Math.round(calculateEclipseEnergyWh(powerW, orbit.eclipseMinutesPerOrbit) * 10) / 10
   const hardwareCostMillionUsd = selectedParts.reduce(
     (total, part) => total + part.costMillionUsd,
     0,
   )
   const launchCostMillionUsd = launchVehicle.costMillionUsdByBody[scenario.bodyId] ?? 0
   const operationsCostMillionUsd = missionDurationDays * scenario.operationsCostMillionUsdPerDay
-  const costMillionUsd = hardwareCostMillionUsd + launchCostMillionUsd + propulsion.costMillionUsd + operationsCostMillionUsd
+  const costMillionUsd = hardwareCostMillionUsd + solarArrayCostMillionUsd + launchCostMillionUsd + propulsion.costMillionUsd + operationsCostMillionUsd
   const dataGbPerDay = selectedParts.reduce(
     (total, part) => total + part.dataGbPerDay,
     0,
@@ -63,8 +77,8 @@ export function evaluateDesign(
     (launchVehicle.payloadCapacityKgByBody[scenario.bodyId] ?? 0) * orbit.launchCapacityFactor,
   )
   const allowanceFactor = design.difficulty === 'easy' ? 1.2 : 1
-  const powerAvailableW = Math.round(scenario.powerAvailableW * allowanceFactor)
-  const budgetMillionUsd = Math.round(scenario.budgetMillionUsd * allowanceFactor)
+  const budgetFactor = design.difficulty === 'easy' ? 1.2 : design.difficulty === 'hard' ? 0.85 : 1
+  const budgetMillionUsd = Math.round(scenario.budgetMillionUsd * budgetFactor)
   const contactMinutesPerDay = Math.round(orbit.contactMinutesPerDay * allowanceFactor)
   const dataLimitGbPerDay = Math.round(
     calculateDownlinkCapacityGb(scenario.downlinkRateMbps, contactMinutesPerDay) * 10,
@@ -84,7 +98,7 @@ export function evaluateDesign(
     {
       id: 'mass-budget',
       status: massKg <= launchCapacityKg ? 'ok' : 'fail',
-      cause: `${launchVehicle.name} can carry ${launchCapacityKg} kg to this orbit; the spacecraft uses ${massKg} kg.`,
+      cause: `${launchVehicle.name} can carry ${launchCapacityKg} kg to this orbit; the spacecraft uses ${massKg} kg, including ${solarArrayMassKg.toFixed(1)} kg of solar arrays.`,
       effect:
         massKg <= launchCapacityKg
           ? 'The selected launch vehicle can carry this spacecraft to the chosen orbit.'
@@ -97,7 +111,7 @@ export function evaluateDesign(
     {
       id: 'power-budget',
       status: powerW <= powerAvailableW ? 'ok' : 'fail',
-      cause: `The selected parts need ${powerW} W; the solar array supplies ${powerAvailableW} W.`,
+      cause: `The selected parts need ${powerW} W; ${solarPanelAreaM2.toFixed(1)} m² of panels at ${scenario.solarIrradianceWPerM2} W/m² sunlight supply ${powerAvailableW} W.`,
       effect:
         powerW <= powerAvailableW
           ? 'The spacecraft has enough power for the selected equipment.'
@@ -105,7 +119,18 @@ export function evaluateDesign(
       fix:
         powerW <= powerAvailableW
           ? 'Leave a power margin for eclipse and aging.'
-          : 'Select lower-power instruments or add power capacity.',
+          : 'Select lower-power instruments or increase the solar-panel area.',
+    },
+    {
+      id: 'eclipse-battery',
+      status: eclipseEnergyRequiredWh <= batteryCapacityWh ? 'ok' : 'fail',
+      cause: `This orbit has about ${orbit.eclipseMinutesPerOrbit} minutes of eclipse per pass. The load needs ${eclipseEnergyRequiredWh} Wh; the selected bus stores ${batteryCapacityWh} Wh.`,
+      effect: eclipseEnergyRequiredWh <= batteryCapacityWh
+        ? 'The battery can keep the spacecraft operating through the modeled eclipse.'
+        : 'The battery would run short before the spacecraft leaves eclipse.',
+      fix: eclipseEnergyRequiredWh <= batteryCapacityWh
+        ? 'Keep an energy reserve for longer-than-planned eclipses.'
+        : 'Choose the higher-capacity spacecraft bus or reduce the power load.',
     },
     {
       id: 'delta-v-budget',
@@ -123,7 +148,7 @@ export function evaluateDesign(
     {
       id: 'cost-budget',
       status: costMillionUsd <= budgetMillionUsd ? 'ok' : 'fail',
-      cause: `Hardware, propulsion, ${launchVehicle.name} launch, and ${missionDurationDays} days of operations cost $${costMillionUsd}M of a $${budgetMillionUsd}M cap.`,
+      cause: `Parts, instruments, solar array, propulsion, ${launchVehicle.name} launch, and ${missionDurationDays} days of operations cost $${costMillionUsd}M of a $${budgetMillionUsd}M cap.`,
       effect:
         costMillionUsd <= budgetMillionUsd
           ? 'The hardware stays within the scenario budget.'
@@ -148,10 +173,10 @@ export function evaluateDesign(
     },
     {
       id: 'mission-deadline',
-      status: missionDurationDays <= scenario.missionDeadlineDays ? 'ok' : 'fail',
-      cause: `The mission is planned for ${missionDurationDays} days; the scenario deadline is ${scenario.missionDeadlineDays} days.`,
+      status: scheduleDurationDays <= scenario.missionDeadlineDays * (design.difficulty === 'hard' ? 0.8 : 1) ? 'ok' : 'fail',
+      cause: `Development takes ${developmentDurationDays} days and operations take ${missionDurationDays} days, for ${scheduleDurationDays} total days. The ${design.difficulty === 'hard' ? 'Hard-mode planning target' : 'scenario deadline'} is ${Math.floor(scenario.missionDeadlineDays * (design.difficulty === 'hard' ? 0.8 : 1))} days.`,
       effect:
-        missionDurationDays <= scenario.missionDeadlineDays
+        scheduleDurationDays <= scenario.missionDeadlineDays * (design.difficulty === 'hard' ? 0.8 : 1)
           ? 'The mission fits within the available operations window.'
           : 'The mission would miss its scenario deadline.',
       fix: 'Shorten the mission plan to fit the available operations window.',
@@ -184,6 +209,11 @@ export function evaluateDesign(
     scienceValue,
     launchCapacityKg,
     powerAvailableW,
+    batteryCapacityWh,
+    eclipseEnergyRequiredWh,
+    solarPanelAreaM2,
+    solarArrayMassKg,
+    solarArrayCostMillionUsd,
     budgetMillionUsd,
     dataLimitGbPerDay,
     orbitAltitudeKm: orbit.altitudeKm,
@@ -197,6 +227,8 @@ export function evaluateDesign(
     specificImpulseSeconds: propulsion.specificImpulseSeconds,
     maxPropellantKg: propulsion.maxPropellantKg,
     missionDurationDays,
+    developmentDurationDays,
+    scheduleDurationDays,
     missionDeadlineDays: scenario.missionDeadlineDays,
     operationsCostMillionUsd,
     reliabilityPercent,

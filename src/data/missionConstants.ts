@@ -16,10 +16,15 @@ export const missionConstants = {
     meanRadiusKm: 3389.5,
     gravitationalParameterKm3PerSec2: 42828.4,
   },
+  venus: {
+    meanRadiusKm: 6051.8,
+    gravitationalParameterKm3PerSec2: 324858.592,
+  },
 } as const
 
 export const missionConstantSources = {
   earthAndMars: 'https://ssd.jpl.nasa.gov/planets/phys_par.html',
   marsFactSheet: 'https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html',
   moon: 'https://ssd.jpl.nasa.gov/sats/phys_par/',
+  venus: 'https://ssd.jpl.nasa.gov/planets/phys_par.html',
 } as const
