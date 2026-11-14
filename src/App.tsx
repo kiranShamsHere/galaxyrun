@@ -17,7 +17,7 @@ import type { DesignEvaluation, MissionDesign, MissionSimulation, Reason } from 
 import { useMissionStore } from './store.ts'
 import { readSharedDesign } from './utils/designLibrary.ts'
 import { recordLocalScore, updateLatestLocalScore } from './utils/leaderboardStorage.ts'
-import { rememberGuideCompleted } from './utils/guideStorage.ts'
+import { hasCompletedGuide, rememberGuideCompleted } from './utils/guideStorage.ts'
 
 const scenarioArtwork: Record<string, string> = {
   'earth-observer': '/assets/mission-earth.svg',
@@ -97,9 +97,20 @@ function estimateRadiationRisk(bodyId: string, altitudeKm: number) {
 
 function getLaunchBlockers(evaluation: DesignEvaluation, design: MissionDesign, teamScore: number, approvals: number, hasTradeoff: boolean) {
   const blockedChecks = design.playMode === 'sandbox' ? [] : evaluation.reasons.filter((reason) => reason.status === 'fail')
+  const fixTargets: Record<string, { target: string; action: string }> = {
+    'mass-budget': { target: 'instrument-list', action: 'Reduce craft mass' },
+    'power-budget': { target: 'solar-panel-slider', action: 'Boost solar power' },
+    'eclipse-battery': { target: 'bus-options', action: 'Choose a larger battery' },
+    'delta-v-budget': { target: 'propellant-slider', action: 'Adjust engine or fuel' },
+    'cost-budget': { target: 'instrument-list', action: 'Lower mission cost' },
+    'mission-deadline': { target: 'mission-duration-slider', action: 'Shorten the schedule' },
+    'thermal-exposure': { target: 'orbit-options', action: 'Change the orbit' },
+    'mission-reliability': { target: 'instrument-list', action: 'Improve reliability' },
+  }
   const blockers = blockedChecks.map((reason) => ({
     label: reason.id.split('-').map((part) => part[0]?.toUpperCase() + part.slice(1)).join(' '),
     instruction: reason.fix,
+    ...(fixTargets[reason.id] ?? { target: 'flight-tuning', action: 'Review flight settings' }),
     crew: false,
   }))
   if (design.teamMode && teamScore < 85) {
@@ -107,14 +118,14 @@ function getLaunchBlockers(evaluation: DesignEvaluation, design: MissionDesign, 
       ...(approvals < 4 ? [`${approvals}/4 roles approved; approve each role.`] : []),
       ...(!hasTradeoff ? ['Choose a crew trade-off.'] : []),
     ]
-    blockers.push({ label: 'Crew approval', instruction: steps.join(' '), crew: true })
+    blockers.push({ label: 'Crew approval', instruction: steps.join(' '), target: 'crew-review', action: 'Open crew review', crew: true })
   }
   return blockers
 }
 
-function LaunchGuidance({ id, blockers, onOpenCrew }: { id: string; blockers: ReturnType<typeof getLaunchBlockers>; onOpenCrew: () => void }) {
+function LaunchGuidance({ id, blockers, onNavigate }: { id: string; blockers: ReturnType<typeof getLaunchBlockers>; onNavigate: (target: string) => void }) {
   if (!blockers.length) return null
-  return <div id={id} className="launch-guidance" role="status" aria-live="polite"><b>Launch locked</b><ul>{blockers.map((item) => <li key={item.label}><strong>{item.label}:</strong> {item.instruction}</li>)}</ul>{blockers.some((item) => item.crew) && <button type="button" className="text-button" onClick={onOpenCrew}>Open crew review ↓</button>}</div>
+  return <div id={id} className="launch-guidance" role="status" aria-live="polite"><b>Launch locked · {blockers.length} {blockers.length === 1 ? 'fix' : 'fixes'} needed</b><ul>{blockers.map((item) => <li key={item.label}><strong>{item.label}:</strong> {item.instruction}<button type="button" className="blocker-fix" onClick={() => onNavigate(item.target)}>{item.action} <span aria-hidden="true">→</span></button></li>)}</ul></div>
 }
 
 function FlightSequence({ result, evaluation, scenario, step, fuelMassKg, onAdvance, onSkip }: {
@@ -253,6 +264,8 @@ function MissionReport({ result, design, onEdit, onAnotherFlight, onLearningAnsw
         <div className="grade-badge"><strong>{result.grade}</strong><span>MISSION<br />GRADE</span></div>
       </div>
 
+      <section className="report-group" aria-labelledby="mission-results-title">
+      <div className="report-section-heading"><p className="eyebrow">MISSION RESULTS</p><h2 id="mission-results-title">Score &amp; rewards</h2></div>
       <section className="panel mission-score-panel">
       <div className="score-total"><span>{result.playMode === 'sandbox' ? 'PRACTICE SCORE' : 'FINAL SCORE'}</span><strong>{result.score}</strong><small>{result.playMode === 'sandbox' ? 'unranked · out of 100' : 'out of 100'}</small></div>
       <div className="score-breakdown">
@@ -263,7 +276,10 @@ function MissionReport({ result, design, onEdit, onAnotherFlight, onLearningAnsw
       <LearningCheck seed={result.seed} bonus={Math.min(10, 100 - result.learningScore)} onAnswer={onLearningAnswer} />
       {result.achievements.length > 0 && <section className="panel achievement-panel" aria-label="Achievements earned"><p className="eyebrow">FLIGHT AWARDS</p><div>{result.achievements.map((achievement) => <span className="achievement-badge" key={achievement}>✦ {achievement}</span>)}</div></section>}
       <LocalLeaderboard design={design} result={result} />
+      </section>
 
+      <section className="report-group" aria-labelledby="mission-debrief-title">
+      <div className="report-section-heading"><p className="eyebrow">MISSION DEBRIEF</p><h2 id="mission-debrief-title">Flight data &amp; lessons</h2><p>Review each phase, then open a system check to see what to change.</p></div>
       <div className="report-columns">
         <section className="panel timeline-panel">
           <div className="section-heading"><div><p className="eyebrow">SEE WHAT HAPPENED</p><h2>Flight timeline</h2></div><span className="parts-count">{result.timeline.length} MISSION PHASES</span></div>
@@ -274,6 +290,7 @@ function MissionReport({ result, design, onEdit, onAnotherFlight, onLearningAnsw
           {reportReasons.length > 0 ? <div className="reason-list">{reportReasons.map((reason) => <ReasonCard reason={reason} key={reason.id} />)}</div> : <div className="all-clear"><span>✦</span><b>All design checks are clear.</b><p>Try a different instrument mix to explore another trade-off.</p></div>}
         </section>
       </div>
+      </section>
       <div className="report-actions"><p>Seed {result.seed} keeps this flight reproducible.</p><button className="secondary-button" type="button" onClick={() => window.print()}>Print / save report as PDF</button><button className="secondary-button" type="button" onClick={onAnotherFlight}>Fly again · new conditions</button><button className="launch-button edit-button" type="button" onClick={onEdit}>← Improve this design</button></div>
     </section>
   )
@@ -289,6 +306,7 @@ export default function App() {
   const [teamScore, setTeamScore] = useState({ key: '', score: 0, approvals: 0, hasTradeoff: false })
   const reportWasOpen = useRef(false)
   const missionToolsRef = useRef<HTMLDetailsElement>(null)
+  const flightTuningRef = useRef<HTMLDetailsElement>(null)
   const design = useMissionStore((state) => state.design)
   const selectScenario = useMissionStore((state) => state.selectScenario)
   const selectBus = useMissionStore((state) => state.selectBus)
@@ -309,7 +327,6 @@ export default function App() {
   const orbit = scenario.orbits.find((item) => item.id === design.orbitId) ?? scenario.orbits[0]
   const launchVehicle = launchVehicles.find((item) => item.id === design.launchVehicleId) ?? launchVehicles[0]
   const propulsion = propulsionSystems.find((item) => item.id === design.propulsionId) ?? propulsionSystems[0]
-  const bus = parts.find((part) => part.id === design.busId)
   const buses = parts.filter((part) => part.category === 'bus')
   const instruments = parts.filter((part) => part.category === 'instrument')
   const evaluation = evaluateDesign(design, scenario, parts, launchVehicles, propulsionSystems)
@@ -324,9 +341,14 @@ export default function App() {
   const canLaunch = (hardChecksClear || design.playMode === 'sandbox') && (!design.teamMode || currentTeamScore >= 85)
   const launchBlockers = getLaunchBlockers(evaluation, design, currentTeamScore, currentApprovals, hasTeamTradeoff)
 
-  function openCrewReview() {
-    if (missionToolsRef.current) missionToolsRef.current.open = true
-    document.getElementById('crew-review')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  function openFlightTuning() {
+    if (flightTuningRef.current) flightTuningRef.current.open = true
+  }
+
+  function openLaunchFix(target: string) {
+    if (target === 'crew-review' && missionToolsRef.current) missionToolsRef.current.open = true
+    if (['solar-panel-slider', 'propellant-slider', 'mission-duration-slider', 'propulsion-options', 'orbit-options', 'launcher-options', 'flight-tuning'].includes(target)) openFlightTuning()
+    requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
   }
 
   function launchMission(seed = runSeed) {
@@ -395,7 +417,7 @@ export default function App() {
       scenarios={scenarios}
       selectedScenarioId={scenario.id}
       onSelectScenario={selectScenario}
-      onStart={() => setScreen('designer')}
+      onStart={() => { setGuideOpen(!hasCompletedGuide()); setScreen('designer') }}
     />
   }
 
@@ -408,7 +430,7 @@ export default function App() {
           <span className="brand-mark" aria-hidden="true"><img src="/assets/galaxy-run-mark.svg" width="34" height="34" alt="" decoding="async" /></span>
           <span>GALAXY<span className="brand-light"> RUN</span></span>
         </a>
-        <div className="topbar-right">{!missionResult && <><button className="home-toggle" type="button" onClick={() => setScreen('landing')}>Mission brief</button><button className="guide-toggle" type="button" onClick={toggleGuide} aria-expanded={guideOpen}>{guideOpen ? 'Hide guide' : 'Flight guide'}</button></>}<button className={`sound-toggle ${soundEnabled ? 'is-on' : ''}`} type="button" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundEnabled} aria-label={`SFX ${soundEnabled ? 'ON' : 'OFF'}, sound effects ${soundEnabled ? 'enabled' : 'disabled'}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z" /><path d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10" /></svg><span>SFX {soundEnabled ? 'ON' : 'OFF'}</span></button><span className="pilot-badge">LOCAL PILOT</span></div>
+        <div className="topbar-right">{!missionResult && <><button className="home-toggle" type="button" onClick={() => setScreen('landing')}>Mission brief</button><button className="guide-toggle" type="button" onClick={toggleGuide} aria-expanded={guideOpen}>{guideOpen ? 'Close guide' : 'Flight guide'}</button></>}<button className={`sound-toggle ${soundEnabled ? 'is-on' : ''}`} type="button" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundEnabled} aria-label={`SFX ${soundEnabled ? 'ON' : 'OFF'}, sound effects ${soundEnabled ? 'enabled' : 'disabled'}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z" /><path d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10" /></svg><span>Sound {soundEnabled ? 'ON' : 'OFF'}</span></button></div>
       </header>
 
       <main id="main-content" tabIndex={-1}>
@@ -419,10 +441,9 @@ export default function App() {
       <section className="page-intro" id="top">
         <div>
           <p className="eyebrow">MISSION CONTROL <span> / </span> DESIGN LAB</p>
-          <h1 id="design-title" tabIndex={-1}>Build your mission<span className="title-period">.</span></h1>
-          <p className="intro-copy">Pick a target. Build your craft. Launch the run.</p>
+          <h1 id="design-title" tabIndex={-1}>Build &amp; launch<span className="title-period">.</span></h1>
+          <p className="intro-copy">Choose a world, build a craft, fly the mission.</p>
         </div>
-        <div className="step-status"><span className="step-number">01</span><div><b>MISSION DESIGN</b><small>Step 1 of 3</small></div><span className="step-track"><i /></span></div>
       </section>
 
       {guideOpen && <FirstMissionGuide onDismiss={dismissGuide} />}
@@ -461,13 +482,6 @@ export default function App() {
       <div className="play-mode-row"><label htmlFor="play-mode">Flight mode</label><select id="play-mode" value={design.playMode} onChange={(event) => selectPlayMode(event.currentTarget.value as 'mission' | 'sandbox')}><option value="mission">Mission — limits apply</option><option value="sandbox">Sandbox — explore freely</option></select><p>{design.playMode === 'sandbox' ? 'Launch freely. Scores stay unranked.' : 'Limits must be clear to launch.'}</p></div>
       {design.difficulty === 'easy' && <p className="mode-hint"><span aria-hidden="true">✦</span> Coach tip: Keep some mass and power in reserve.</p>}
 
-      <section className="quick-flight" aria-label="Quick start mission">
-        <div className="quick-flight-mark" aria-hidden="true"><span>↗</span></div>
-        <div className="quick-flight-copy"><span className="eyebrow">CURRENT DESIGN · QUICK LAUNCH</span><h2>{scenario.name}</h2></div>
-        <button className="quick-flight-button" type="button" disabled={!canLaunch} aria-describedby={launchBlockers.length ? 'quick-flight-help' : undefined} onClick={() => launchMission()}>Fly now <span aria-hidden="true">→</span></button>
-        {launchBlockers.length > 0 && <div className="quick-flight-guidance"><LaunchGuidance id="quick-flight-help" blockers={launchBlockers} onOpenCrew={openCrewReview} /></div>}
-      </section>
-
       <div className="design-layout">
         <section className="panel hardware-panel" aria-labelledby="hardware-title">
           <div className="section-heading">
@@ -476,7 +490,7 @@ export default function App() {
           </div>
 
           <div className="subsection-heading"><span className="subsection-index">01</span><div><h3>Spacecraft bus</h3><p>The platform that powers and carries your payload.</p></div><TermTip term="Spacecraft bus" /></div>
-          <div className="bus-options">
+          <div className="bus-options" id="bus-options">
             {buses.map((item) => (
               <button key={item.id} className={`bus-option ${item.id === design.busId ? 'is-selected' : ''}`} onClick={() => selectBus(item.id)} aria-pressed={item.id === design.busId}>
                 <span className="bus-glyph" aria-hidden="true">▣</span><span className="bus-copy"><b>{item.name}</b><small>{item.description}</small><span className="part-spec">{item.massKg} kg <i>·</i> {item.powerW} W <i>·</i> ${item.costMillionUsd}M</span></span><span className="radio-dot" aria-hidden="true" />
@@ -485,7 +499,7 @@ export default function App() {
           </div>
 
           <div className="subsection-heading instrument-heading"><span className="subsection-index">02</span><div><h3>Science instruments</h3><p>Pick the payload that answers your mission question.</p></div><TermTip term="Science instruments" /><span className="optional-label">SELECT 3–5</span></div>
-          <div className="instrument-list">
+          <div className="instrument-list" id="instrument-list">
             {instruments.map((item, index) => {
               const selected = design.instrumentIds.includes(item.id)
               return (
@@ -498,8 +512,9 @@ export default function App() {
             })}
           </div>
 
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">03</span><div><h3>Propulsion system</h3><p>Choose the trade-off between engine power and propellant mass.</p></div><TermTip term="Propulsion system" /><TermTip term="Chemical upper stage" /><TermTip term="Solar-electric ion drive" /></div>
-          <div className="propulsion-options">
+          <details className="flight-tuning" id="flight-tuning" ref={flightTuningRef}><summary><span className="tuning-icon" aria-hidden="true">⌁</span><span><b>Flight tuning</b><small>Engine · power · fuel · orbit · launcher</small></span><span className="tuning-chevron" aria-hidden="true">＋</span></summary><div className="flight-tuning-content">
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">03</span><div><h3>Propulsion system</h3><p>Pick an engine.</p></div><TermTip term="Propulsion system" /><TermTip term="Chemical upper stage" /><TermTip term="Solar-electric ion drive" /></div>
+          <div className="propulsion-options" id="propulsion-options">
             {propulsionSystems.map((system) => {
               const selected = system.id === propulsion.id
               return (
@@ -511,7 +526,7 @@ export default function App() {
               )
             })}
           </div>
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">04</span><div><h3>Solar array and eclipse battery</h3><p>More panel area makes power, but adds spacecraft mass and cost.</p></div></div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">04</span><div><h3>Solar power</h3><p>More panel area makes more power, but adds mass.</p></div></div>
           <div className="propellant-control solar-array-control">
             <label htmlFor="solar-panel-slider"><span>Solar-panel area</span><b>{evaluation.solarPanelAreaM2.toFixed(1)} m²</b></label>
             <input id="solar-panel-slider" type="range" min="0.5" max="5" step="0.1" value={evaluation.solarPanelAreaM2} onChange={(event) => setSolarPanelArea(Number(event.currentTarget.value))} aria-valuetext={`${evaluation.solarPanelAreaM2.toFixed(1)} square metres, producing ${evaluation.powerAvailableW} watts`} />
@@ -537,7 +552,7 @@ export default function App() {
                 <label className="schedule-slider-label" htmlFor="development-slider">Development time <b>{evaluation.developmentDurationDays} days</b></label>
                 <input id="development-slider" type="range" min="5" max={Math.max(5, scenario.missionDeadlineDays - 30)} step="5" value={evaluation.developmentDurationDays} onChange={(event) => setDevelopmentDuration(Number(event.currentTarget.value))} aria-valuetext={`${evaluation.developmentDurationDays} development days`} />
                 <div className="duration-readout"><span>Operations cost<TermTip term="Operations cost" /></span><b>${evaluation.operationsCostMillionUsd.toFixed(1)}M</b></div>
-                <input type="range" min="30" max={Math.max(30, scenario.missionDeadlineDays - evaluation.developmentDurationDays)} step="1" value={evaluation.missionDurationDays} onChange={(event) => setMissionDuration(Number(event.currentTarget.value))} aria-label="Mission operations duration" aria-valuetext={`${evaluation.missionDurationDays} days, with ${evaluation.operationsCostMillionUsd.toFixed(1)} million dollars operations cost`} />
+                <input id="mission-duration-slider" type="range" min="30" max={Math.max(30, scenario.missionDeadlineDays - evaluation.developmentDurationDays)} step="1" value={evaluation.missionDurationDays} onChange={(event) => setMissionDuration(Number(event.currentTarget.value))} aria-label="Mission operations duration" aria-valuetext={`${evaluation.missionDurationDays} days, with ${evaluation.operationsCostMillionUsd.toFixed(1)} million dollars operations cost`} />
                 <div className="slider-ends"><span>30 days</span><span>Up to {scenario.missionDeadlineDays - evaluation.developmentDurationDays} ops days</span></div>
                 <p className="schedule-total">Total schedule <b>{evaluation.developmentDurationDays} development + {evaluation.missionDurationDays} operations = {evaluation.scheduleDurationDays} days</b> <TermTip term="Mission deadline" align="end" /></p>
                 <p className="model-note">Science and event rates scale with campaign length; this is an educational planning model.</p>
@@ -546,7 +561,7 @@ export default function App() {
           </div>
 
           <div className="subsection-heading instrument-heading"><span className="subsection-index">07</span><div><h3>Mission orbit</h3><p>Altitude changes the orbit period and daily ground contact.</p></div><TermTip term="Orbit options" /></div>
-          <div className="orbit-options">
+          <div className="orbit-options" id="orbit-options">
             {scenario.orbits.map((item) => {
               const periodMinutes = calculateOrbitPeriodMinutes(item.altitudeKm, scenario.bodyRadiusKm, scenario.gravitationalParameterKm3PerSec2)
               const selected = item.id === orbit.id
@@ -560,7 +575,7 @@ export default function App() {
           </div>
 
           <div className="subsection-heading instrument-heading"><span className="subsection-index">08</span><div><h3>Launch vehicle</h3><p>Payload capacity depends on destination and orbit.</p></div><TermTip term="Launch vehicle" /><TermTip term="Launch capacity" /></div>
-          <div className="launcher-options">
+          <div className="launcher-options" id="launcher-options">
             {launchVehicles.map((vehicle) => {
               const capacityKg = Math.floor(vehicle.payloadCapacityKgByBody[scenario.bodyId] * orbit.launchCapacityFactor)
               const costMillionUsd = vehicle.costMillionUsdByBody[scenario.bodyId]
@@ -574,11 +589,12 @@ export default function App() {
               )
             })}
           </div>
+          </div></details>
           <p className="catalog-note">Game estimates — use them to compare designs.</p>
           <button className="launch-button" type="button" disabled={!canLaunch} aria-describedby={launchBlockers.length ? 'launch-lock-help' : undefined} onClick={() => launchMission()}>
             Launch mission <span aria-hidden="true">→</span>
           </button>
-          {launchBlockers.length > 0 ? <LaunchGuidance id="launch-lock-help" blockers={launchBlockers} onOpenCrew={openCrewReview} /> : <p className="launch-hint">{design.playMode === 'sandbox' ? 'Sandbox ready · limits won’t block launch.' : 'Ready for launch.'}</p>}
+          {launchBlockers.length > 0 ? <LaunchGuidance id="launch-lock-help" blockers={launchBlockers} onNavigate={openLaunchFix} /> : <p className="launch-hint">{design.playMode === 'sandbox' ? 'Ready · sandbox limits are off.' : 'All checks clear · ready to fly.'}</p>}
         </section>
 
         <aside className="right-column">
@@ -591,11 +607,7 @@ export default function App() {
             <p className="why-intro">Open a card to see the next move.</p>
             {designIssues.length > 0 ? <div className="reason-list">{designIssues.map((reason) => <ReasonCard key={reason.id} reason={reason} />)}</div> : <div className="all-clear"><span aria-hidden="true">✓</span><b>All design checks are clear.</b><p>Try a different instrument mix to explore another trade-off.</p></div>}
           </section>
-          <section className="spacecraft-preview" aria-label="Spacecraft preview">
-            <img className="spacecraft-art" src="/assets/orbiter-illustration.svg" width="720" height="280" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-            <div className="preview-caption"><span>SPACECRAFT PREVIEW</span><b>{bus?.name ?? 'Select a bus'}</b></div>
-            <span className="preview-coordinate">{orbit.altitudeKm} KM · {evaluation.orbitPeriodMinutes} MIN ORBIT</span>
-          </section>
+          <OrbitDiagram scenario={scenario} orbit={orbit} />
         </aside>
       </div>
       <details className="mission-tools" ref={missionToolsRef}>
@@ -604,7 +616,6 @@ export default function App() {
           <DesignLibraryPanel design={design} onLoad={(savedDesign) => replaceDesign(savedDesign)} />
           <TeamPanel key={designKey} enabled={Boolean(design.teamMode)} resetKey={designKey} evaluation={evaluation} onToggle={setTeamMode} onScoreChange={handleTeamScoreChange} />
           <OnlineCrewRoom design={design} onDesignChange={handleOnlineDesign} />
-          <OrbitDiagram scenario={scenario} orbit={orbit} />
           <MissionLearningCards scenario={scenario} />
         </div>
       </details>

@@ -2,22 +2,22 @@ import { useState } from 'react'
 
 const guideSteps = [
   {
-    label: 'Choose a target',
-    title: 'Start with the question.',
-    copy: 'Pick Earth, the Moon, or Mars. Each destination has its own science goal, operating window, and design limits.',
-    cue: 'Your objective sets the mission’s boundaries.',
+    label: '01 · TARGET',
+    title: 'Pick a world.',
+    copy: 'Each world gives you a different mission goal.',
+    cue: 'Tap a planet card to switch targets.',
   },
   {
-    label: 'Build the craft',
-    title: 'Make every kilogram count.',
-    copy: 'Choose a bus, then select three to five instruments. Balance fuel, power, data, and cost in the live design checks.',
-    cue: 'Keep some mass and power in reserve.',
+    label: '02 · BUILD',
+    title: 'Choose your spacecraft.',
+    copy: 'Pick a bus and 3–5 instruments. Watch the live meters as you build.',
+    cue: 'Open Flight tuning for extra controls.',
   },
   {
-    label: 'Fly and learn',
-    title: 'A good mission learns from surprises.',
-    copy: 'Launch when the hard limits are clear. Review the flight timeline, then use each result to improve your next design.',
-    cue: 'The same seed replays the same flight events.',
+    label: '03 · LAUNCH',
+    title: 'Clear the warnings. Fly.',
+    copy: 'Fix red checks, then launch and step through the flight.',
+    cue: 'Replay the same seed to compare designs.',
   },
 ]
 
@@ -53,7 +53,7 @@ export function FirstMissionGuide({ onDismiss }: { onDismiss: () => void }) {
       <div className="guide-actions">
         <button className="guide-dismiss" type="button" onClick={onDismiss}>Skip guide</button>
         <button className="guide-next" type="button" onClick={() => step === guideSteps.length - 1 ? onDismiss() : setStep((value) => value + 1)}>
-          {step === guideSteps.length - 1 ? 'Start designing' : 'Next note'}
+          {step === guideSteps.length - 1 ? 'Start building' : 'Next'}
           <span aria-hidden="true">→</span>
         </button>
       </div>

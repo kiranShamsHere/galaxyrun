@@ -890,6 +890,118 @@ body {
 .quick-flight-guidance .launch-guidance { margin: 0; }
 .quick-flight-guidance .launch-guidance ul { margin-top: 3px; }
 .crash-recovery { width: min(520px, calc(100% - 36px)); margin: 14vh auto; padding: 32px; border: 1px solid #5a4355; border-radius: 14px; background: linear-gradient(145deg, #241a28, #100d13); box-shadow: 0 25px 90px #0008; }
+
+/* A quieter flight deck: progressive controls, readable cold palette, clear game feedback. */
+:root { --accent: #e38bce; --success: #88e2c6; --warning: #e8d79c; --danger: #ff849c; }
+body { background-color: #08111b; }
+.panel, .mission-tools { border-color: #293b50; background: linear-gradient(145deg, rgba(15, 27, 41, .97), rgba(8, 16, 27, .98)); box-shadow: 0 18px 46px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(196, 230, 247, .035); }
+.topbar, .landing-header { border-color: rgba(115, 219, 231, .18); }
+.brand-light, .title-period, .landing-copy h1 span { color: #e38bce; text-shadow: 0 0 24px rgba(227, 139, 206, .2); }
+.eyebrow { color: #9fc7dc; }
+.scenario-card, .difficulty-option, .bus-option, .propulsion-option, .orbit-option, .launcher-option, .instrument-option { border-color: #293b50; background: rgba(12, 22, 35, .92); }
+.scenario-card:hover, .difficulty-option:hover, .bus-option:hover, .propulsion-option:hover, .orbit-option:hover, .launcher-option:hover, .instrument-option:hover { border-color: #6a9cac; }
+.scenario-card.is-selected, .difficulty-option.is-selected, .bus-option.is-selected, .propulsion-option.is-selected, .orbit-option.is-selected, .launcher-option.is-selected, .instrument-option.is-selected { border-color: #e38bce; background: linear-gradient(135deg, rgba(127, 62, 117, .28), rgba(31, 29, 53, .78)); box-shadow: 0 0 0 1px rgba(227, 139, 206, .13), 0 11px 30px rgba(160, 80, 154, .12); }
+.launch-button, .landing-primary { color: #1c1020; background: linear-gradient(110deg, #f4b3e3, #e38bce 58%, #aa9af0); box-shadow: 0 12px 26px rgba(190, 94, 174, .19); }
+.launch-button:hover:not(:disabled), .landing-primary:hover { filter: brightness(1.08); }
+.quick-flight-mark, .live-indicator i, .status-pip { background: #e38bce; box-shadow: 0 0 0 4px rgba(227, 139, 206, .1), 0 0 18px rgba(227, 139, 206, .4); }
+.quick-flight { border-color: #34566b; background: linear-gradient(105deg, rgba(24, 64, 81, .32), rgba(13, 26, 40, .84)); }
+.meter-fill, .risk-fill, .score-item em { background: linear-gradient(90deg, #e38bce, #d39ce5, #aa9af0); }
+.flight-tuning { margin: 20px 0 16px; overflow: hidden; border: 1px solid #2b4057; border-radius: 9px; background: rgba(8, 18, 30, .7); }
+.flight-tuning > summary { display: flex; align-items: center; gap: 12px; min-height: 62px; padding: 10px 14px; cursor: pointer; list-style: none; }
+.flight-tuning > summary::-webkit-details-marker { display: none; }
+.tuning-icon { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid #654466; border-radius: 50%; background: #2b1d35; color: #f0afe2; font-size: 22px; }
+.flight-tuning > summary > span:nth-child(2) { display: grid; gap: 3px; }
+.flight-tuning > summary b { color: #e6f3fa; font-size: 13px; }
+.flight-tuning > summary small { color: #8ba2b4; font-size: 10px; }
+.tuning-chevron { margin-left: auto; color: #f0afe2; font-size: 19px; transition: transform .2s ease; }
+.flight-tuning[open] .tuning-chevron { transform: rotate(45deg); }
+.flight-tuning-content { padding: 0 14px 14px; border-top: 1px solid #253a50; animation: enter-soft .25s ease-out both; }
+.flight-tuning-content > .subsection-heading:first-child { margin-top: 17px; }
+.launch-guidance { border-color: #4b5964; border-left-color: #e8d79c; background: rgba(22, 30, 39, .96); }
+.launch-guidance > b, .launch-guidance li strong { color: #f0dfa5; }
+.launch-guidance-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 7px; }
+.launch-guidance .text-button { color: #efb2e3; }
+.orbit-diagram-panel { border-color: #2c435a; }
+.orbit-view-toggle { border-color: #2b4358; background: #0d1b29; }
+.orbit-view-toggle button { color: #9aafc1; }
+.orbit-view-toggle button[aria-pressed="true"] { background: #38253e; color: #f5cfef; box-shadow: inset 0 0 0 1px #9d6c9b; }
+.orbit-3d-stage { border-color: #2d5067; background: radial-gradient(ellipse at 50% 50%, #173246, #08111c 75%); }
+.orbit-3d-stars { background-image: radial-gradient(#d5f4fc 1px, transparent 1.5px), radial-gradient(#8ab9d0 .8px, transparent 1.4px); }
+.orbit-3d-planet { border-color: #9bcddd; background: radial-gradient(circle at 32% 27%, #9fc5d0, #456b7d 56%, #172b3e); box-shadow: 0 0 32px rgba(89, 178, 206, .22); }
+.orbit-3d-track { border-color: rgba(227, 139, 206, .78); }
+.orbit-3d-satellite::before { border-color: #fff0fc; background: #e38bce; box-shadow: 0 0 14px rgba(227, 139, 206, .68); }
+.orbit-3d-craft { filter: drop-shadow(0 0 13px rgba(227, 139, 206, .36)); }
+.flight-scene { border-color: #31526a; background-color: #0a1622; }
+.flight-planet { background: radial-gradient(circle at 35% 22%, #91c2d1, #40687d 39%, #1d3448 72%, #0b111a 100%); box-shadow: 0 -10px 70px rgba(88, 173, 207, .2), inset 18px 24px 60px rgba(213, 242, 249, .12); }
+.flight-orbit { border-color: rgba(142, 220, 236, .54); }
+.flight-orbit b { background: #f0b3e5; box-shadow: 0 0 13px 4px rgba(227, 139, 206, .5); }
+.flight-scene-label { color: #f0c8e8; }
+.flight-phase-row > div { background: #1b3040; }
+.flight-phase-row i { background: linear-gradient(90deg, #e38bce, #aa9af0); }
+.flight-telemetry > div { border-color: #294158; background: rgba(10, 24, 37, .92); }
+.telemetry-track { background: #203648; }
+.telemetry-track i { background: linear-gradient(90deg, #e38bce, #aa9af0); }
+.guide-panel { border-color: #604365; background: radial-gradient(ellipse at 3% 50%, rgba(113, 51, 107, .25), transparent 45%), linear-gradient(110deg, #261a30, #151726 68%, #1b192c); box-shadow: inset 3px 0 #e38bce, 0 10px 30px #0005; }
+.guide-crest, .guide-next { border-color: #745078; background: #352340; color: #f7e4f3; }
+.guide-crest, .guide-next span { color: #efb4e3; }
+.guide-progress span { background: #e38bce; }
+.guide-step-label { color: #e6a5d8; }
+.guide-cue i { color: #e38bce; }
+.learning-check-answers button:hover:not(:disabled) { border-color: #75cad6; background: #173040; }
+.landing-page { background-color: #08111b; }
+.landing-scene { border-color: #35526b; background: radial-gradient(ellipse at 53% 60%, #213d52 0, #112538 38%, #09121d 78%); }
+.scene-orbit { border-color: rgba(115, 219, 231, .38); }
+.scene-orbit-two { border-color: rgba(142, 165, 221, .26); }
+.scene-planet { border-color: rgba(148, 204, 220, .58); background: radial-gradient(circle at 37% 24%, #9abdc7 0, #536e84 31%, #283c52 71%, #121c29 100%); box-shadow: 0 -14px 60px rgba(97, 174, 201, .2), inset 20px 28px 70px rgba(214, 242, 248, .13); }
+.planet-glow { background: #c4f4f0; box-shadow: 0 0 22px 8px rgba(115, 219, 231, .32); }
+.landing-primary, .landing-bottom-cta { border-color: #efaddd; background: linear-gradient(105deg, #f4b3e3, #e38bce 62%, #aa9af0); color: #1c1020; }
+.landing-primary:hover, .landing-bottom-cta:hover { background: linear-gradient(105deg, #ffd2ef, #eda6db 62%, #beb0fa); box-shadow: 0 10px 30px rgba(190, 94, 174, .24); }
+.destination-card.is-selected { border-color: #e38bce; background: linear-gradient(155deg, #35243e, #111827); box-shadow: inset 0 0 0 1px rgba(227, 139, 206, .14); }
+.destination-image { background: radial-gradient(ellipse at 50% 68%, #233e53, #09131e 74%); }
+.landing-footer i, .landing-footer b, .landing-nav-cta span, .landing-secondary span { color: #e38bce; }
+
+@media (max-width: 700px) {
+  .flight-tuning-content { padding-right: 9px; padding-left: 9px; }
+  .flight-tuning > summary { min-height: 58px; }
+  .launch-guidance-actions { gap: 5px 12px; }
+}
+
+/* Keep supporting copy readable on both landing and in-flight screens. */
+.app-shell, .landing-page { font-size: 16px; }
+.app-shell p, .landing-page p { font-size: 14px; line-height: 1.55; }
+.app-shell small, .landing-page small { font-size: 13px; }
+.app-shell button, .landing-page button, .app-shell select, .landing-page select, .app-shell input { font-size: 14px; }
+.app-shell .eyebrow, .landing-page .eyebrow { font-size: 12px; }
+.app-shell .intro-copy, .landing-page .landing-lede { font-size: 16px; }
+.app-shell .scenario-kicker, .app-shell .parts-count, .app-shell .selection-note, .app-shell .flight-hud span, .app-shell .flight-phase-row span, .app-shell .flight-telemetry small, .app-shell .seed-label, .app-shell .score-total > span, .app-shell .flight-event small, .app-shell .reason-count small { font-size: 12px; }
+.app-shell .objective-line, .app-shell .selection-note, .app-shell .difficulty-copy strong, .app-shell .play-mode-row, .app-shell .difficulty-option b { font-size: 14px; }
+.app-shell .difficulty-option small, .app-shell .scenario-copy small, .app-shell .subsection-heading p, .app-shell .part-spec, .app-shell .model-note, .app-shell .catalog-note, .app-shell .schedule-total, .app-shell .solar-array-readouts span { font-size: 13px; }
+.app-shell .bus-copy b, .app-shell .instrument-copy b, .app-shell .propulsion-copy b, .app-shell .section-heading h2, .app-shell .subsection-heading h3 { font-size: 16px; }
+.app-shell .bus-copy small, .app-shell .instrument-copy small, .app-shell .propulsion-copy small { font-size: 14px; line-height: 1.5; }
+.app-shell .metric-heading, .app-shell .risk-heading, .app-shell .why-intro, .app-shell .reason-card > p, .app-shell .flight-event p, .app-shell .all-clear p, .app-shell .report-actions p, .app-shell .report-section-heading > p:last-child, .app-shell .score-item { font-size: 14px; }
+.app-shell .metric-limit, .app-shell .score-total small, .app-shell .score-item b small, .app-shell .launch-hint, .app-shell .reason-detail, .app-shell .report-reasons .all-clear { font-size: 13px; }
+.app-shell .score-item b, .app-shell .flight-event h3, .app-shell .all-clear b { font-size: 15px; }
+.app-shell .guide-content p, .app-shell .guide-cue, .app-shell .guide-dismiss, .app-shell .guide-next, .app-shell .text-button, .app-shell .launch-guidance { font-size: 14px; }
+.app-shell .flight-telemetry b { font-size: 19px; }
+.landing-page .landing-nav a, .landing-page .scene-coordinate, .landing-page .scene-readout span, .landing-page .scene-readout strong, .landing-page .destination-index, .landing-page .destination-objective, .landing-page .destination-orbit, .landing-page .landing-footer { font-size: 13px; }
+.landing-page .scenario-kicker { font-size: 12px; }
+.report-group { display: grid; gap: 13px; margin-top: 22px; }
+.report-section-heading { padding: 3px 2px 0; }
+.report-section-heading .eyebrow { margin-bottom: 5px; }
+.report-section-heading h2 { margin: 0; color: #e8f4f8; font: 500 23px var(--font-display); }
+.report-section-heading > p:last-child { margin: 6px 0 0; color: #aabccc; }
+.launch-guidance li { padding: 2px 0; }
+.blocker-fix { display: inline-flex; min-height: 36px; align-items: center; gap: 6px; margin: 5px 0 2px; padding: 5px 10px; border: 1px solid #68496f; border-radius: 6px; background: #2a1e35; color: #f5d5ef; cursor: pointer; }
+.blocker-fix:hover { border-color: #e38bce; background: #3b2948; }
+.blocker-fix span { color: #efaddd; }
+.local-leaderboard li small { font-size: 13px; }
+
+@media (max-width: 600px) {
+  .app-shell p, .landing-page p { font-size: 14px; }
+  .app-shell .intro-copy, .landing-page .landing-lede { font-size: 15px; }
+  .app-shell button, .landing-page button, .app-shell select, .app-shell input { font-size: 14px; }
+  .report-section-heading h2 { font-size: 21px; }
+}
 .crash-recovery > span { color: var(--accent); font-size: 28px; }
 .crash-recovery h1 { margin: 8px 0; font-size: 27px; }
 .crash-recovery p:not(.eyebrow) { color: #c5b4c2; line-height: 1.6; }
