@@ -11,10 +11,22 @@ create table if not exists public.mission_scores (
 );
 create index if not exists mission_scores_board_idx on public.mission_scores (scenario_id, difficulty, seed, score desc, mission_days asc);
 alter table public.mission_scores enable row level security;
-grant select, insert, update on public.mission_scores to anon, authenticated;
+grant select, insert on public.mission_scores to anon, authenticated;
+revoke update, delete on public.mission_scores from anon, authenticated;
 drop policy if exists "Anyone can read mission scores" on public.mission_scores;
 create policy "Anyone can read mission scores" on public.mission_scores for select to anon, authenticated using (true);
 drop policy if exists "Players can submit valid scores" on public.mission_scores;
 create policy "Players can submit valid scores" on public.mission_scores for insert to anon, authenticated with check (score between 0 and 100 and mission_days between 1 and 10000);
 drop policy if exists "Players can update submitted scores" on public.mission_scores;
-create policy "Players can update submitted scores" on public.mission_scores for update to anon, authenticated using (true) with check (score between 0 and 100 and mission_days between 1 and 10000);
+
+-- Push new scores to open leaderboard screens in real time.
+do $$
+begin
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime')
+    and not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'mission_scores'
+    ) then
+    execute 'alter publication supabase_realtime add table public.mission_scores';
+  end if;
+end $$;

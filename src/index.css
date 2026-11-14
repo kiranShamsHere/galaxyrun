@@ -996,6 +996,11 @@ body { background-color: #08111b; }
 .blocker-fix:hover { border-color: #e38bce; background: #3b2948; }
 .blocker-fix span { color: #efaddd; }
 .local-leaderboard li small { font-size: 13px; }
+.online-room-controls, .online-room-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.online-room-controls input { min-width: 130px; min-height: 42px; flex: 1; padding: 0 11px; border: 1px solid #3f3851; border-radius: 6px; background: #11121f; color: #f2e9f4; letter-spacing: .12em; }
+.online-room-actions { margin-top: 9px; }
+.online-room-actions code { min-width: 92px; padding: 8px 10px; border: 1px dashed #79537b; border-radius: 6px; background: #211729; color: #f0b8e5; font: 600 15px var(--font-mono); letter-spacing: .14em; text-align: center; }
+.online-room-actions .text-button { min-height: 40px; padding: 7px 9px; }
 .status-key { display: flex; flex-wrap: wrap; gap: 7px 14px; margin: 12px 0 2px; color: #b6c3d0; font-size: 12px; }
 .status-key span { display: inline-flex; align-items: center; gap: 6px; }
 .status-key i { display: grid; width: 19px; height: 19px; place-items: center; border-radius: 50%; font-size: 12px; font-style: normal; font-weight: 700; }
