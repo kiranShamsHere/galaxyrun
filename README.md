@@ -15,7 +15,7 @@ A browser game for the NASA Space Apps Challenge 2026, built for the official ch
 
 </div>
 
-> **Project status:** the first playable loop is in progress. The working project deadline is December 15, 2026. The repository includes three mission scenarios, Easy and Normal modes, spacecraft hardware and propulsion choices, live resource totals, engine-generated design feedback, fuel/delta-v checks, mission-duration/deadline trade-offs, orbit and launcher choices, a seeded mission run, a flight timeline and a score report. The UI uses original local artwork, an optional launch cue, a first-mission guide, and contextual technical definitions. Keyboard and reduced-motion support are implemented; accessibility audits remain. Design saving/sharing, cooperative mode, and public deployment are still to come. See [the development checklist](docs/DEVELOPMENT_CHECKLIST.md) for the full proposal status.
+> **Project status:** the first playable loop is in progress. The working project deadline is December 15, 2026. The repository includes a responsive landing page, three mission scenarios, Easy and Normal modes, spacecraft hardware and propulsion choices, live resource totals, engine-generated design feedback, fuel/delta-v checks, mission-duration/deadline trade-offs, orbit and launcher choices, a seeded mission run, a flight timeline and a score report. The UI uses original local artwork, an optional launch cue, a first-mission guide, and contextual technical definitions. Keyboard and reduced-motion support are implemented; accessibility audits remain. Design saving/sharing and cooperative mode are still to come. See [the development checklist](docs/DEVELOPMENT_CHECKLIST.md) for the full proposal status.
 
 ---
 

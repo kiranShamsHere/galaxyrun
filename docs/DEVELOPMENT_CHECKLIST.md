@@ -6,6 +6,7 @@ Check an item only when its implementation is present and usable. Development co
 
 ## MVP: complete playable mission loop
 
+- [x] Add an accessible landing page that introduces the game, previews all three destinations, and enters the mission designer.
 - [x] Choose between Earth Observer, Moon Mapper, and Mars Scout.
 - [x] Configure a spacecraft bus and select three to five science instruments.
 - [x] Show live mass, power, mission cost, daily data, and science potential.
@@ -89,4 +90,4 @@ Check an item only when its implementation is present and usable. Development co
 
 ## Development status
 
-The designer, resource checks, propulsion/fuel/delta-v controls, mission-duration budgeting, thermal/reliability estimates, seeded flight events including a budget cut, simplified orbit/launcher selection with distinct launcher icons, Easy/Normal modes, authored local assets, first-flight guide, quick-start flight, contextual term help, and report are implemented. The unchecked items above remain before all proposal development features are complete. Revisit this list after each project step and notify the user when every development item is complete.
+The landing page, designer, resource checks, propulsion/fuel/delta-v controls, mission-duration budgeting, thermal/reliability estimates, seeded flight events including a budget cut, simplified orbit/launcher selection with distinct launcher icons, Easy/Normal modes, authored local assets, first-flight guide, quick-start flight, contextual term help, and report are implemented. The unchecked items above remain before all proposal development features are complete. Revisit this list after each project step and notify the user when every development item is complete.

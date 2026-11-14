@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { FirstMissionGuide } from './components/FirstMissionGuide.tsx'
+import { LandingPage } from './components/LandingPage.tsx'
 import { TermTip } from './components/TermTip.tsx'
 import { launchVehicles, parts, propulsionSystems, scenarios } from './data/catalog.ts'
 import type { GlossaryTerm } from './data/glossary.ts'
@@ -166,6 +167,7 @@ function MissionReport({ result, onEdit }: { result: MissionSimulation; onEdit: 
 }
 
 export default function App() {
+  const [screen, setScreen] = useState<'landing' | 'designer'>('landing')
   const [missionResult, setMissionResult] = useState<MissionSimulation | null>(null)
   const [soundEnabled, setSoundEnabled] = useState(false)
   const [guideOpen, setGuideOpen] = useState(() => !hasCompletedGuide())
@@ -213,19 +215,31 @@ export default function App() {
 
   useEffect(() => {
     if (missionResult) reportWasOpen.current = true
-    else if (reportWasOpen.current) document.getElementById('design-title')?.focus()
-  }, [missionResult])
+    else if (screen === 'designer') {
+      document.getElementById('design-title')?.focus()
+      reportWasOpen.current = false
+    }
+  }, [missionResult, screen])
+
+  if (screen === 'landing') {
+    return <LandingPage
+      scenarios={scenarios}
+      selectedScenarioId={scenario.id}
+      onSelectScenario={selectScenario}
+      onStart={() => setScreen('designer')}
+    />
+  }
 
   return (
     <>
       <a className="skip-link" href="#main-content">Skip to mission design</a>
       <div className="app-shell">
       <header className="topbar">
-        <a className="brand" href="#main-content" aria-label="Galaxy Run home">
+        <a className="brand" href="#landing-top" aria-label="Galaxy Run home" onClick={(event) => { event.preventDefault(); setMissionResult(null); setScreen('landing') }}>
           <span className="brand-mark" aria-hidden="true"><img src="/assets/galaxy-run-mark.svg" width="34" height="34" alt="" decoding="async" /></span>
           <span>GALAXY<span className="brand-light"> RUN</span></span>
         </a>
-        <div className="topbar-right"><span className="save-state"><i /> Design session active</span>{!missionResult && <button className="guide-toggle" type="button" onClick={toggleGuide} aria-expanded={guideOpen}>{guideOpen ? 'Hide guide' : 'Flight guide'}</button>}<button className={`sound-toggle ${soundEnabled ? 'is-on' : ''}`} type="button" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundEnabled} aria-label={`SFX ${soundEnabled ? 'ON' : 'OFF'}, sound effects ${soundEnabled ? 'enabled' : 'disabled'}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z" /><path d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10" /></svg><span>SFX {soundEnabled ? 'ON' : 'OFF'}</span></button><span className="pilot-badge">LOCAL PILOT</span></div>
+        <div className="topbar-right"><span className="save-state"><i /> Design session active</span>{!missionResult && <><button className="home-toggle" type="button" onClick={() => setScreen('landing')}>Mission brief</button><button className="guide-toggle" type="button" onClick={toggleGuide} aria-expanded={guideOpen}>{guideOpen ? 'Hide guide' : 'Flight guide'}</button></>}<button className={`sound-toggle ${soundEnabled ? 'is-on' : ''}`} type="button" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundEnabled} aria-label={`SFX ${soundEnabled ? 'ON' : 'OFF'}, sound effects ${soundEnabled ? 'enabled' : 'disabled'}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z" /><path d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10" /></svg><span>SFX {soundEnabled ? 'ON' : 'OFF'}</span></button><span className="pilot-badge">LOCAL PILOT</span></div>
       </header>
 
       <main id="main-content" tabIndex={-1}>
