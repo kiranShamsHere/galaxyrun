@@ -33,6 +33,7 @@ function Metric({
   limit,
   display,
   help,
+  hint,
   extraHelp,
 }: {
   label: string
@@ -41,6 +42,7 @@ function Metric({
   limit: number
   display: string
   help: GlossaryTerm
+  hint: string
   extraHelp?: GlossaryTerm
 }) {
   const percent = limit > 0 ? Math.min((current / limit) * 100, 100) : 0
@@ -54,6 +56,7 @@ function Metric({
           {display}<small> {unit}</small>
         </strong>
       </div>
+      <p className="metric-hint">{hint}</p>
       <div
         className="meter-track"
         role="progressbar"
@@ -67,7 +70,7 @@ function Metric({
           style={{ width: `${percent}%` }}
         />
       </div>
-      <p className="metric-limit">Limit {limit.toLocaleString()} {unit}</p>
+      <p className="metric-limit">Target: {limit.toLocaleString()} {unit}</p>
     </div>
   )
 }
@@ -125,7 +128,7 @@ function getLaunchBlockers(evaluation: DesignEvaluation, design: MissionDesign, 
 
 function LaunchGuidance({ id, blockers, onNavigate }: { id: string; blockers: ReturnType<typeof getLaunchBlockers>; onNavigate: (target: string) => void }) {
   if (!blockers.length) return null
-  return <div id={id} className="launch-guidance" role="status" aria-live="polite"><b>Launch locked · {blockers.length} {blockers.length === 1 ? 'fix' : 'fixes'} needed</b><ul>{blockers.map((item) => <li key={item.label}><strong>{item.label}:</strong> {item.instruction}<button type="button" className="blocker-fix" onClick={() => onNavigate(item.target)}>{item.action} <span aria-hidden="true">→</span></button></li>)}</ul></div>
+  return <div id={id} className="launch-guidance" role="status" aria-live="polite"><b>Launch locked · {blockers.length} {blockers.length === 1 ? 'fix' : 'fixes'} needed</b><p className="launch-guidance-intro">Tap a fix to jump straight to that control.</p><ul>{blockers.map((item) => <li key={item.label}><strong>{item.label}:</strong> {item.instruction}<button type="button" className="blocker-fix" onClick={() => onNavigate(item.target)}>{item.action} <span aria-hidden="true">→</span></button></li>)}</ul></div>
 }
 
 function FlightSequence({ result, evaluation, scenario, step, fuelMassKg, onAdvance, onSkip }: {
@@ -203,30 +206,31 @@ function DesignSummary({ evaluation }: { evaluation: DesignEvaluation }) {
       <div className="section-heading">
         <div>
           <p className="eyebrow">LIVE DESIGN CHECK</p>
-          <h2 id="summary-title">Mission resources</h2>
+          <h2 id="summary-title">Mission meters</h2>
         </div>
         <span className="live-indicator"><i /> Updating live</span>
       </div>
+      <div className="status-key" aria-label="Meter status guide"><span><i className="key-good">✓</i> Within limit</span><span><i className="key-watch">!</i> Watch</span><span><i className="key-stop">×</i> Over limit</span></div>
       <div className="metric-grid">
-        <Metric label="Spacecraft mass" current={evaluation.massKg} limit={evaluation.launchCapacityKg} unit="kg" display={evaluation.massKg.toLocaleString()} help="Spacecraft mass" />
-        <Metric label="Power demand" current={evaluation.powerW} limit={evaluation.powerAvailableW} unit="W" display={evaluation.powerW.toLocaleString()} help="Power demand" />
-        <Metric label="Mission cost" current={evaluation.costMillionUsd} limit={evaluation.budgetMillionUsd} unit="M USD" display={`$${evaluation.costMillionUsd}`} help="Mission cost" />
-        <Metric label="Delta-v" current={evaluation.deltaVMps} limit={evaluation.requiredDeltaVMps} unit="m/s" display={evaluation.deltaVMps.toLocaleString()} help="Delta-v" />
+        <Metric label="Spacecraft mass" current={evaluation.massKg} limit={evaluation.launchCapacityKg} unit="kg" display={evaluation.massKg.toLocaleString()} help="Spacecraft mass" hint="Craft plus fuel must fit the rocket." />
+        <Metric label="Power demand" current={evaluation.powerW} limit={evaluation.powerAvailableW} unit="W" display={evaluation.powerW.toLocaleString()} help="Power demand" hint="Keep power use below solar output." />
+        <Metric label="Mission cost" current={evaluation.costMillionUsd} limit={evaluation.budgetMillionUsd} unit="M USD" display={`$${evaluation.costMillionUsd}`} help="Mission cost" hint="Stay within the mission budget." />
+        <Metric label="Maneuver range" current={evaluation.deltaVMps} limit={evaluation.requiredDeltaVMps} unit="m/s" display={evaluation.deltaVMps.toLocaleString()} help="Delta-v" hint="Your engine and fuel must meet this target." />
       </div>
       <details className="advanced-gauges">
         <summary>More mission stats <span aria-hidden="true">+</span></summary>
         <div className="metric-grid">
-          <Metric label="Eclipse battery" current={evaluation.eclipseEnergyRequiredWh} limit={evaluation.batteryCapacityWh} unit="Wh" display={evaluation.eclipseEnergyRequiredWh.toLocaleString()} help="Eclipse battery" />
-          <Metric label="Daily data" current={evaluation.dataGbPerDay} limit={evaluation.dataLimitGbPerDay} unit="GB/day" display={`${evaluation.dataGbPerDay}`} help="Daily data" extraHelp="Downlink" />
-          <Metric label="Mission schedule" current={evaluation.scheduleDurationDays} limit={evaluation.missionDeadlineDays} unit="days" display={`${evaluation.scheduleDurationDays}`} help="Mission time" />
+          <Metric label="Shadow battery" current={evaluation.eclipseEnergyRequiredWh} limit={evaluation.batteryCapacityWh} unit="Wh" display={evaluation.eclipseEnergyRequiredWh.toLocaleString()} help="Eclipse battery" hint="Stored power keeps systems on in darkness." />
+          <Metric label="Data to send home" current={evaluation.dataGbPerDay} limit={evaluation.dataLimitGbPerDay} unit="GB/day" display={`${evaluation.dataGbPerDay}`} help="Daily data" hint="Collected data should fit the radio link." extraHelp="Downlink" />
+          <Metric label="Total schedule" current={evaluation.scheduleDurationDays} limit={evaluation.missionDeadlineDays} unit="days" display={`${evaluation.scheduleDurationDays}`} help="Mission time" hint="Build time plus flight time must meet the deadline." />
         </div>
       </details>
       <div className="risk-summary" aria-label="Estimated system risk">
-        <div className="risk-heading"><span>Estimated mission reliability<TermTip term="Mission reliability" /></span><strong>{evaluation.reliabilityPercent}%</strong></div>
+        <div className="risk-heading"><span>Smooth-flight estimate<TermTip term="Mission reliability" /></span><strong>{evaluation.reliabilityPercent}%</strong></div>
         <div className="risk-track" role="progressbar" aria-label="Estimated mission reliability" aria-valuemin={0} aria-valuemax={100} aria-valuenow={evaluation.reliabilityPercent}>
           <span className={evaluation.reliabilityPercent < 80 ? 'risk-fill is-watch' : 'risk-fill'} style={{ width: `${evaluation.reliabilityPercent}%` }} />
         </div>
-        <p>{evaluation.thermalRiskPercent}% thermal-stress risk<TermTip term="Thermal risk" /> · game estimate.</p>
+        <p>{evaluation.thermalRiskPercent}% heat/cold stress estimate<TermTip term="Thermal risk" /> · game model.</p>
       </div>
       <div className="science-score">
         <span>Science potential<TermTip term="Science potential" /></span>
@@ -489,7 +493,7 @@ export default function App() {
             <span className="parts-count">{selectedCount} instruments selected</span>
           </div>
 
-          <div className="subsection-heading"><span className="subsection-index">01</span><div><h3>Spacecraft bus</h3><p>The platform that powers and carries your payload.</p></div><TermTip term="Spacecraft bus" /></div>
+          <div className="subsection-heading"><span className="subsection-index">01</span><div><h3>Spacecraft platform</h3><p>Holds the tools, battery, and flight computer.</p></div><TermTip term="Spacecraft bus" /></div>
           <div className="bus-options" id="bus-options">
             {buses.map((item) => (
               <button key={item.id} className={`bus-option ${item.id === design.busId ? 'is-selected' : ''}`} onClick={() => selectBus(item.id)} aria-pressed={item.id === design.busId}>
@@ -498,7 +502,8 @@ export default function App() {
             ))}
           </div>
 
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">02</span><div><h3>Science instruments</h3><p>Pick the payload that answers your mission question.</p></div><TermTip term="Science instruments" /><span className="optional-label">SELECT 3–5</span></div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">02</span><div><h3>Science tools</h3><p>Choose 3–5 tools to collect mission data.</p></div><TermTip term="Science instruments" /><span className="optional-label">{selectedCount} / 5 PICKED</span></div>
+          <p className="control-hint">More tools can mean more science, weight, and power use.</p>
           <div className="instrument-list" id="instrument-list">
             {instruments.map((item, index) => {
               const selected = design.instrumentIds.includes(item.id)
@@ -513,14 +518,14 @@ export default function App() {
           </div>
 
           <details className="flight-tuning" id="flight-tuning" ref={flightTuningRef}><summary><span className="tuning-icon" aria-hidden="true">⌁</span><span><b>Flight tuning</b><small>Engine · power · fuel · orbit · launcher</small></span><span className="tuning-chevron" aria-hidden="true">＋</span></summary><div className="flight-tuning-content">
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">03</span><div><h3>Propulsion system</h3><p>Pick an engine.</p></div><TermTip term="Propulsion system" /><TermTip term="Chemical upper stage" /><TermTip term="Solar-electric ion drive" /></div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">03</span><div><h3>Engine</h3><p>Pick a strong short burn or a slower fuel-saver.</p></div><TermTip term="Propulsion system" /><TermTip term="Chemical upper stage" /><TermTip term="Solar-electric ion drive" /></div>
           <div className="propulsion-options" id="propulsion-options">
             {propulsionSystems.map((system) => {
               const selected = system.id === propulsion.id
               return (
                 <button key={system.id} type="button" className={`propulsion-option ${selected ? 'is-selected' : ''}`} onClick={() => selectPropulsionSystem(system.id)} aria-pressed={selected}>
                   <span className="propulsion-icon" aria-hidden="true">{system.id === 'solar-electric-ion' ? '⊙' : '↗'}</span>
-                  <span className="propulsion-copy"><b>{system.name}</b><small>{system.description}</small><span className="part-spec">{system.specificImpulseSeconds} s Isp <i>·</i> {system.dryMassKg} kg dry <i>·</i> {system.powerW} W</span></span>
+                  <span className="propulsion-copy"><b>{system.name}</b><small>{system.description}</small><span className="part-spec">{system.dryMassKg} kg · {system.powerW} W power</span></span>
                   <span className="radio-dot" aria-hidden="true" />
                 </button>
               )
@@ -531,8 +536,8 @@ export default function App() {
             <label htmlFor="solar-panel-slider"><span>Solar-panel area</span><b>{evaluation.solarPanelAreaM2.toFixed(1)} m²</b></label>
             <input id="solar-panel-slider" type="range" min="0.5" max="5" step="0.1" value={evaluation.solarPanelAreaM2} onChange={(event) => setSolarPanelArea(Number(event.currentTarget.value))} aria-valuetext={`${evaluation.solarPanelAreaM2.toFixed(1)} square metres, producing ${evaluation.powerAvailableW} watts`} />
             <div className="slider-ends"><span>0.5 m²</span><span>5 m²</span></div>
-            <div className="solar-array-readouts"><span>Solar output <b>{evaluation.powerAvailableW} W</b></span><span>Battery through eclipse <b>{evaluation.eclipseEnergyRequiredWh} / {evaluation.batteryCapacityWh} Wh</b></span><span>Array mass and cost <b>{evaluation.solarArrayMassKg.toFixed(1)} kg · ${evaluation.solarArrayCostMillionUsd.toFixed(1)}M</b></span></div>
-            <p className="model-note">Output = panel area × sunlight at the destination × 28% assumed efficiency. Array mass, cost, and eclipse time are simplified game values.</p>
+            <div className="solar-array-readouts"><span>Solar output <b>{evaluation.powerAvailableW} W</b></span><span>Battery in shadow <b>{evaluation.eclipseEnergyRequiredWh} / {evaluation.batteryCapacityWh} Wh</b></span><span>Panel mass and cost <b>{evaluation.solarArrayMassKg.toFixed(1)} kg · ${evaluation.solarArrayCostMillionUsd.toFixed(1)}M</b></span></div>
+            <p className="model-note">More panels make more power, but also add weight and cost.</p>
           </div>
           <div className="planning-grid">
             <div className="planning-card">
@@ -541,8 +546,7 @@ export default function App() {
                 <label htmlFor="propellant-slider"><span>Fuel mass<TermTip term="Propellant" /></span><b>{evaluation.propellantMassKg} kg</b></label>
                 <input id="propellant-slider" type="range" min="0" max={evaluation.maxPropellantKg} step="1" value={evaluation.propellantMassKg} onChange={(event) => setPropellantMass(Number(event.currentTarget.value))} aria-valuetext={`${evaluation.propellantMassKg} kilograms of propellant`} />
                 <div className="slider-ends"><span>0 kg</span><span>Tank limit {evaluation.maxPropellantKg} kg</span></div>
-                <p className="equation-note">Δv = Isp × g₀ × ln((dry mass + propellant) / dry mass) <span className="equation-name">Rocket equation<TermTip term="Rocket equation" /></span></p>
-                <p className="model-note">Game delta-v targets are simplified estimates. Thrust duration, gravity losses, and tank mass are not modeled.</p>
+                <p className="control-hint">More fuel improves maneuver range but makes the craft heavier.</p>
               </div>
             </div>
 
@@ -555,12 +559,12 @@ export default function App() {
                 <input id="mission-duration-slider" type="range" min="30" max={Math.max(30, scenario.missionDeadlineDays - evaluation.developmentDurationDays)} step="1" value={evaluation.missionDurationDays} onChange={(event) => setMissionDuration(Number(event.currentTarget.value))} aria-label="Mission operations duration" aria-valuetext={`${evaluation.missionDurationDays} days, with ${evaluation.operationsCostMillionUsd.toFixed(1)} million dollars operations cost`} />
                 <div className="slider-ends"><span>30 days</span><span>Up to {scenario.missionDeadlineDays - evaluation.developmentDurationDays} ops days</span></div>
                 <p className="schedule-total">Total schedule <b>{evaluation.developmentDurationDays} development + {evaluation.missionDurationDays} operations = {evaluation.scheduleDurationDays} days</b> <TermTip term="Mission deadline" align="end" /></p>
-                <p className="model-note">Science and event rates scale with campaign length; this is an educational planning model.</p>
+                <p className="control-hint">Longer flights collect more science and cost more.</p>
               </div>
             </div>
           </div>
 
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">07</span><div><h3>Mission orbit</h3><p>Altitude changes the orbit period and daily ground contact.</p></div><TermTip term="Orbit options" /></div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">07</span><div><h3>Orbit path</h3><p>Choose how the craft circles the target.</p></div><TermTip term="Orbit options" /></div>
           <div className="orbit-options" id="orbit-options">
             {scenario.orbits.map((item) => {
               const periodMinutes = calculateOrbitPeriodMinutes(item.altitudeKm, scenario.bodyRadiusKm, scenario.gravitationalParameterKm3PerSec2)
@@ -574,7 +578,7 @@ export default function App() {
             })}
           </div>
 
-          <div className="subsection-heading instrument-heading"><span className="subsection-index">08</span><div><h3>Launch vehicle</h3><p>Payload capacity depends on destination and orbit.</p></div><TermTip term="Launch vehicle" /><TermTip term="Launch capacity" /></div>
+          <div className="subsection-heading instrument-heading"><span className="subsection-index">08</span><div><h3>Launch rocket</h3><p>Bigger rockets carry heavier spacecraft.</p></div><TermTip term="Launch vehicle" /><TermTip term="Launch capacity" /></div>
           <div className="launcher-options" id="launcher-options">
             {launchVehicles.map((vehicle) => {
               const capacityKg = Math.floor(vehicle.payloadCapacityKgByBody[scenario.bodyId] * orbit.launchCapacityFactor)

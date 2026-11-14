@@ -991,10 +991,22 @@ body { background-color: #08111b; }
 .report-section-heading h2 { margin: 0; color: #e8f4f8; font: 500 23px var(--font-display); }
 .report-section-heading > p:last-child { margin: 6px 0 0; color: #aabccc; }
 .launch-guidance li { padding: 2px 0; }
+.launch-guidance-intro { margin: 4px 0; color: #b5c1cd; font-size: 13px; }
 .blocker-fix { display: inline-flex; min-height: 36px; align-items: center; gap: 6px; margin: 5px 0 2px; padding: 5px 10px; border: 1px solid #68496f; border-radius: 6px; background: #2a1e35; color: #f5d5ef; cursor: pointer; }
 .blocker-fix:hover { border-color: #e38bce; background: #3b2948; }
 .blocker-fix span { color: #efaddd; }
 .local-leaderboard li small { font-size: 13px; }
+.status-key { display: flex; flex-wrap: wrap; gap: 7px 14px; margin: 12px 0 2px; color: #b6c3d0; font-size: 12px; }
+.status-key span { display: inline-flex; align-items: center; gap: 6px; }
+.status-key i { display: grid; width: 19px; height: 19px; place-items: center; border-radius: 50%; font-size: 12px; font-style: normal; font-weight: 700; }
+.status-key .key-good { background: rgba(227, 139, 206, .16); color: #e38bce; }
+.status-key .key-watch { background: rgba(232, 215, 156, .16); color: #e8d79c; }
+.status-key .key-stop { background: rgba(255, 132, 156, .16); color: #ff849c; }
+.metric-hint { min-height: 38px; margin: 6px 0 0; color: #aab8c7; font-size: 12px !important; line-height: 1.4 !important; }
+.control-hint { margin: 5px 0 10px; color: #aab8c7; font-size: 13px !important; line-height: 1.45 !important; }
+.metric-limit { margin-top: 4px; }
+.risk-summary p { font-size: 13px !important; }
+.solar-array-readouts span { font-size: 13px !important; }
 
 @media (max-width: 600px) {
   .app-shell p, .landing-page p { font-size: 14px; }

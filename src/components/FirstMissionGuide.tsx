@@ -10,14 +10,19 @@ const guideSteps = [
   {
     label: '02 · BUILD',
     title: 'Choose your spacecraft.',
-    copy: 'Pick a bus and 3–5 instruments. Watch the live meters as you build.',
-    cue: 'Open Flight tuning for extra controls.',
+    copy: 'Pick a platform and 3–5 science tools. Watch the live meters as you build.',
   },
   {
-    label: '03 · LAUNCH',
-    title: 'Clear the warnings. Fly.',
-    copy: 'Fix red checks, then launch and step through the flight.',
-    cue: 'Replay the same seed to compare designs.',
+    label: '03 · CHECK',
+    title: 'Follow the meters.',
+    copy: 'Pink means within limits. Red means over. Warnings explain what to change.',
+    cue: 'Tap a Fix button to jump to the right control.',
+  },
+  {
+    label: '04 · FLY',
+    title: 'Launch and learn.',
+    copy: 'Step through the flight, then see your score and what to improve.',
+    cue: 'Flight tuning has optional engine, fuel, and orbit choices.',
   },
 ]
 
@@ -38,16 +43,16 @@ export function FirstMissionGuide({ onDismiss }: { onDismiss: () => void }) {
       <div className="guide-main">
         <div className="guide-topline">
           <p className="eyebrow">FLIGHT DECK NOTE <span>/</span> FIRST MISSION</p>
-          <span className="guide-counter">0{step + 1} <i>/</i> 03</span>
+          <span className="guide-counter">0{step + 1} <i>/</i> 0{guideSteps.length}</span>
         </div>
-        <div className="guide-progress" role="progressbar" aria-label="First mission guide progress" aria-valuemin={1} aria-valuemax={3} aria-valuenow={step + 1}>
+        <div className="guide-progress" role="progressbar" aria-label="First mission guide progress" aria-valuemin={1} aria-valuemax={guideSteps.length} aria-valuenow={step + 1}>
           <span style={{ width: `${((step + 1) / guideSteps.length) * 100}%` }} />
         </div>
         <div className="guide-content" aria-live="polite" aria-atomic="true">
           <span className="guide-step-label">{current.label}</span>
           <h2 id="guide-title">{current.title}</h2>
           <p>{current.copy}</p>
-          <span className="guide-cue"><i aria-hidden="true">✦</i>{current.cue}</span>
+          {current.cue && <span className="guide-cue"><i aria-hidden="true">✦</i>{current.cue}</span>}
         </div>
       </div>
       <div className="guide-actions">
