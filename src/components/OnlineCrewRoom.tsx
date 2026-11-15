@@ -20,7 +20,10 @@ export function OnlineCrewRoom({ design, onDesignChange }: { design: MissionDesi
   const designRef = useRef(design)
   const channelRef = useRef<ReturnType<NonNullable<typeof supabase>['channel']> | null>(null)
   const pilotId = useRef(crypto.randomUUID().slice(0, 8))
-  designRef.current = design
+
+  useEffect(() => {
+    designRef.current = design
+  }, [design])
 
   useEffect(() => {
     if (!supabase || !room) return
