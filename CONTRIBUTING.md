@@ -2,10 +2,12 @@
 
 Galaxy Run is a four-person hackathon project maintained by:
 
-- Kiran Shams
-- Hadeed Ahsan
-- Rimsha Younis
-- Mariam
+| Team member | Contribution |
+| --- | --- |
+| Kiran Shams | Project lead |
+| Hadeed Ahsan | Development |
+| Rimsha Younis | Data research and resources |
+| Mariam | Testing |
 
 The rules are short so everyone can contribute consistently.
 
