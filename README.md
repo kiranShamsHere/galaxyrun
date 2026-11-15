@@ -8,7 +8,7 @@
 
 A browser game about balancing spacecraft choices and learning from their consequences.
 
-[Problem](#problem) · [Features](#features) · [Architecture](#architecture) · [Project structure](#project-structure) · [Run locally](#run-locally) · [Contributing](CONTRIBUTING.md)
+[Play live](https://galaxyrun-eight.vercel.app/) · [Problem](#problem) · [Features](#features) · [Architecture](#architecture) · [Project structure](#project-structure) · [Run locally](#run-locally) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -135,19 +135,21 @@ See [docs/CREDITS.md](docs/CREDITS.md) for retrieval dates, exact values, softwa
 
 ## Live deployment
 
-The project team reports that a Vercel deployment exists, but its production URL is not recorded in this repository. Add and verify the URL before sharing the README or submitting the project.
+**Live demo:** [Play Galaxy Run](https://galaxyrun-eight.vercel.app/)
+
+The deployment returned the Galaxy Run app page when checked on 2026-11-15. Full mission-flow and private-window verification remain on the handoff checklist.
 
 ## Limitations
 
 - Mission values and flight events are simplified; the app is not suitable for real spacecraft engineering or mission decisions.
 - Designs and pilot names are browser-local, with no cross-device sync, accounts, or online leaderboard.
-- The production deployment URL has not been verified in this repository.
+- The live deployment link is available, but full gameplay and private-window verification are still pending.
 
 ## Future work
 
 - Run human playtests and review the educational model assumptions with a knowledgeable reviewer.
 - Complete keyboard-only and screen-reader reviews, then recheck WCAG AA contrast.
-- Verify and publish the production URL; capture screenshots and finish submission materials.
+- Verify the full mission flow in a private window; capture screenshots and finish submission materials.
 - Review the AI-use attribution with the team before the final submission.
 
 Track handoff progress in [docs/DEVELOPMENT_CHECKLIST.md](docs/DEVELOPMENT_CHECKLIST.md) and [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md).
