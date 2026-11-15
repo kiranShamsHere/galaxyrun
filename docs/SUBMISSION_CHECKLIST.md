@@ -7,7 +7,7 @@ The project requirements may change in the official 2026 submission guide; check
 ## Before submitting
 
 - [ ] Confirm all team members are registered on the same event team and selected the correct challenge.
-- [ ] Verify the production Vercel URL opens in a private window without login, then add it to README and the form.
+- [ ] Verify https://galaxyrun-eight.vercel.app/ opens in a private window and the full mission flow works without login, then add it to the form.
 - [ ] Push the finished branch, complete teammate review, and merge the approved change.
 - [ ] Run a first-time player session and confirm it can be completed in under ten minutes.
 - [ ] Complete keyboard-only and screen-reader reviews; check contrast after final UI changes.
@@ -23,7 +23,7 @@ The project requirements may change in the official 2026 submission guide; check
 - [x] Project name: Galaxy Run.
 - [ ] High-level summary: prepare from the project overview in README.
 - [ ] Demo link: add the public presentation or video URL.
-- [ ] Project link: add the verified Vercel URL and GitHub repository URL.
+- [ ] Project link: include the Vercel URL listed above and the GitHub repository URL; confirm both open publicly.
 - [ ] Detailed description: describe the mission loop, engineering trade-offs, learning reasons, and use of seed-based replay.
 - [ ] NASA and other agency data: identify planetary constants, irradiance values, and NASA/ESA mission field notes; refer to `docs/CREDITS.md`.
 - [ ] Tools, code, text, and image resources: use the credits file and AI-use note.

@@ -18,7 +18,7 @@ An item is checked only when the work exists in the project. Local implementatio
 - [x] Include skippable/reopenable first-flight guidance and a one-click starter flight.
 - [ ] Confirm a new player completes a mission in under ten minutes in a short human playtest.
 - [ ] Manually review the full flow at laptop and tablet sizes.
-- [ ] Verify the production URL opens without authentication. The repository has no Vercel project link or deployment URL recorded.
+- [ ] Manually verify the production URL in a private window and confirm the full mission flow works without authentication: https://galaxyrun-eight.vercel.app/
 
 ## Mission math, science, and fairness
 
@@ -58,7 +58,7 @@ An item is checked only when the work exists in the project. Local implementatio
 - [x] Document NASA/ESA sources and direct software dependencies in `docs/CREDITS.md`.
 - [x] Verify each direct dependency license against its installed package metadata; transitive licenses still need the team’s submission-policy review.
 - [ ] Replace the pending reviewer status in `docs/AI_USE.md` after teammates review the work; do not guess reviewer names.
-- [ ] Add screenshots and the verified public deployment URL to README/submission materials.
+- [ ] Capture screenshots and enter the verified deployment URL in the submission materials.
 - [x] Keep all in-project copy in English and avoid NASA logos, personal information, and unlicensed music or images.
 
 ## Verification record
