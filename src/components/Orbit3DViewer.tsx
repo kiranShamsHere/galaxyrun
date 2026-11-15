@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import type { MissionScenario, OrbitOption } from '../engine/types.ts'
+import { SpaceIcon } from './SpaceIcon.tsx'
 
 interface Orbit3DViewerProps {
   scenario: MissionScenario
@@ -371,14 +372,14 @@ export function Orbit3DViewer({ scenario, orbit }: Orbit3DViewerProps) {
               className={`layer-pill ${showShadowCone ? 'is-active' : ''}`}
               onClick={() => setShowShadowCone(!showShadowCone)}
             >
-              🌑 Shadow
+              <SpaceIcon symbol="🌑" size={16} /> Shadow
             </button>
             <button
               type="button"
               className={`layer-pill ${showGroundCone ? 'is-active' : ''}`}
               onClick={() => setShowGroundCone(!showGroundCone)}
             >
-              📡 DSN Cone
+              <SpaceIcon symbol="📡" size={16} /> DSN Cone
             </button>
           </div>
         </div>

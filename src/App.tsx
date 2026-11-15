@@ -1,25 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FirstMissionGuide } from './components/FirstMissionGuide.tsx'
 import { DesignLibraryPanel } from './components/DesignLibraryPanel.tsx'
 import { LandingPage } from './components/LandingPage.tsx'
+import { PlayerNamePage } from './components/PlayerNamePage.tsx'
+import { SpaceIcon } from './components/SpaceIcon.tsx'
 import { OrbitDiagram } from './components/OrbitDiagram.tsx'
 import { Spacecraft3DViewer } from './components/Spacecraft3DViewer.tsx'
 import { Orbit3DViewer } from './components/Orbit3DViewer.tsx'
 import { NasaMissionHubModal } from './components/NasaMissionHubModal.tsx'
 import { MissionLearningCards } from './components/MissionLearningCards.tsx'
-import { LocalLeaderboard } from './components/LocalLeaderboard.tsx'
-import { TeamPanel } from './components/TeamPanel.tsx'
-import { OnlineCrewRoom } from './components/OnlineCrewRoom.tsx'
 import { TermTip } from './components/TermTip.tsx'
 import { launchVehicles, parts, propulsionSystems, scenarios } from './data/catalog.ts'
 import type { GlossaryTerm } from './data/glossary.ts'
 import { evaluateDesign } from './engine/evaluateDesign.ts'
 import { calculateOrbitPeriodMinutes } from './engine/orbit.ts'
 import { simulateMission } from './engine/simulateMission.ts'
-import type { DesignEvaluation, MissionDesign, MissionSimulation, Reason } from './engine/types.ts'
+import type { DesignEvaluation, MissionSimulation, Reason } from './engine/types.ts'
 import { useMissionStore } from './store.ts'
-import { readSharedDesign } from './utils/designLibrary.ts'
-import { recordLocalScore, updateLatestLocalScore } from './utils/leaderboardStorage.ts'
 import { hasCompletedGuide, rememberGuideCompleted } from './utils/guideStorage.ts'
 import { soundFx } from './utils/soundEffects.ts'
 
@@ -422,7 +419,7 @@ function DesignSummary({ evaluation }: { evaluation: DesignEvaluation }) {
 
       {/* CML 4 Maturity Badge */}
       <div className={`cml-hud-badge ${isCml4Compliant ? 'is-pass' : 'is-warn'}`}>
-        <span>{isCml4Compliant ? '✓ JPL CML-4 READY' : '⚠️ PRE-CML-4 TRADE SPACE'}</span>
+        <span>{isCml4Compliant ? '✓ JPL CML-4 READY' : <><SpaceIcon symbol="⚠️" size={14} /> PRE-CML-4 TRADE SPACE</>}</span>
         <small>
           Mass Res: {massMarginPct}% (≥15% req) · Power Res: {powerMarginPct}% (≥20% req)
         </small>
@@ -553,13 +550,11 @@ function DesignSummary({ evaluation }: { evaluation: DesignEvaluation }) {
 
 function MissionReport({
   result,
-  design,
   onEdit,
   onAnotherFlight,
   onLearningAnswer,
 }: {
   result: MissionSimulation
-  design: MissionDesign
   onEdit: () => void
   onAnotherFlight: () => void
   onLearningAnswer: (correct: boolean) => void
@@ -570,7 +565,6 @@ function MissionReport({
     ['Efficiency', result.efficiencyScore],
     ['Reliability', result.reliabilityScore],
     ['Learning', result.learningScore],
-    ...(result.collaborationScore > 0 ? ([['Collaboration', result.collaborationScore] as const] as const) : []),
   ] as const
   const reportReasons = result.reasons.filter((reason) => reason.status !== 'ok')
 
@@ -654,7 +648,6 @@ function MissionReport({
             </div>
           </section>
         )}
-        <LocalLeaderboard design={design} result={result} />
       </section>
 
       <section className="report-group" aria-labelledby="mission-debrief-title">
@@ -735,17 +728,18 @@ function MissionReport({
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<'landing' | 'designer'>('landing')
+  const [screen, setScreen] = useState<'landing' | 'pilot' | 'designer'>('landing')
+  const [pilotName, setPilotName] = useState(() => {
+    try { return localStorage.getItem('galaxy-run-pilot-name') ?? '' } catch { return '' }
+  })
   const [missionResult, setMissionResult] = useState<MissionSimulation | null>(null)
   const [flightStep, setFlightStep] = useState<number | null>(null)
   const [soundEnabled, setSoundEnabled] = useState(false)
   const [guideOpen, setGuideOpen] = useState(false)
   const [nasaModalOpen, setNasaModalOpen] = useState(false)
   const [viewerTab, setViewerTab] = useState<'spacecraft' | 'orbit' | 'mel'>('spacecraft')
-  const [runSeed, setRunSeed] = useState(() => readSharedDesign(window.location.search)?.seed ?? 2026)
-  const [teamScore, setTeamScore] = useState({ key: '', score: 0, approvals: 0, hasTradeoff: false })
+  const [runSeed, setRunSeed] = useState(2026)
   const reportWasOpen = useRef(false)
-  const missionToolsRef = useRef<HTMLDetailsElement>(null)
   const flightTuningRef = useRef<HTMLDetailsElement>(null)
 
   const design = useMissionStore((state) => state.design)
@@ -760,10 +754,8 @@ export default function App() {
   const setSolarPanelArea = useMissionStore((state) => state.setSolarPanelArea)
   const selectDifficulty = useMissionStore((state) => state.selectDifficulty)
   const selectPlayMode = useMissionStore((state) => state.selectPlayMode)
-  const setTeamMode = useMissionStore((state) => state.setTeamMode)
   const toggleInstrument = useMissionStore((state) => state.toggleInstrument)
   const replaceDesign = useMissionStore((state) => state.replaceDesign)
-  const handleOnlineDesign = useCallback((next: MissionDesign) => replaceDesign(next), [replaceDesign])
 
   const scenario = scenarios.find((item) => item.id === design.scenarioId) ?? scenarios[0]
   const orbit = scenario.orbits.find((item) => item.id === design.orbitId) ?? scenario.orbits[0]
@@ -776,15 +768,7 @@ export default function App() {
   const designIssues = evaluation.reasons.filter((reason) => reason.status !== 'ok')
   const hardChecksClear = !evaluation.reasons.some((reason) => reason.status === 'fail')
 
-  const handleTeamScoreChange = useCallback(
-    (key: string, score: number, approvals: number, hasTradeoff: boolean) =>
-      setTeamScore({ key, score, approvals, hasTradeoff }),
-    [],
-  )
-
-  const designKey = JSON.stringify(design)
-  const currentTeamScore = teamScore.key === designKey ? teamScore.score : 0
-  const canLaunch = (hardChecksClear || design.playMode === 'sandbox') && (!design.teamMode || currentTeamScore >= 85)
+  const canLaunch = hardChecksClear || design.playMode === 'sandbox'
 
   // 1-Click Smart Quick-Fix Actions Generator
   const quickFixes: Array<{
@@ -799,7 +783,7 @@ export default function App() {
     if (design.launchVehicleId === 'pathfinder') {
       quickFixes.push({
         id: 'upgrade-launcher',
-        label: '🚀 Upgrade to Voyager Rocket (+240kg)',
+        label: 'Upgrade to Voyager Rocket (+240kg)',
         badge: 'Mass Fix',
         execute: () => {
           selectLaunchVehicle('voyager')
@@ -809,7 +793,7 @@ export default function App() {
     } else if (design.launchVehicleId === 'voyager') {
       quickFixes.push({
         id: 'upgrade-launcher-heavy',
-        label: '🚀 Upgrade to Atlas Rocket (+400kg)',
+        label: 'Upgrade to Atlas Rocket (+400kg)',
         badge: 'Mass Fix',
         execute: () => {
           selectLaunchVehicle('atlas')
@@ -838,7 +822,7 @@ export default function App() {
     )
     quickFixes.push({
       id: 'boost-solar',
-      label: `⚡ Auto-Size Solar Arrays to ${neededSolarArea} m²`,
+      label: `Auto-Size Solar Arrays to ${neededSolarArea} m²`,
       badge: 'Power Fix',
       execute: () => {
         setSolarPanelArea(neededSolarArea)
@@ -870,7 +854,7 @@ export default function App() {
   if (evaluation.eclipseEnergyRequiredWh > evaluation.batteryCapacityWh) {
     quickFixes.push({
       id: 'upgrade-battery',
-      label: `🔋 Switch to Explorer Bus (720 Wh Battery)`,
+      label: `Switch to Explorer Bus (720 Wh Battery)`,
       badge: 'Battery Fix',
       execute: () => {
         selectBus('explorer-bus')
@@ -883,7 +867,7 @@ export default function App() {
   if (evaluation.costMillionUsd > evaluation.budgetMillionUsd && design.busId !== 'compact-bus') {
     quickFixes.push({
       id: 'trim-cost',
-      label: `💸 Switch to Compact Bus (-$9M)`,
+      label: `Switch to Compact Bus (-$9M)`,
       badge: 'Budget Fix',
       execute: () => {
         selectBus('compact-bus')
@@ -916,10 +900,9 @@ export default function App() {
 
   function launchMission(seed = runSeed) {
     soundFx.launch(soundEnabled)
-    const result = simulateMission(design, scenario, parts, launchVehicles, propulsionSystems, seed, currentTeamScore)
+    const result = simulateMission(design, scenario, parts, launchVehicles, propulsionSystems, seed)
     setMissionResult(result)
     setFlightStep(0)
-    recordLocalScore(result)
   }
 
   function launchAnotherFlight() {
@@ -933,8 +916,7 @@ export default function App() {
     const bonus = Math.min(10, 100 - missionResult.learningScore)
     if (bonus <= 0) return
     const learningScore = missionResult.learningScore + bonus
-    const scoreWeight = missionResult.collaborationScore > 0 ? 0.135 : 0.15
-    const score = Math.min(100, Math.round(missionResult.score + bonus * scoreWeight))
+    const score = Math.min(100, Math.round(missionResult.score + bonus * 0.15))
     const updatedResult: MissionSimulation = {
       ...missionResult,
       learningScore,
@@ -942,16 +924,7 @@ export default function App() {
       grade: score >= 85 ? 'A' : score >= 70 ? 'B' : score >= 55 ? 'C' : 'D',
     }
     setMissionResult(updatedResult)
-    updateLatestLocalScore(updatedResult)
   }
-
-  useEffect(() => {
-    const shared = readSharedDesign(window.location.search)
-    if (shared) {
-      replaceDesign(shared.design)
-      window.history.replaceState({}, '', `${window.location.pathname}${window.location.hash}`)
-    }
-  }, [replaceDesign])
 
   function dismissGuide() {
     rememberGuideCompleted()
@@ -978,6 +951,20 @@ export default function App() {
         selectedScenarioId={scenario.id}
         onSelectScenario={selectScenario}
         onStart={() => {
+          setScreen('pilot')
+        }}
+      />
+    )
+  }
+
+  if (screen === 'pilot') {
+    return (
+      <PlayerNamePage
+        initialName={pilotName}
+        onBack={() => setScreen('landing')}
+        onContinue={(name) => {
+          setPilotName(name)
+          try { localStorage.setItem('galaxy-run-pilot-name', name) } catch { /* Private browsing may block storage. */ }
           setGuideOpen(!hasCompletedGuide())
           setScreen('designer')
         }}
@@ -1018,7 +1005,7 @@ export default function App() {
                   onClick={() => setNasaModalOpen(true)}
                   title="Explore real NASA fleet data and JPL CML framework"
                 >
-                  🛰️ NASA Fleet &amp; CML
+                  <SpaceIcon symbol="🛰️" /> NASA Fleet &amp; CML
                 </button>
                 <button className="home-toggle" type="button" onClick={() => setScreen('landing')}>
                   Mission brief
@@ -1072,7 +1059,6 @@ export default function App() {
             ) : (
               <MissionReport
                 result={missionResult}
-                design={design}
                 onEdit={() => {
                   setMissionResult(null)
                   setFlightStep(null)
@@ -1103,7 +1089,7 @@ export default function App() {
                     className="open-nasa-archive-btn"
                     onClick={() => setNasaModalOpen(true)}
                   >
-                    <span>🚀</span>
+                    <SpaceIcon symbol="🚀" />
                     <div>
                       <b>NASA Fleet &amp; JPL CML Archive</b>
                       <small>Compare with real NASA missions</small>
@@ -1128,7 +1114,7 @@ export default function App() {
                         soundFx.blip(soundEnabled)
                       }}
                     >
-                      🛰️ 3D Spacecraft CAD
+                      <SpaceIcon symbol="🛰️" /> 3D Spacecraft CAD
                     </button>
                     <button
                       type="button"
@@ -1140,7 +1126,7 @@ export default function App() {
                         soundFx.blip(soundEnabled)
                       }}
                     >
-                      🪐 3D Orbit Trajectory
+                      <SpaceIcon symbol="🪐" /> 3D Orbit Trajectory
                     </button>
                     <button
                       type="button"
@@ -1152,7 +1138,7 @@ export default function App() {
                         soundFx.blip(soundEnabled)
                       }}
                     >
-                      📋 JPL CML-4 MEL
+                      <SpaceIcon symbol="📋" /> JPL CML-4 MEL
                     </button>
                   </div>
                   <span className="holo-status">
@@ -1264,7 +1250,7 @@ export default function App() {
               {/* Mission Presets (Game Archetypes) */}
               <section className="presets-section" aria-label="Quick Archetype Presets">
                 <div className="presets-header">
-                  <span className="presets-label">🎮 MISSION PRESETS:</span>
+                <span className="presets-label"><SpaceIcon symbol="🎮" /> MISSION PRESETS:</span>
                   <small>1-click launch-ready loadouts to test trade-offs</small>
                 </div>
                 <div className="presets-row">
@@ -1275,7 +1261,7 @@ export default function App() {
                       className="preset-card-btn"
                       onClick={() => applyPreset(preset)}
                     >
-                      <span className="preset-icon">{preset.icon}</span>
+                      <span className="preset-icon"><SpaceIcon symbol={preset.icon} size={22} /></span>
                       <div className="preset-text">
                         <b>{preset.name}</b>
                         <small>{preset.tag}</small>
@@ -1381,7 +1367,7 @@ export default function App() {
                         aria-pressed={item.id === design.busId}
                       >
                         <span className="bus-glyph" aria-hidden="true">
-                          {item.id === 'compact-bus' ? '🛰️' : item.id === 'survey-bus' ? '📡' : '🛸'}
+                          <SpaceIcon symbol={item.id === 'compact-bus' ? '🛰️' : item.id === 'survey-bus' ? '📡' : '🛸'} size={22} />
                         </span>
                         <span className="bus-copy">
                           <b>{item.name}</b>
@@ -1417,7 +1403,7 @@ export default function App() {
                           title={item.description}
                         >
                           <div className="tile-top">
-                            <span className="tile-icon">{icon}</span>
+                            <span className="tile-icon"><SpaceIcon symbol={icon} size={21} /></span>
                             <span className="tile-name">{item.name}</span>
                             <input
                               type="checkbox"
@@ -1429,9 +1415,9 @@ export default function App() {
                           </div>
 
                           <div className="tile-chips">
-                            <span className="tile-chip mass-chip">⚖️ {item.massKg} kg</span>
-                            <span className="tile-chip power-chip">⚡ {item.powerW} W</span>
-                            <span className="tile-chip sci-chip">🔬 +{item.scienceValue}</span>
+                            <span className="tile-chip mass-chip"><SpaceIcon symbol="⚖️" size={14} /> {item.massKg} kg</span>
+                            <span className="tile-chip power-chip"><SpaceIcon symbol="⚡" size={14} /> {item.powerW} W</span>
+                            <span className="tile-chip sci-chip"><SpaceIcon symbol="🔬" size={14} /> +{item.scienceValue}</span>
                           </div>
                         </label>
                       )
@@ -1477,7 +1463,7 @@ export default function App() {
                               aria-pressed={selected}
                             >
                               <span className="propulsion-icon" aria-hidden="true">
-                                {system.id === 'solar-electric-ion' ? '⚡' : '🔥'}
+                                <SpaceIcon symbol={system.id === 'solar-electric-ion' ? '⚡' : '🔥'} />
                               </span>
                               <span className="propulsion-copy">
                                 <b>{system.name}</b>
@@ -1713,7 +1699,7 @@ export default function App() {
                   {quickFixes.length > 0 && (
                     <div className="quick-fixes-deck">
                       <div className="fixes-header">
-                        <span className="fixes-title">⚡ 1-CLICK SYSTEM FIXES:</span>
+                        <span className="fixes-title"><SpaceIcon symbol="⚡" size={16} /> 1-CLICK SYSTEM FIXES:</span>
                         <small>Tap an action to automatically rebalance your mission</small>
                       </div>
                       <div className="fixes-pills-row">
@@ -1739,7 +1725,7 @@ export default function App() {
                     disabled={!canLaunch}
                     onClick={() => launchMission()}
                   >
-                    {canLaunch ? '🚀 Launch Mission to Orbit' : '⚠️ Launch Blocked — Apply 1-Click Fix'}
+                    <><SpaceIcon symbol={canLaunch ? '🚀' : '⚠️'} size={18} /> {canLaunch ? 'Launch Mission to Orbit' : 'Launch Blocked — Apply 1-Click Fix'}</>
                     <span aria-hidden="true">→</span>
                   </button>
 
@@ -1787,25 +1773,16 @@ export default function App() {
               </div>
 
               {/* Optional Mission Tools Drawer */}
-              <details className="mission-tools" ref={missionToolsRef}>
+              <details className="mission-tools">
                 <summary>
                   <span>
                     <small>ADVANCED</small>
-                    <b>Collaborative Mission Tools &amp; Library</b>
+                    <b>Mission tools &amp; saved designs</b>
                   </span>
                   <span aria-hidden="true">+</span>
                 </summary>
                 <div className="mission-tools-content">
                   <DesignLibraryPanel design={design} onLoad={(savedDesign) => replaceDesign(savedDesign)} />
-                  <TeamPanel
-                    key={designKey}
-                    enabled={Boolean(design.teamMode)}
-                    resetKey={designKey}
-                    evaluation={evaluation}
-                    onToggle={setTeamMode}
-                    onScoreChange={handleTeamScoreChange}
-                  />
-                  <OnlineCrewRoom design={design} onDesignChange={handleOnlineDesign} />
                   <MissionLearningCards scenario={scenario} />
                 </div>
               </details>

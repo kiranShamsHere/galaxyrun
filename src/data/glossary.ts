@@ -18,7 +18,7 @@ export const glossary = {
   'Orbit period': 'The time the spacecraft takes to complete one trip around its orbit. The displayed value assumes a circular orbit.',
   'Sun-sync orbit': 'A near-polar Earth orbit chosen so the spacecraft crosses a region at a similar local solar time on each pass.',
   'Polar orbit': 'An orbit that passes over or near the north and south poles as the body rotates below it.',
-  'Safe mode': 'A protective spacecraft state that limits activity while the team checks a possible system problem.',
+  'Safe mode': 'A protective spacecraft state that limits activity while mission control checks a possible system problem.',
   'Solar flare': 'A burst of energy from the Sun that can disturb spacecraft electronics and observations.',
   'Launch capacity': 'The maximum spacecraft mass the selected launch vehicle can deliver to the chosen destination and orbit in this game.',
   'Downlink': 'The radio connection used to send collected spacecraft data back to Earth.',

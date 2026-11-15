@@ -7,6 +7,7 @@ import {
   type RealNasaMission,
 } from '../data/nasaMissionData.ts'
 import type { DesignEvaluation, MissionDesign } from '../engine/types.ts'
+import { SpaceIcon } from './SpaceIcon.tsx'
 
 interface NasaMissionHubModalProps {
   isOpen: boolean
@@ -94,7 +95,7 @@ export function NasaMissionHubModal({
             className={`nasa-tab ${activeTab === 'fleet' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('fleet')}
           >
-            🛰️ NASA Science Fleet ({nasaMissionFleet.length})
+            <SpaceIcon symbol="🛰️" /> NASA Science Fleet ({nasaMissionFleet.length})
           </button>
           <button
             type="button"
@@ -103,7 +104,7 @@ export function NasaMissionHubModal({
             className={`nasa-tab ${activeTab === 'cml' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('cml')}
           >
-            📋 JPL Concept Maturity (CML)
+            <SpaceIcon symbol="📋" /> JPL Concept Maturity (CML)
           </button>
           <button
             type="button"
@@ -112,7 +113,7 @@ export function NasaMissionHubModal({
             className={`nasa-tab ${activeTab === 'segments' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('segments')}
           >
-            🌐 4 Mission Segments
+            <SpaceIcon symbol="🌐" /> 4 Mission Segments
           </button>
           <button
             type="button"
@@ -121,7 +122,7 @@ export function NasaMissionHubModal({
             className={`nasa-tab ${activeTab === 'mdl' ? 'is-active' : ''}`}
             onClick={() => setActiveTab('mdl')}
           >
-            🔬 Goddard MDL Disciplines
+            <SpaceIcon symbol="🔬" /> Goddard MDL Disciplines
           </button>
         </div>
 
@@ -219,7 +220,7 @@ export function NasaMissionHubModal({
                     </div>
 
                     <div className="fleet-takeaway">
-                      <b>💡 Mission Engineering Lesson:</b>
+                      <b><SpaceIcon symbol="💡" size={16} /> Mission Engineering Lesson:</b>
                       <p>{m.heritageTakeaway}</p>
                     </div>
 
@@ -370,7 +371,7 @@ export function NasaMissionHubModal({
                 {nasaMissionSegments.map((seg) => (
                   <div key={seg.id} className="segment-card">
                     <div className="segment-card-top">
-                      <span className="segment-icon">{seg.icon}</span>
+                      <span className="segment-icon"><SpaceIcon symbol={seg.icon} size={26} /></span>
                       <div>
                         <h3>{seg.title}</h3>
                         <small>{seg.leadAgency}</small>
@@ -402,7 +403,7 @@ export function NasaMissionHubModal({
                 {nasaMdlDisciplines.map((d) => (
                   <div key={d.name} className="mdl-card">
                     <div className="mdl-header">
-                      <span className="mdl-icon">{d.icon}</span>
+                      <span className="mdl-icon"><SpaceIcon symbol={d.icon} size={26} /></span>
                       <h4>{d.name}</h4>
                     </div>
                     <p className="mdl-desc">{d.description}</p>

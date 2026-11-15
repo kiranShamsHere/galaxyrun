@@ -2,6 +2,7 @@ import type { MissionScenario } from '../engine/types.ts'
 import { LandingHero3D } from './LandingHero3D.tsx'
 import { HowToPlaySection } from './HowToPlaySection.tsx'
 import { PlanetComparator } from './PlanetComparator.tsx'
+import { SpaceIcon } from './SpaceIcon.tsx'
 
 const destinationArtwork: Record<string, { image: string; label: string; index: string }> = {
   'earth-observer': { image: '/assets/mission-earth.svg', label: 'Earth in low orbit', index: '01' },
@@ -38,8 +39,6 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
         <nav className="landing-nav" aria-label="Main navigation">
           <a href="#destinations">Missions</a>
           <a href="#how-to-play">How to Play</a>
-          <a href="#compare-worlds">Compare Worlds</a>
-          <a href="#systems-features">NASA Architecture</a>
           <button type="button" className="landing-nav-cta" onClick={onStart}>
             Enter mission control <span aria-hidden="true">↗</span>
           </button>
@@ -60,8 +59,7 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
               Send it. <span>Learn.</span>
             </h1>
             <p className="landing-lede">
-              The interactive space mission design simulator. Balance competing engineering constraints—mass, power,
-              budget, delta-v, and launch vehicles—then simulate seeded flights into deep space.
+              Build a spacecraft, balance its systems, and see how your mission flies.
             </p>
 
             <div className="landing-actions">
@@ -69,12 +67,12 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
                 Start a mission <span aria-hidden="true">→</span>
               </button>
               <a className="landing-secondary" href="#compare-worlds">
-                Compare worlds 🪐
+                Compare worlds <SpaceIcon symbol="🪐" size={16} />
               </a>
             </div>
 
             <div className="landing-promise">
-              <span aria-hidden="true">✳</span> Real 3D Three.js CAD · Keplerian Orbits · JPL CML-4 Margins.
+              <span aria-hidden="true">✳</span> Choose a world · Build · Fly.
             </div>
           </div>
 
@@ -163,7 +161,7 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
 
           <div className="systems-grid">
             <div className="system-feature-box">
-              <span className="feature-icon">📋</span>
+              <span className="feature-icon"><SpaceIcon symbol="📋" size={27} /></span>
               <h3>JPL Concept Maturity Levels</h3>
               <p>
                 From CML 1 &quot;Cocktail Napkin&quot; ideas to CML 4 Point Designs with verified technical reserves (≥ 15% mass
@@ -173,7 +171,7 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
             </div>
 
             <div className="system-feature-box">
-              <span className="feature-icon">🌐</span>
+              <span className="feature-icon"><SpaceIcon symbol="🌐" size={27} /></span>
               <h3>4 Mission Segments</h3>
               <p>
                 Integrated concurrent design balancing Launch segment, Space segment, Ground telecommunications (DSN),
@@ -183,7 +181,7 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
             </div>
 
             <div className="system-feature-box">
-              <span className="feature-icon">🔬</span>
+              <span className="feature-icon"><SpaceIcon symbol="🔬" size={27} /></span>
               <h3>Goddard MDL Disciplines</h3>
               <p>
                 Structures, Thermal, Avionics, Power, Propulsion, and Telecommunications modeled concurrently to prevent
@@ -193,7 +191,7 @@ export function LandingPage({ scenarios, selectedScenarioId, onSelectScenario, o
             </div>
 
             <div className="system-feature-box">
-              <span className="feature-icon">🛰️</span>
+              <span className="feature-icon"><SpaceIcon symbol="🛰️" size={27} /></span>
               <h3>NASA WSMV Astrodynamics</h3>
               <p>
                 3D Keplerian orbits with orbital eccentricity, true anomaly propagation, eclipse shadow loss, and DSN

@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string'
 import { z } from 'zod'
 import { useMissionStore } from './store.ts'
 
@@ -7,12 +6,6 @@ import { useMissionStore } from './store.ts'
 describe('toolchain smoke test', () => {
   it('runs TypeScript tests with Vitest', () => {
     expect(1 + 1).toBe(2)
-  })
-
-  it('round trips data through lz-string (used for share links)', () => {
-    const payload = JSON.stringify({ hello: 'orbit' })
-    const packed = compressToEncodedURIComponent(payload)
-    expect(decompressFromEncodedURIComponent(packed)).toBe(payload)
   })
 
   it('validates data with Zod (used for JSON catalogs)', () => {

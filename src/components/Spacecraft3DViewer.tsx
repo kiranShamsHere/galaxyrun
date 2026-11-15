@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { SpaceIcon } from './SpaceIcon.tsx'
 import type { SpacecraftPart } from '../engine/types.ts'
 
 interface Spacecraft3DViewerProps {
@@ -649,7 +650,7 @@ export function Spacecraft3DViewer({
               onClick={() => setAutoRotate(!autoRotate)}
               title="Toggle automatic 3D rotation"
             >
-              🔄 Rotate
+              <SpaceIcon symbol="🔄" size={16} /> Rotate
             </button>
             <button
               type="button"
@@ -657,7 +658,7 @@ export function Spacecraft3DViewer({
               onClick={() => setWireframeMode(!wireframeMode)}
               title="Toggle engineering X-ray wireframe"
             >
-              🌐 {wireframeMode ? 'Shaded' : 'X-Ray'}
+              <SpaceIcon symbol="🌐" size={16} /> {wireframeMode ? 'Shaded' : 'X-Ray'}
             </button>
           </div>
         </div>
@@ -727,7 +728,7 @@ export function Spacecraft3DViewer({
             </span>
           ))}
           <span className="solar-metric-chip">
-            ⚡ {solarPanelAreaM2.toFixed(1)} m² Arrays
+            <SpaceIcon symbol="⚡" size={16} /> {solarPanelAreaM2.toFixed(1)} m² Arrays
           </span>
         </div>
       </div>

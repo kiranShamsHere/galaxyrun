@@ -15,7 +15,6 @@ type MissionStore = {
   setSolarPanelArea: (areaM2: number) => void
   selectDifficulty: (difficulty: MissionDesign['difficulty']) => void
   selectPlayMode: (playMode: MissionDesign['playMode']) => void
-  setTeamMode: (enabled: boolean) => void
   toggleInstrument: (instrumentId: string) => void
   replaceDesign: (design: MissionDesign) => void
 }
@@ -96,9 +95,6 @@ export const useMissionStore = create<MissionStore>((set) => ({
   })),
   selectPlayMode: (playMode) => set((state) => ({
     design: { ...state.design, playMode },
-  })),
-  setTeamMode: (teamMode) => set((state) => ({
-    design: { ...state.design, teamMode },
   })),
   toggleInstrument: (instrumentId) => set((state) => {
     const selected = state.design.instrumentIds.includes(instrumentId)

@@ -28,20 +28,14 @@ An item is checked only when the work exists in the project. Local implementatio
 - [x] Keep deterministic rules in the pure TypeScript engine.
 - [x] Label hardware mass, costs, reliability, eclipse duration, solar-array efficiency, event rates, and mission targets as simplified game assumptions.
 - [x] Include difficulty-adjusted budgets/events, Hard-mode schedule pressure and contingencies, and Sandbox runs that show limits without blocking launch.
-- [x] Use the same objective and seed for the device-local challenge board.
+- [x] Use a repeatable mission seed for solo flight comparisons.
 - [ ] Review the model assumptions with a knowledgeable human before presenting it as educational guidance.
 
-## Collaboration and replay
+## Solo replay and local saves
 
-- [x] Pass-and-play roles: systems lead, spacecraft engineer, science & communications, and mission planner.
-- [x] Require all four role approvals and a selected trade-off agreement before team launch.
-- [x] Include a collaboration score in team runs.
 - [x] Save and compare designs in browser localStorage.
-- [x] Create a compressed link that restores a validated design and seed.
-- [x] Keep a same-objective, same-difficulty, same-seed leaderboard on the current device.
-- [x] Add optional Supabase Realtime rooms for pilot presence and shared live design edits; configure the shared leaderboard table and row policies.
-- [ ] Create/configure the Supabase project, add deployment environment variables, and apply `supabase/migrations/202611140001_shared_game.sql`.
-- [ ] Add server-side validation before treating anonymous leaderboard scores as competitive or prize-eligible.
+- [x] Replay a seeded mission locally to compare the player's own designs.
+- [x] Keep all mission play and saved designs on one device for one player.
 
 ## Learning, report, and presentation
 
@@ -56,9 +50,9 @@ An item is checked only when the work exists in the project. Local implementatio
 
 - [x] Use keyboard-operable controls, skip links, visible focus, page headings, status words, and report focus management.
 - [x] Respect reduced-motion preferences and provide screen-reader announcements for live resources.
-- [x] Add responsive layouts and semantic labels to new controls, comparison tables, orbit diagram, team approval, and leaderboard.
+- [x] Add responsive layouts and semantic labels to controls, comparison tables, and orbit views.
 - [ ] Complete a keyboard-only review of the entire flow.
-- [ ] Complete a screen-reader review of the builder, team approvals, and report.
+- [ ] Complete a screen-reader review of the builder and report.
 - [ ] Re-run WCAG AA contrast checks across all current and newly added screens; previous Lighthouse scores do not replace this audit.
 - [x] Keep project-authored artwork and synthesized sound credited in `docs/CREDITS.md`.
 - [x] Document NASA/ESA sources and direct software dependencies in `docs/CREDITS.md`.

@@ -59,15 +59,10 @@ describe('mission formulas', () => {
     expect(evaluation.reasons.find((reason) => reason.id === 'mission-deadline')?.cause).toContain('70 days')
   })
 
-  it('uses stricter Hard limits and records team collaboration in scoring', () => {
+  it('uses stricter limits for Hard difficulty', () => {
     const hard = evaluateDesign({ ...defaultDesign, difficulty: 'hard' }, earth, parts, launchVehicles, propulsionSystems)
     const standard = evaluateDesign(defaultDesign, earth, parts, launchVehicles, propulsionSystems)
     expect(hard.budgetMillionUsd).toBeLessThan(standard.budgetMillionUsd)
-    const teamRun = simulateMission({ ...defaultDesign, teamMode: true }, earth, parts, launchVehicles, propulsionSystems, 2026, 100)
-    const soloRun = simulateMission(defaultDesign, earth, parts, launchVehicles, propulsionSystems, 2026)
-    expect(teamRun.collaborationScore).toBe(100)
-    expect(teamRun.score).toBe(Math.round(soloRun.score * 0.9 + 10))
-    expect(teamRun.achievements).toContain('Crew in agreement')
   })
 
   it('lets Sandbox launch a design that fails a mission resource gate', () => {

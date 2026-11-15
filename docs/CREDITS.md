@@ -35,7 +35,6 @@ Previously cited for Venus irradiance and superseded by the directly comparable 
 | Tailwind CSS | Styling | MIT |
 | Zustand | State store | MIT |
 | Zod | Data validation | MIT |
-| lz-string | Share link compression | MIT |
 | Vitest | Testing | MIT |
 | oxlint | Linting | MIT |
 | `@types/node`, `@types/react`, `@types/react-dom` | Type declarations | MIT |

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { SpaceIcon } from './SpaceIcon.tsx'
 
 export function HowToPlaySection({ onStartMission }: { onStartMission: () => void }) {
   const [activeStep, setActiveStep] = useState<number>(0)
@@ -52,7 +53,7 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
       summary:
         'Ignite the engines and watch your mission execute across 7 flight phases. Encounter seeded space events, download science data, and review your flight report.',
       tips: [
-        'Seeded simulations keep every flight reproducible. Share your seed with friends to compete!',
+        'The same seed repeats the same events, so you can compare your own designs.',
         'The Why Engine explains every success and anomaly with actionable root-cause analysis.',
       ],
       actionLabel: 'Start Flying Now',
@@ -78,12 +79,6 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
       tag: 'STRICT MARGINS',
       desc: 'Hard difficulty balancing tight mass limits, strict CML-4 reserves, and minimal cost growth.',
     },
-    {
-      icon: '👥',
-      title: 'Crew Co-Op & Multiplayer',
-      tag: 'TEAM PLAY',
-      desc: 'Collaborate with up to 4 roles (Flight Director, Science, Systems, Comms) or share live room codes.',
-    },
   ]
 
   const faqs = [
@@ -103,10 +98,6 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
       q: 'What are JPL Concept Maturity Levels (CML)?',
       a: 'CML is NASA Jet Propulsion Laboratory’s formal framework for advancing mission concepts from an initial "Cocktail Napkin" idea (CML 1) through Trade Space exploration (CML 3) to verified Point Design (CML 4).',
     },
-    {
-      q: 'How does team multiplayer work?',
-      a: 'You can play in pass-and-play crew review mode (approving roles and recording trade-offs) or create an online live room using Supabase to synchronize designs with friends in real time.',
-    },
   ]
 
   return (
@@ -117,7 +108,7 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
           <span className="eyebrow">FLIGHT ACADEMY</span>
           <h2 id="academy-title">How to Play in 4 Simple Steps</h2>
           <p>
-            Galaxy Run puts you in the pilot seat of a NASA mission design team. Here is how your concept goes from
+            Galaxy Run puts you in the pilot seat at mission control. Here is how your concept goes from
             drawing board to deep space.
           </p>
         </div>
@@ -134,7 +125,7 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
               onClick={() => setActiveStep(idx)}
             >
               <span className="step-tab-num">{s.num}</span>
-              <span className="step-tab-icon">{s.icon}</span>
+              <span className="step-tab-icon"><SpaceIcon symbol={s.icon} size={21} /></span>
               <span className="step-tab-title">{s.title}</span>
             </button>
           ))}
@@ -144,7 +135,7 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
         <div className="active-step-card">
           <div className="step-card-left">
             <span className="step-kicker-pill">
-              {steps[activeStep].icon} STEP {steps[activeStep].num} · {steps[activeStep].kicker}
+              <SpaceIcon symbol={steps[activeStep].icon} size={15} /> STEP {steps[activeStep].num} · {steps[activeStep].kicker}
             </span>
             <h3>{steps[activeStep].title}</h3>
             <p className="step-summary">{steps[activeStep].summary}</p>
@@ -170,19 +161,19 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
                   <span className="mockup-tag">SELECT TARGET</span>
                   <div className="mockup-grid-mini">
                     <div className="mini-world is-sel">
-                      <span>🌍</span>
+                      <span><SpaceIcon symbol="🌍" /></span>
                       <b>Earth</b>
                     </div>
                     <div className="mini-world">
-                      <span>🌑</span>
+                      <span><SpaceIcon symbol="🌑" /></span>
                       <b>Moon</b>
                     </div>
                     <div className="mini-world">
-                      <span>🔴</span>
+                      <span><SpaceIcon symbol="🔴" /></span>
                       <b>Mars</b>
                     </div>
                     <div className="mini-world">
-                      <span>🟡</span>
+                      <span><SpaceIcon symbol="🟡" /></span>
                       <b>Venus</b>
                     </div>
                   </div>
@@ -192,9 +183,9 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
                 <div className="mockup-content mockup-cad">
                   <span className="mockup-tag">3D CAD BAY</span>
                   <div className="mockup-satellite-art">
-                    <span className="mockup-sat-core">🛰️</span>
-                    <span className="mockup-chip-tag">⚡ 2.0 m² Arrays</span>
-                    <span className="mockup-chip-tag">📷 3 Sensors</span>
+                    <span className="mockup-sat-core"><SpaceIcon symbol="🛰️" size={35} /></span>
+                    <span className="mockup-chip-tag"><SpaceIcon symbol="⚡" size={14} /> 2.0 m² Arrays</span>
+                    <span className="mockup-chip-tag"><SpaceIcon symbol="📷" size={14} /> 3 Sensors</span>
                   </div>
                 </div>
               )}
@@ -219,7 +210,7 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
                 <div className="mockup-content mockup-flight">
                   <span className="mockup-tag">FLIGHT TELEMETRY</span>
                   <div className="flight-status-box">
-                    <span>🚀 TLI BURN NOMINAL</span>
+                    <span><SpaceIcon symbol="🚀" size={15} /> TLI BURN NOMINAL</span>
                     <small>+72 Science Points Collected</small>
                     <b style={{ color: '#fbbf24' }}>GRADE A FLIGHT</b>
                   </div>
@@ -242,7 +233,7 @@ export function HowToPlaySection({ onStartMission }: { onStartMission: () => voi
           {playstyles.map((ps) => (
             <div key={ps.title} className="playstyle-card" onClick={onStartMission}>
               <div className="playstyle-top">
-                <span className="playstyle-icon">{ps.icon}</span>
+                <span className="playstyle-icon"><SpaceIcon symbol={ps.icon} size={26} /></span>
                 <span className="playstyle-tag">{ps.tag}</span>
               </div>
               <h3>{ps.title}</h3>

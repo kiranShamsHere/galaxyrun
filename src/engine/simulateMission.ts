@@ -32,7 +32,6 @@ export function simulateMission(
   launchVehicles: LaunchVehicle[],
   propulsionSystems: PropulsionSystem[],
   seed: number,
-  collaborationScore = 0,
 ): MissionSimulation {
   const evaluation = evaluateDesign(design, scenario, catalog, launchVehicles, propulsionSystems)
   const random = createRandom(seed)
@@ -77,7 +76,7 @@ export function simulateMission(
         : systemAnomaly
           ? 'A seeded thermal or component anomaly forced a safe-mode period; the remaining systems resumed observations afterward.'
           : budgetCut
-            ? 'A seeded mid-mission funding cut reduced active observation time by 20%; the team protected the highest-priority science.'
+            ? 'A seeded mid-mission funding cut reduced active observation time by 20%; mission control protected the highest-priority science.'
           : instrumentFault
           ? 'One instrument missed part of its observation window; the other payload continued.'
         : `The selected payload operated through the ${evaluation.missionDurationDays}-day observation plan.`,
@@ -124,7 +123,7 @@ export function simulateMission(
   const reliabilityScore = clampScore(100 - eventCount * 12 - (designFailed ? 60 : 0))
   const learningScore = clampScore(100 - evaluation.reasons.filter((reason) => reason.status !== 'ok').length * 10)
   const baseScore = scienceScore * 0.35 + efficiencyScore * 0.25 + reliabilityScore * 0.25 + learningScore * 0.15
-  const score = clampScore(design.teamMode ? baseScore * 0.9 + collaborationScore * 0.1 : baseScore)
+  const score = clampScore(baseScore)
 
   const eventReasons: Reason[] = []
   if (delay) {
@@ -171,7 +170,7 @@ export function simulateMission(
     eventReasons.push({
       id: 'budget-cut', status: 'warn',
       cause: 'A seeded mid-mission funding cut reduced active observation time by 20%.',
-      effect: 'The spacecraft collected less data and delivered fewer science points, while the team prioritized its most valuable observations.',
+      effect: 'The spacecraft collected less data and delivered fewer science points, so the mission prioritized its most valuable observations.',
       fix: 'Keep an operations reserve or make the science plan resilient to reduced funding.',
     })
   }
@@ -188,7 +187,6 @@ export function simulateMission(
     ...(!designFailed ? ['Orbit reached'] : []),
     ...(returnedGb >= 10 ? ['First 10 GB home'] : []),
     ...(design.difficulty === 'hard' && !designFailed ? ['Hard flight certified'] : []),
-    ...(design.teamMode && collaborationScore === 100 ? ['Crew in agreement'] : []),
     ...(design.playMode === 'sandbox' ? ['Sandbox explorer'] : []),
   ]
 
@@ -196,7 +194,6 @@ export function simulateMission(
     seed,
     difficulty: design.difficulty,
     playMode: design.playMode,
-    collaborationScore: design.teamMode ? clampScore(collaborationScore) : 0,
     scenarioId: scenario.id,
     achievements,
     missionDurationDays: evaluation.missionDurationDays,

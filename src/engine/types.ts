@@ -79,7 +79,6 @@ export type MissionDesign = {
   missionDurationDays: number
   difficulty: Difficulty
   playMode: PlayMode
-  teamMode?: boolean
   instrumentIds: string[]
   solarPanelAreaM2: number
 }
@@ -139,7 +138,6 @@ export type MissionSimulation = {
   seed: number
   difficulty: Difficulty
   playMode: PlayMode
-  collaborationScore: number
   scenarioId: string
   achievements: string[]
   missionDurationDays: number

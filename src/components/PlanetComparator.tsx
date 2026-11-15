@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { SpaceIcon } from './SpaceIcon.tsx'
 
 export interface PlanetComparisonData {
   id: string
@@ -102,14 +103,14 @@ export function PlanetComparator({ onSelectMission }: { onSelectMission: (scenar
             >
               {planetDatabase.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.icon} {p.name}
+                  {p.name}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="world-hero-visual" style={{ borderColor: planetA.color }}>
-            <span className="world-emoji-avatar">{planetA.icon}</span>
+            <span className={`world-planet world-${planetA.id}`} style={{ color: planetA.color }} aria-hidden="true"><SpaceIcon symbol={planetA.icon} size={44} /></span>
             <h3>{planetA.name}</h3>
             <small>{planetA.tagline}</small>
           </div>
@@ -190,14 +191,14 @@ export function PlanetComparator({ onSelectMission }: { onSelectMission: (scenar
             >
               {planetDatabase.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.icon} {p.name}
+                  {p.name}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="world-hero-visual" style={{ borderColor: planetB.color }}>
-            <span className="world-emoji-avatar">{planetB.icon}</span>
+            <span className={`world-planet world-${planetB.id}`} style={{ color: planetB.color }} aria-hidden="true"><SpaceIcon symbol={planetB.icon} size={44} /></span>
             <h3>{planetB.name}</h3>
             <small>{planetB.tagline}</small>
           </div>

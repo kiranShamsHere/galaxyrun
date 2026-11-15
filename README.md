@@ -24,7 +24,7 @@ The **why engine** is the center of the game. Each resource check describes its 
 2. Select a bus, three to five science instruments, propulsion, propellant, launch vehicle, orbit, solar-panel area, development time, and mission length.
 3. Review live mass, power, eclipse battery, budget, data, science, and schedule estimates.
 4. Launch a seeded simulation and inspect the timeline, score, reasons, and awards.
-5. Revise, save, compare, or share the design. Shared links restore the design and replay seed.
+5. Revise, save, and compare your designs on this device. Replay a flight with the same seed to compare your own changes.
 
 ## Features
 
@@ -32,9 +32,8 @@ The **why engine** is the center of the game. Each resource check describes its 
 - Easy, Normal, and Hard settings, plus a resource-unbounded Sandbox practice mode.
 - Solar-array output and eclipse battery calculations alongside mass, cost, data, reliability, thermal risk, delta-v, and schedule checks.
 - Cause/effect/fix explanations and a seeded flight timeline.
-- Four-role pass-and-play crew review with approvals, a recorded trade-off, and collaboration scoring.
-- Device-local design saving, compressed share links, design comparison, shareable same-seed flight challenges, and achievements.
-- Optional Supabase online rooms with live design sync/pilot presence and a shared same-seed leaderboard.
+- Single-player mission design, flight simulation, debrief, and achievements.
+- Device-local design saving and comparison, plus repeatable seeded flights.
 - NASA/ESA mission field notes, a switchable 2D/3D-style orbit view, and a browser print-to-PDF flight report.
 - Original project artwork, optional synthesized sound, first-flight help, contextual definitions, keyboard support, and reduced-motion handling.
 
@@ -55,15 +54,6 @@ npm run dev
 
 Open the local address printed by Vite, usually `http://localhost:5173`.
 
-### Enable online co-op and scores
-
-1. Create a Supabase project and copy `.env.example` to `.env.local`.
-2. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from the project API settings. Use only the publishable/anon key in this browser app; never place a service-role key here.
-3. Run `supabase/migrations/202611140001_shared_game.sql` in the Supabase SQL Editor.
-4. Restart Vite. Open **Mission tools → Online crew**, create a room, and share its short code. Crew design edits sync live; the board is shared by destination, difficulty, and seed.
-
-The public anonymous score board checks value ranges but does not verify that a score came from a legitimate run. Add server-side score validation before using it for prizes or competitive rankings. Online rooms and the shared board remain disabled until project credentials and the SQL migration are applied.
-
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the development server |
@@ -80,7 +70,7 @@ src/
   data/        Mission constants, scenarios, spacecraft catalog, glossary
   engine/      Pure mission calculations, evaluation, seeded simulation, tests
   learn/       Learning notes
-  utils/       Browser design sharing, local scores, and optional Supabase client
+  utils/       Local design storage and first-flight guide state
   App.tsx      Screen composition and mission interactions
   store.ts     Mission design state
 public/assets/ Original SVG artwork and synthesized launch sound
@@ -96,7 +86,7 @@ See [docs/CREDITS.md](docs/CREDITS.md) for sources, libraries, artwork, and soun
 
 ## Verification and remaining handoff
 
-`npm run build` passes. Human playtesting, full keyboard and screen-reader reviews, final contrast review, deployment-link verification, Supabase project setup, teammate review, and event-site fields remain listed in [docs/DEVELOPMENT_CHECKLIST.md](docs/DEVELOPMENT_CHECKLIST.md) and [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md).
+`npm run build` passes. Human playtesting, full keyboard and screen-reader reviews, final contrast review, deployment-link verification, teammate review, and event-site fields remain listed in [docs/DEVELOPMENT_CHECKLIST.md](docs/DEVELOPMENT_CHECKLIST.md) and [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md).
 
 ## License
 
