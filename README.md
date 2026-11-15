@@ -18,6 +18,14 @@ Galaxy Run turns early mission design into a short, replayable systems exercise.
 
 The **why engine** makes the trade-offs visible. Every design check reports its status, cause, effect, and a possible fix. This is an educational game, not a spacecraft engineering tool.
 
+## Problem
+
+Mission concepts have to balance coupled constraints: adding instruments may increase science potential while also increasing mass, power demand, cost, and data volume. A simple pass/fail result does not teach players which trade-off caused a problem.
+
+## Solution
+
+Galaxy Run makes those trade-offs interactive. Players adjust a mission plan, see the resource estimates update, then fly a repeatable simulation and inspect the reasons behind the result.
+
 ## How it works
 
 1. Choose an Earth, Moon, Mars, or Venus mission and a difficulty, or use Sandbox.
@@ -50,7 +58,24 @@ flowchart TD
 - Local design saving and comparison, NASA mission field notes, interactive orbit/spacecraft views, and a print-to-PDF flight report.
 - Original project artwork and optional synthesized sound, first-flight guidance, contextual definitions, keyboard support, and reduced-motion handling.
 
-## Architecture at a glance
+## Mission checks
+
+Limits are calculated from the selected destination, orbit, difficulty, and hardware; the game does not use a medical-style fixed reference range. A failed limit blocks a Mission-mode launch. Sandbox allows the flight while still showing the checks.
+
+| Check | What the game compares | If the limit is exceeded |
+| --- | --- | --- |
+| Mass | Spacecraft mass versus launcher payload capacity for the destination and orbit | Blocks launch |
+| Power | System power demand versus estimated solar-array output | Blocks launch |
+| Eclipse energy | Energy needed during eclipse versus spacecraft-bus battery capacity | Blocks launch |
+| Delta-v | Idealized propulsion estimate versus the scenario target | Blocks launch |
+| Cost | Hardware, launch, propulsion, solar array, and operations cost versus scenario budget | Blocks launch |
+| Data return | Instrument data generation versus estimated daily downlink capacity | Warns that some data may not return |
+| Schedule | Development plus mission duration versus scenario deadline | Blocks launch |
+| Thermal risk and reliability | Simplified component/environment estimates | Warns when thermal risk is above 12% or estimated reliability is below 80% |
+
+These are educational game rules and simplified assumptions, not operational spacecraft acceptance criteria. The calculation details and caveats are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -69,12 +94,18 @@ flowchart LR
 
 The core game runs in the browser from bundled data. There is no runtime AI model, remote game backend, or account service in the current code. The pilot name, saved designs, and first-flight guide status are kept in browser storage; current mission state and flight results are in memory. See [the full architecture and data notes](docs/ARCHITECTURE.md).
 
-## Team
+### API and machine-learning status
 
-- Kiran Shams
-- Hadeed Ahsan
-- Rimsha Younis
-- Mariam
+The current app has no public API endpoints, backend service, or in-game machine-learning model. Mission data and calculations are bundled with the web app and run locally in the browser. NASA reference links are educational sources, not live data feeds. AI tools mentioned below assisted development; they are not called by players' missions.
+
+## Team and contributions
+
+| Team member | Contribution |
+| --- | --- |
+| Kiran Shams | Project lead |
+| Hadeed Ahsan | Development |
+| Rimsha Younis | Data research and resources |
+| Mariam | Testing |
 
 ## AI tools
 
@@ -84,9 +115,36 @@ AI tools are used as part of project development, not as models called by the ga
 
 Planetary radii, gravitational parameters, and solar irradiance values are bundled from NASA/JPL and NASA NSSDC references. NASA mission and instrument information is included as learning material. Costs, spacecraft masses, efficiencies, reliability, risk, launch capacity, and event probabilities are simplified game assumptions. Source links, retrieval dates, libraries, and original assets are listed in [docs/CREDITS.md](docs/CREDITS.md).
 
+## NASA and partner resources
+
+The following sources inform bundled physical values and learning content; Galaxy Run does not fetch live data from these sites.
+
+- **NASA/JPL planetary data:** [physical parameters](https://ssd.jpl.nasa.gov/planets/phys_par.html), [astrodynamic parameters](https://ssd.jpl.nasa.gov/astro_par.html), and [satellite physical parameters](https://ssd.jpl.nasa.gov/sats/phys_par/).
+- **NASA NSSDC solar-system fact sheets:** [Earth](https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html), [Moon](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html), [Mars](https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html), and [Venus](https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html).
+- **NASA mission references:** [Terra](https://terra.nasa.gov/about/mission), [Lunar Reconnaissance Orbiter](https://science.nasa.gov/mission/lro/), [Mars Reconnaissance Orbiter](https://science.nasa.gov/mission/mars-reconnaissance-orbiter/science-instruments/), and [Magellan](https://science.nasa.gov/mission/magellan/).
+- **NASA Space Apps Challenge:** [Space Mission Design Game challenge](https://github.com/NASA-SPACEAPP-2026/Space-Mission-Design-Game).
+- **ESA historical reference:** [Venus Express](https://www.esa.int/Science_Exploration/Space_Science/Venus_Express) is credited as an earlier project source; the current Venus learning reference is NASA's Magellan mission.
+
+See [docs/CREDITS.md](docs/CREDITS.md) for retrieval dates, exact values, software licenses, and project-created assets.
+
 ## Live deployment
 
 The project team reports that a Vercel deployment exists, but its production URL is not recorded in this repository. Add and verify the URL before sharing the README or submitting the project.
+
+## Limitations
+
+- Mission values and flight events are simplified; the app is not suitable for real spacecraft engineering or mission decisions.
+- Designs and pilot names are browser-local, with no cross-device sync, accounts, or online leaderboard.
+- The production deployment URL has not been verified in this repository.
+
+## Future work
+
+- Run human playtests and review the educational model assumptions with a knowledgeable reviewer.
+- Complete keyboard-only and screen-reader reviews, then recheck WCAG AA contrast.
+- Verify and publish the production URL; capture screenshots and finish submission materials.
+- Review the AI-use attribution with the team before the final submission.
+
+Track handoff progress in [docs/DEVELOPMENT_CHECKLIST.md](docs/DEVELOPMENT_CHECKLIST.md) and [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md).
 
 ## Run locally
 
