@@ -208,10 +208,20 @@ function FlightSequence({
   onAdvance: () => void
   onSkip: () => void
 }) {
+  const [autoPlay, setAutoPlay] = useState(false)
+  const [playbackSpeed, setPlaybackSpeed] = useState<1 | 2>(1)
   const event = result.timeline[step]
   const isLastStep = step >= result.timeline.length - 1
+  const progress = result.timeline.length > 1 ? step / (result.timeline.length - 1) : 0
+  const elapsedDays = Math.round(result.missionDurationDays * progress)
   const downlinkStep = result.timeline.findIndex((item) => item.phase.includes('DOWNLINK'))
-  const returnedSoFarGb = downlinkStep >= 0 && step >= downlinkStep ? result.returnedGb : 0
+  const operationsStep = result.timeline.findIndex((item) => item.phase.includes('OPERATIONS'))
+  const collectedSoFarGb = operationsStep >= 0 && step >= operationsStep
+    ? result.collectedGb * (step > operationsStep ? 1 : 0.55)
+    : 0
+  const returnedSoFarGb = downlinkStep >= 0 && step >= downlinkStep
+    ? result.returnedGb * (isLastStep ? 1 : 0.7)
+    : 0
   const powerUsePercent = Math.min(100, Math.round((evaluation.powerW / Math.max(1, evaluation.powerAvailableW)) * 100))
   const batteryUsePercent = Math.min(
     100,
@@ -219,6 +229,21 @@ function FlightSequence({
   )
   const dataReturnPercent = Math.min(100, Math.round((returnedSoFarGb / Math.max(1, result.collectedGb)) * 100))
   const fuelLoadPercent = Math.min(100, Math.round((fuelMassKg / Math.max(1, evaluation.maxPropellantKg)) * 100))
+
+  const previousStep = useRef(step)
+  useEffect(() => {
+    if (previousStep.current !== step) {
+      if (event.phase.includes('DOWNLINK')) soundFx.downlink(true)
+      else soundFx.missionPhase(true, event.status, isLastStep)
+    }
+    previousStep.current = step
+  }, [event.phase, event.status, isLastStep, step])
+
+  useEffect(() => {
+    if (!autoPlay) return
+    const timer = window.setTimeout(onAdvance, playbackSpeed === 1 ? 3400 : 1700)
+    return () => window.clearTimeout(timer)
+  }, [autoPlay, onAdvance, playbackSpeed, step])
 
   return (
     <section className="flight-sequence" aria-labelledby="flight-title">
@@ -228,16 +253,19 @@ function FlightSequence({
         </span>
         <span>{scenario.name.toUpperCase()}</span>
       </div>
-      <div className="flight-scene" aria-hidden="true">
+      <div className={`flight-scene flight-body-${scenario.bodyId} flight-phase-${step}`} aria-hidden="true">
         <div className="flight-nebula" />
+        <div className="flight-starfield" />
+        <div className="flight-scanline" />
         <div className="flight-planet">
           <span />
         </div>
         <div className="flight-orbit">
           <b />
         </div>
+        <span className="flight-engine-plume" />
         <img src="/assets/orbiter-illustration.svg" alt="" className="flight-craft" />
-        <span className="flight-scene-label">{evaluation.orbitAltitudeKm} KM ORBIT</span>
+        <span className="flight-scene-label">{event.phase.split('/').at(-1)?.trim()} · {evaluation.orbitAltitudeKm} KM ORBIT</span>
       </div>
       <div className="flight-phase-row">
         <span>
@@ -254,17 +282,38 @@ function FlightSequence({
         </div>
         <span>{Math.round(((step + 1) / result.timeline.length) * 100)}%</span>
       </div>
-      <div className={`flight-event-card flight-${event.status}`} key={`${event.phase}-${step}`}>
+      <ol
+        className="flight-phase-track"
+        aria-label="Mission phases"
+        style={{ gridTemplateColumns: `repeat(${result.timeline.length}, minmax(0, 1fr))` }}
+      >
+        {result.timeline.map((phase, index) => (
+          <li
+            key={phase.phase}
+            className={index === step ? 'is-current' : index < step ? 'is-complete' : ''}
+            aria-current={index === step ? 'step' : undefined}
+          >
+            <span>{index < step ? '✓' : String(index + 1).padStart(2, '0')}</span>
+            <small>{phase.phase.split('/').at(-1)?.trim()}</small>
+          </li>
+        ))}
+      </ol>
+      <div className={`flight-event-card flight-${event.status}`} key={`${event.phase}-${step}`} aria-live="polite">
         <span className="flight-event-icon" aria-hidden="true">
           {event.status === 'ok' ? '✓' : event.status === 'warn' ? '!' : '×'}
         </span>
         <div>
-          <small>{event.phase}</small>
+          <div className="flight-event-meta">
+            <small>{event.phase}</small>
+            <span className={`flight-status-tag status-${event.status}`}>
+              {event.status === 'ok' ? 'Nominal' : event.status === 'warn' ? 'Needs attention' : 'Launch held'}
+            </span>
+          </div>
           <h1 id="flight-title">{event.title}</h1>
           <p>{event.detail}</p>
         </div>
       </div>
-      <div className="flight-telemetry" aria-label="Live mission telemetry">
+      <div className="flight-telemetry" aria-label="Live mission telemetry" aria-live="polite">
         <div>
           <small>POWER LOAD</small>
           <b>
@@ -286,7 +335,7 @@ function FlightSequence({
           </span>
         </div>
         <div>
-          <small>DATA RETURN</small>
+          <small>DATA DOWNLINKED</small>
           <b>
             {returnedSoFarGb.toFixed(1)}
             <i> GB</i>
@@ -294,6 +343,16 @@ function FlightSequence({
           <span className="telemetry-track">
             <i style={{ width: `${dataReturnPercent}%` }} />
           </span>
+        </div>
+        <div>
+          <small>SCIENCE STORED</small>
+          <b>{collectedSoFarGb.toFixed(1)}<i> GB</i></b>
+          <span className="telemetry-track"><i style={{ width: `${Math.min(100, (collectedSoFarGb / Math.max(1, result.collectedGb)) * 100)}%` }} /></span>
+        </div>
+        <div>
+          <small>MISSION CLOCK</small>
+          <b>{elapsedDays}<i> / {result.missionDurationDays} d</i></b>
+          <span className="telemetry-track"><i style={{ width: `${Math.round(progress * 100)}%` }} /></span>
         </div>
         <div>
           <small>FUEL LOAD</small>
@@ -307,10 +366,18 @@ function FlightSequence({
         </div>
       </div>
       <div className="flight-controls">
-        <button className="flight-skip" type="button" onClick={onSkip}>
-          Skip to debrief
-        </button>
-        <button className="launch-button flight-advance" type="button" onClick={onAdvance}>
+        <div className="flight-playback-controls">
+          <button className="flight-autoplay" type="button" aria-pressed={autoPlay} onClick={() => setAutoPlay((playing) => !playing)}>
+            {autoPlay ? 'Ⅱ Pause' : '▶ Auto-play'}
+          </button>
+          {autoPlay && (
+            <button className="flight-speed" type="button" onClick={() => setPlaybackSpeed((speed) => speed === 1 ? 2 : 1)} aria-label={`Playback speed ${playbackSpeed} times. Change speed`}>
+              {playbackSpeed}× speed
+            </button>
+          )}
+          <button className="flight-skip" type="button" onClick={onSkip}>Skip to debrief</button>
+        </div>
+        <button className="launch-button flight-advance" type="button" onClick={() => { setAutoPlay(false); onAdvance() }}>
           {isLastStep ? 'View mission debrief' : 'Next flight phase'} <span aria-hidden="true">→</span>
         </button>
       </div>
@@ -737,7 +804,6 @@ export default function App() {
   })
   const [missionResult, setMissionResult] = useState<MissionSimulation | null>(null)
   const [flightStep, setFlightStep] = useState<number | null>(null)
-  const [soundEnabled, setSoundEnabled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [desktopSidebarVisible, setDesktopSidebarVisible] = useState(true)
   const [guideOpen, setGuideOpen] = useState(false)
@@ -792,7 +858,7 @@ export default function App() {
         badge: 'Mass Fix',
         execute: () => {
           selectLaunchVehicle('voyager')
-          soundFx.fix(soundEnabled)
+          soundFx.fix(true)
         },
       })
     } else if (design.launchVehicleId === 'voyager') {
@@ -802,7 +868,7 @@ export default function App() {
         badge: 'Mass Fix',
         execute: () => {
           selectLaunchVehicle('atlas')
-          soundFx.fix(soundEnabled)
+          soundFx.fix(true)
         },
       })
     }
@@ -813,7 +879,7 @@ export default function App() {
         badge: 'Mass Fix',
         execute: () => {
           setPropellantMass(Math.max(20, evaluation.propellantMassKg - 30))
-          soundFx.fix(soundEnabled)
+          soundFx.fix(true)
         },
       })
     }
@@ -831,7 +897,7 @@ export default function App() {
       badge: 'Power Fix',
       execute: () => {
         setSolarPanelArea(neededSolarArea)
-        soundFx.fix(soundEnabled)
+        soundFx.fix(true)
       },
     })
   }
@@ -849,7 +915,7 @@ export default function App() {
         badge: 'Delta-V Fix',
         execute: () => {
           setPropellantMass(evaluation.propellantMassKg + additionalFuelNeeded)
-          soundFx.fix(soundEnabled)
+          soundFx.fix(true)
         },
       })
     }
@@ -863,7 +929,7 @@ export default function App() {
       badge: 'Battery Fix',
       execute: () => {
         selectBus('explorer-bus')
-        soundFx.fix(soundEnabled)
+          soundFx.fix(true)
       },
     })
   }
@@ -876,14 +942,14 @@ export default function App() {
       badge: 'Budget Fix',
       execute: () => {
         selectBus('compact-bus')
-        soundFx.fix(soundEnabled)
+        soundFx.fix(true)
       },
     })
   }
 
   // Apply mission preset loadout
   function applyPreset(preset: MissionPreset) {
-    soundFx.mount(soundEnabled)
+    soundFx.mount(true)
     selectBus(preset.busId)
     selectPropulsionSystem(preset.propulsionId)
     setPropellantMass(preset.propellantMassKg)
@@ -899,12 +965,12 @@ export default function App() {
   }
 
   function handleInstrumentToggle(id: string) {
-    soundFx.mount(soundEnabled)
+    soundFx.mount(true)
     toggleInstrument(id)
   }
 
   function launchMission(seed = runSeed) {
-    soundFx.launch(soundEnabled)
+    soundFx.launch(true)
     const result = simulateMission(design, scenario, parts, launchVehicles, propulsionSystems, seed)
     setMissionResult(result)
     setFlightStep(0)
@@ -1056,23 +1122,6 @@ export default function App() {
                 </button>
               </>
             )}
-            <button
-              className={`sound-toggle ${soundEnabled ? 'is-on' : ''}`}
-              type="button"
-              onClick={() => {
-                const next = !soundEnabled
-                setSoundEnabled(next)
-                if (next) soundFx.blip(true)
-              }}
-              aria-pressed={soundEnabled}
-              aria-label={`SFX ${soundEnabled ? 'ON' : 'OFF'}, sound effects ${soundEnabled ? 'enabled' : 'disabled'}`}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 10v4h4l5 4V6l-5 4H4Z" />
-                <path d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10" />
-              </svg>
-              <span>Sound {soundEnabled ? 'ON' : 'OFF'}</span>
-            </button>
           </div>
         </header>
 
@@ -1171,7 +1220,7 @@ export default function App() {
                       className={`holo-tab ${viewerTab === 'spacecraft' ? 'is-active' : ''}`}
                       onClick={() => {
                         setViewerTab('spacecraft')
-                        soundFx.blip(soundEnabled)
+                        soundFx.blip(true)
                       }}
                     >
                       <SpaceIcon symbol="🛰️" /> 3D Spacecraft CAD
@@ -1183,7 +1232,7 @@ export default function App() {
                       className={`holo-tab ${viewerTab === 'orbit' ? 'is-active' : ''}`}
                       onClick={() => {
                         setViewerTab('orbit')
-                        soundFx.blip(soundEnabled)
+                        soundFx.blip(true)
                       }}
                     >
                       <SpaceIcon symbol="🪐" /> 3D Orbit Trajectory
@@ -1195,7 +1244,7 @@ export default function App() {
                       className={`holo-tab ${viewerTab === 'mel' ? 'is-active' : ''}`}
                       onClick={() => {
                         setViewerTab('mel')
-                        soundFx.blip(soundEnabled)
+                        soundFx.blip(true)
                       }}
                     >
                       <SpaceIcon symbol="📋" /> JPL CML-4 MEL
@@ -1275,7 +1324,7 @@ export default function App() {
                       key={item.id}
                       className={`scenario-card ${item.id === scenario.id ? 'is-selected' : ''}`}
                       onClick={() => {
-                        soundFx.blip(soundEnabled)
+                        soundFx.blip(true)
                         selectScenario(item.id)
                       }}
                       aria-pressed={item.id === scenario.id}
@@ -1342,7 +1391,7 @@ export default function App() {
                     type="button"
                     className={`difficulty-option ${design.difficulty === 'easy' ? 'is-selected' : ''}`}
                     onClick={() => {
-                      soundFx.blip(soundEnabled)
+                      soundFx.blip(true)
                       selectDifficulty('easy')
                     }}
                     aria-pressed={design.difficulty === 'easy'}
@@ -1354,7 +1403,7 @@ export default function App() {
                     type="button"
                     className={`difficulty-option ${design.difficulty === 'normal' ? 'is-selected' : ''}`}
                     onClick={() => {
-                      soundFx.blip(soundEnabled)
+                      soundFx.blip(true)
                       selectDifficulty('normal')
                     }}
                     aria-pressed={design.difficulty === 'normal'}
@@ -1366,7 +1415,7 @@ export default function App() {
                     type="button"
                     className={`difficulty-option ${design.difficulty === 'hard' ? 'is-selected' : ''}`}
                     onClick={() => {
-                      soundFx.blip(soundEnabled)
+                      soundFx.blip(true)
                       selectDifficulty('hard')
                     }}
                     aria-pressed={design.difficulty === 'hard'}
@@ -1421,7 +1470,7 @@ export default function App() {
                         key={item.id}
                         className={`bus-option ${item.id === design.busId ? 'is-selected' : ''}`}
                         onClick={() => {
-                          soundFx.mount(soundEnabled)
+                          soundFx.mount(true)
                           selectBus(item.id)
                         }}
                         aria-pressed={item.id === design.busId}
@@ -1517,7 +1566,7 @@ export default function App() {
                               type="button"
                               className={`propulsion-option ${selected ? 'is-selected' : ''}`}
                               onClick={() => {
-                                soundFx.mount(soundEnabled)
+                                soundFx.mount(true)
                                 selectPropulsionSystem(system.id)
                               }}
                               aria-pressed={selected}
@@ -1680,7 +1729,7 @@ export default function App() {
                               type="button"
                               className={`orbit-option ${selected ? 'is-selected' : ''}`}
                               onClick={() => {
-                                soundFx.blip(soundEnabled)
+                                soundFx.blip(true)
                                 selectOrbit(item.id)
                               }}
                               aria-pressed={selected}
@@ -1728,7 +1777,7 @@ export default function App() {
                               type="button"
                               className={`launcher-option ${selected ? 'is-selected' : ''}`}
                               onClick={() => {
-                                soundFx.mount(soundEnabled)
+                                soundFx.mount(true)
                                 selectLaunchVehicle(vehicle.id)
                               }}
                               aria-pressed={selected}

@@ -144,4 +144,55 @@ export const soundFx = {
     osc.start(now)
     osc.stop(now + 1.2)
   },
+
+  /** Short state cue when the simulation advances to its next flight phase. */
+  missionPhase(enabled: boolean, status: 'ok' | 'warn' | 'fail', isFinal = false) {
+    if (!enabled) return
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const now = ctx.currentTime
+    const notes = status === 'fail'
+      ? [247, 185]
+      : status === 'warn'
+        ? [440, 349]
+        : isFinal
+          ? [523, 659, 784]
+          : [440, 554]
+
+    notes.forEach((frequency, index) => {
+      const start = now + index * 0.09
+      const duration = status === 'fail' ? 0.16 : 0.11
+      const oscillator = ctx.createOscillator()
+      const gain = ctx.createGain()
+      oscillator.type = status === 'fail' ? 'triangle' : 'sine'
+      oscillator.frequency.setValueAtTime(frequency, start)
+      gain.gain.setValueAtTime(status === 'fail' ? 0.045 : 0.035, start)
+      gain.gain.exponentialRampToValueAtTime(0.001, start + duration)
+      oscillator.connect(gain)
+      gain.connect(ctx.destination)
+      oscillator.start(start)
+      oscillator.stop(start + duration)
+    })
+  },
+
+  /** Soft digital tones as science data reaches the ground station. */
+  downlink(enabled: boolean) {
+    if (!enabled) return
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const now = ctx.currentTime
+    ;[740, 988, 830, 1175].forEach((frequency, index) => {
+      const start = now + index * 0.075
+      const oscillator = ctx.createOscillator()
+      const gain = ctx.createGain()
+      oscillator.type = 'sine'
+      oscillator.frequency.setValueAtTime(frequency, start)
+      gain.gain.setValueAtTime(0.025, start)
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.07)
+      oscillator.connect(gain)
+      gain.connect(ctx.destination)
+      oscillator.start(start)
+      oscillator.stop(start + 0.07)
+    })
+  },
 }

@@ -30,9 +30,7 @@ Previously cited for Venus irradiance and superseded by the directly comparable 
 | React DOM | Browser rendering | MIT |
 | Vite | Build tool and dev server | MIT |
 | `@vitejs/plugin-react` | React support in Vite | MIT |
-| `@tailwindcss/vite` | Tailwind integration for Vite | MIT |
 | TypeScript | Language | Apache 2.0 |
-| Tailwind CSS | Styling | MIT |
 | Zustand | State store | MIT |
 | Zod | Data validation | MIT |
 | Vitest | Testing | MIT |

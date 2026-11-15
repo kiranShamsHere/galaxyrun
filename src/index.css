@@ -22,10 +22,9 @@ button { color: inherit; }
 button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 .skip-link { position: fixed; z-index: 20; top: 10px; left: 10px; padding: 10px 14px; transform: translateY(-160%); border: 2px solid var(--focus); border-radius: 7px; background: #101827; color: #fff; font-size: 14px; }
 .skip-link:focus { transform: translateY(0); }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.pilot-badge { padding: 7px 9px; border: 1px solid #344259; border-radius: 6px; color: #b5c4d6; font: 10px var(--font-mono); letter-spacing: .06em; }
-.difficulty-option, .orbit-option, .launcher-option, .launch-button, .sound-toggle { min-height: 44px; }
-.instrument-option input { width: 18px; height: 18px; }
+
+.difficulty-option, .orbit-option, .launcher-option, .launch-button { min-height: 44px; }
+
 .reason-dot { background: var(--success); }
 .reason-label { color: var(--success); }
 .reason-warn .reason-dot, .reason-warn .reason-label { color: var(--warning); background-color: var(--warning); }
@@ -43,11 +42,8 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
 .topbar-right { display: flex; align-items: center; gap: 17px; }
 .guide-toggle { min-height: 44px; padding: 7px 11px; border: 1px solid #344259; border-radius: 6px; background: #111c2a; color: #bfcede; font: 10px var(--font-mono); cursor: pointer; transition: border-color .18s ease, background .18s ease, color .18s ease; }
 .guide-toggle:hover, .guide-toggle[aria-expanded="true"] { border-color: #6485a8; background: #172638; color: #e4effb; }
-.sound-toggle { display: flex; align-items: center; gap: 7px; padding: 6px 9px; border: 1px solid #344259; border-radius: 6px; background: #0d1622; color: #aab8c9; font: 10px var(--font-mono); cursor: pointer; }
-.sound-toggle svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.sound-toggle.is-on { border-color: var(--accent); color: #dce8f7; background: #142235; }
-.save-state, .live-indicator { display: flex; align-items: center; gap: 8px; color: #8996a9; font: 11px var(--font-mono); }
-.save-state i, .live-indicator i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 54%, transparent); }
+  .live-indicator { display: flex; align-items: center; gap: 8px; color: #8996a9; font: 11px var(--font-mono); }
+  .live-indicator i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 54%, transparent); }
 .page-intro { display: flex; align-items: end; justify-content: space-between; padding: 54px 0 37px; }
 .eyebrow { margin: 0 0 10px; color: var(--accent); font: 10px var(--font-mono); letter-spacing: .12em; }
 .eyebrow span { color: #566174; padding: 0 5px; }
@@ -55,13 +51,7 @@ h1, h2, h3, p { margin-top: 0; }
 h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); letter-spacing: -.045em; }
 .title-period { color: var(--accent); }
 .intro-copy { max-width: 510px; margin: 14px 0 0; color: #99a5b4; font-size: 14px; line-height: 1.6; }
-.step-status { display: flex; align-items: center; gap: 12px; min-width: 228px; padding: 12px 14px; border: 1px solid #273448; border-radius: 9px; background: #101827; }
-.step-number { color: var(--accent); font: 12px var(--font-mono); }
-.step-status b, .step-status small { display: block; }
-.step-status b { font: 10px var(--font-mono); letter-spacing: .07em; }
-.step-status small { margin-top: 4px; color: #7f8b9c; font-size: 10px; }
-.step-track { width: 40px; height: 3px; margin-left: auto; border-radius: 5px; background: #293449; }
-.step-track i { display: block; width: 34%; height: 100%; border-radius: inherit; background: var(--accent); }
+
 .scenario-section { margin-bottom: 26px; }
 .guide-panel { position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 16px; margin: -10px 0 27px; padding: 17px 19px; overflow: visible; border-color: #344b64; background: radial-gradient(ellipse at 3% 50%, #182d3c 0, transparent 45%), linear-gradient(110deg, #101c2a, #101827 68%, #111b28); box-shadow: inset 3px 0 #7298c7, 0 10px 30px #0000001c; animation: enter-soft .36s ease-out both; }
 .guide-crest { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid #405870; border-radius: 50%; background: #122235; color: #91b1d1; }
@@ -117,19 +107,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .difficulty-option.is-selected { border-color: #91d45f; background: #102231; }
 .difficulty-option b { color: #e6ebf1; font: 500 10px var(--font-display); }
 .difficulty-option small { color: #8592a3; font-size: 10px; }
-.mode-hint { display: flex; align-items: center; gap: 8px; margin: -13px 0 20px; padding: 9px 12px; border-left: 2px solid var(--accent); background: #10202a; color: #bdc9d6; font-size: 11px; }
-.mode-hint span { color: var(--accent); }
-.quick-flight { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; align-items: center; gap: 13px; margin: 0 0 19px; padding: 14px 16px; border: 1px solid #31445b; border-radius: 9px; background: linear-gradient(100deg, #101c29, #111a27 74%, #142232); }
-.quick-flight-mark { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid #4a6682; border-radius: 50%; background: #172a3d; color: #a9c4df; font: 19px var(--font-display); }
-.quick-flight-copy { min-width: 0; }
-.quick-flight-copy .eyebrow { margin: 0 0 3px; font-size: 8px; }
-.quick-flight-copy h2 { margin: 0; color: #e7edf4; font: 500 14px var(--font-display); }
-.quick-flight-copy p { margin: 3px 0 0; color: #9baabd; font-size: 10px; line-height: 1.45; }
-.quick-flight-button { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 18px; padding: 9px 12px; border: 1px solid #6e91b7; border-radius: 6px; background: #7298c7; color: #0c1721; font: 600 10px var(--font-display); cursor: pointer; transition: transform .18s ease, background .18s ease, box-shadow .18s ease; }
-.quick-flight-button:hover:not(:disabled) { transform: translateY(-1px); background: #8aafd8; box-shadow: 0 7px 18px #7298c72b; }
-.quick-flight-button span { font-size: 16px; transition: transform .18s ease; }
-.quick-flight-button:hover:not(:disabled) span { transform: translateX(3px); }
-.quick-flight-button:disabled { border-color: #39475a; background: #283445; color: #929eae; cursor: not-allowed; }
+
 .design-layout { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(340px, .88fr); align-items: start; gap: 18px; }
 .panel { border: 1px solid #263349; border-radius: 11px; background: #101827; }
 .hardware-panel { padding: 21px; }
@@ -145,9 +123,9 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .bus-option { display: flex; min-height: 100px; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid #29364a; border-radius: 8px; background: #0d1421; text-align: left; cursor: pointer; }
 .bus-option.is-selected { border-color: var(--accent); background: #102231; }
 .bus-glyph { display: grid; flex: 0 0 28px; height: 28px; place-items: center; border: 1px solid #334158; border-radius: 6px; color: var(--accent); font-size: 15px; }
-.bus-copy, .instrument-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; }
-.bus-copy b, .instrument-copy b { font-size: 11px; font-weight: 600; }
-.bus-copy small, .instrument-copy small { margin-top: 4px; color: #8692a2; font-size: 11px; line-height: 1.45; }
+  .bus-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+  .bus-copy b { font-size: 11px; font-weight: 600; }
+  .bus-copy small { margin-top: 4px; color: #8692a2; font-size: 11px; line-height: 1.45; }
 .part-spec { margin-top: 9px; color: #aeb8c6; font: 10px var(--font-mono); }
 .part-spec i { margin: 0 3px; color: #526076; font-style: normal; }
 .radio-dot { display: grid; flex: 0 0 14px; height: 14px; place-items: center; border: 1px solid #48566c; border-radius: 50%; }
@@ -157,15 +135,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .instrument-heading > div { flex: 1; }
 .optional-label { color: #a0adbd; font: 10px var(--font-mono); }
 .instrument-list { display: grid; gap: 7px; }
-.instrument-option { display: flex; align-items: center; gap: 11px; padding: 10px 11px; border: 1px solid #263349; border-radius: 8px; background: #0d1421; cursor: pointer; transition: border-color .18s ease, background .18s ease, transform .18s ease; }
-.instrument-option:hover { transform: translateX(2px); border-color: #526078; }
-.instrument-option.is-selected { border-color: var(--accent); background: #102231; }
-.instrument-icon { display: grid; flex: 0 0 30px; height: 30px; place-items: center; border-radius: 7px; background: #1a2d2c; color: var(--accent); font-size: 17px; }
-.instrument-icon-1 { background: #282539; color: #c1a5ff; }
-.instrument-icon-2 { background: #2e2920; color: #f4c878; }
-.instrument-icon-3 { background: #1c2c3a; color: #83c8e4; }
-.instrument-option input { width: 18px; height: 18px; margin: 0 2px 0 8px; accent-color: var(--accent); }
-.instrument-option input:disabled { opacity: .55; cursor: not-allowed; }
+
 .propulsion-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .propulsion-option { display: flex; min-height: 94px; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid #29364a; border-radius: 8px; background: #0d1421; text-align: left; cursor: pointer; }
 .propulsion-option.is-selected { border-color: var(--accent); background: #102231; }
@@ -186,9 +156,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .schedule-slider-label b { color: #e2ebf4; font: 500 11px var(--font-display); }
 .schedule-total { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin: 10px 0 0; color: #9fb2c6; font-size: 10px; line-height: 1.5; }
 .schedule-total b { color: #d6e2ef; font-weight: 500; }
-.equation-note { margin: 12px 0 0; padding-top: 10px; border-top: 1px solid #24354a; color: #a9b9cd; font: 10px var(--font-mono); line-height: 1.5; }
-.equation-name { display: inline-flex; align-items: center; margin-left: 4px; color: #7f90a5; font: 9px var(--font-mono); }
-.model-note { margin: 7px 0 0; color: #a4b1c2; font-size: 10px; line-height: 1.45; }
+
 .design-library { margin: 18px 0; }
 .library-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; }
 .library-name { display: grid; gap: 6px; min-width: 210px; color: #afbdd0; font-size: 11px; }
@@ -224,7 +192,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .learning-card p { margin: 0 0 10px; color: #bac8d8; font-size: 12px; line-height: 1.6; }
 .learning-card a { color: #9ed7e5; font-size: 11px; }
 .learning-credit { display: block; margin-top: 10px; line-height: 1.5; letter-spacing: 0; }
-.challenge-link { width: 100%; min-height: 38px; margin-top: 7px; padding: 7px 10px; border: 1px solid #594654; border-radius: 6px; background: #120e15; color: #e8dce9; font: 10px var(--font-mono); }
+
 .achievement-panel { margin: 14px 0; padding: 14px; }
 .achievement-panel > div { display: flex; flex-wrap: wrap; gap: 8px; }
 .achievement-badge { padding: 8px 10px; border: 1px solid #6a5e3e; border-radius: 99px; background: #272419; color: #f0d690; font: 500 10px var(--font-display); }
@@ -274,7 +242,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .subsection-heading > .term-tip { align-self: center; }
 .instrument-heading { flex-wrap: wrap; }
 .instrument-heading > div { min-width: 110px; }
-.equation-note .term-tip { vertical-align: text-bottom; }
+
 .orbit-options, .launcher-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
 .orbit-option, .launcher-option { min-width: 0; padding: 10px; border: 1px solid #29364a; border-radius: 7px; background: #0d1421; text-align: left; cursor: pointer; transition: border-color .18s, background .18s; }
 .orbit-option:hover, .launcher-option:hover { border-color: #56657c; }
@@ -304,12 +272,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .reason-card > p { margin: 8px 0 7px; color: #b0bac7; font-size: 11px; line-height: 1.45; }
 .reason-detail { display: grid; grid-template-columns: 57px 1fr; gap: 7px; margin-top: 4px; color: #7e8b9c; font-size: 10px; line-height: 1.4; }
 .reason-detail b { color: #a4afbd; font-weight: 500; }
-.spacecraft-preview { position: relative; height: 190px; overflow: hidden; border: 1px solid #263349; border-radius: 11px; background: linear-gradient(145deg, #0d1725, #172b40); }
-.spacecraft-art { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
-.preview-caption { position: absolute; bottom: 14px; left: 15px; display: flex; flex-direction: column; gap: 5px; }
-.preview-caption span, .preview-coordinate { color: #8090a4; font: 10px var(--font-mono); letter-spacing: .08em; }
-.preview-caption b { font: 500 11px var(--font-display); }
-.preview-coordinate { position: absolute; right: 14px; bottom: 16px; font-size: 10px; }
+
 .page-footer { display: flex; justify-content: space-between; padding: 23px 0 28px; color: #8b99ad; font: 10px var(--font-mono); letter-spacing: .07em; }
 .page-footer i { padding: 0 5px; color: var(--accent); font-style: normal; }
 .mission-report { padding-bottom: 4px; }
@@ -378,9 +341,9 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .landing-copy h1 span { color: #91b1d2; }
 .landing-lede { max-width: 510px; margin: 23px 0 0; color: #aab7c6; font-size: 15px; line-height: 1.75; }
 .landing-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 19px; margin-top: 29px; }
-.landing-primary, .landing-bottom-cta { display: inline-flex; min-height: 50px; align-items: center; justify-content: space-between; gap: 23px; padding: 0 17px; border: 1px solid #9bb9d6; border-radius: 5px; background: #91b1d2; color: #081421; font: 600 12px var(--font-display); cursor: pointer; transition: transform .18s ease, background .18s ease, box-shadow .18s ease; }
-.landing-primary:hover, .landing-bottom-cta:hover { transform: translateY(-2px); background: #a9c5df; box-shadow: 0 10px 30px #6489aa35; }
-.landing-primary span, .landing-bottom-cta span { font-size: 18px; }
+  .landing-primary { display: inline-flex; min-height: 50px; align-items: center; justify-content: space-between; gap: 23px; padding: 0 17px; border: 1px solid #9bb9d6; border-radius: 5px; background: #91b1d2; color: #081421; font: 600 12px var(--font-display); cursor: pointer; transition: transform .18s ease, background .18s ease, box-shadow .18s ease; }
+  .landing-primary:hover { transform: translateY(-2px); background: #a9c5df; box-shadow: 0 10px 30px #6489aa35; }
+  .landing-primary span { font-size: 18px; }
 .landing-secondary { display: inline-flex; min-height: 44px; align-items: center; gap: 10px; color: #c0ccda; text-decoration: none; font-size: 12px; }
 .landing-secondary span { color: #8faac5; font-size: 17px; transition: transform .18s ease; }
 .landing-secondary:hover span { transform: translateY(3px); }
@@ -392,12 +355,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .scene-coordinate span { padding: 0 5px; color: #d9ae78; }
 .coordinate-top { top: 20px; left: 21px; }
 .coordinate-bottom { right: 20px; bottom: 19px; }
-.scene-orbit { position: absolute; z-index: -1; top: 50%; left: 50%; width: 88%; height: 55%; border: 1px solid #8ba8c452; border-radius: 50%; transform: translate(-50%, -50%) rotate(-22deg); }
-.scene-orbit-two { width: 68%; height: 92%; border-style: dashed; border-color: #7892ac35; transform: translate(-50%, -50%) rotate(53deg); }
-.scene-planet { position: absolute; right: -4%; bottom: -47%; width: min(78%, 400px); aspect-ratio: 1; border: 1px solid #7899b7a8; border-radius: 50%; background: radial-gradient(circle at 37% 24%, #67839b 0, #304b63 26%, #172a3b 68%, #0c1723 100%); box-shadow: 0 -14px 60px #7298c747, inset 20px 28px 70px #b4cce533; }
-.scene-planet::before { position: absolute; inset: 8% 17% 34% 7%; border-radius: 50%; background: repeating-linear-gradient(153deg, transparent 0 18px, #c3d3de12 19px 20px), radial-gradient(ellipse at 67% 38%, #8ba0a71d, transparent 41%); content: ""; transform: rotate(-13deg); }
-.planet-glow { position: absolute; top: -8px; right: 13%; left: 8%; height: 2px; border-radius: 50%; background: #b2d0e7; box-shadow: 0 0 22px 8px #739dbb70; }
-.scene-craft { position: absolute; top: 9%; left: 0; display: block; width: 100%; height: 83%; object-fit: contain; filter: drop-shadow(0 10px 17px #0008); animation: craft-drift 7s ease-in-out infinite; }
+
 .scene-readout { position: absolute; bottom: 21px; left: 22px; display: flex; flex-direction: column; gap: 6px; }
 .scene-readout span { color: #879cb1; font: 9px var(--font-mono); letter-spacing: .12em; }
 .scene-readout strong { color: #e0e9f2; font: 500 11px var(--font-display); letter-spacing: .1em; }
@@ -422,14 +380,9 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 .destination-objective { min-height: 43px; margin: 7px 4px 0; color: #a2afbe; font-size: 11px; line-height: 1.55; }
 .destination-orbit { margin: 11px 4px 4px; padding-top: 9px; border-top: 1px solid #2a3949; color: #8da5bc; font: 9px var(--font-mono); letter-spacing: .07em; text-transform: uppercase; }
 .flight-plan { display: grid; grid-template-columns: .8fr 1.2fr auto; align-items: center; gap: 29px; margin: 0 0 41px; padding: 25px 0 28px; border-top: 1px solid #273648; border-bottom: 1px solid #273648; scroll-margin-top: 20px; }
-.flight-plan-heading { max-width: 300px; }
+
 .flight-plan h2 { font-size: clamp(23px, 2.6vw, 30px); }
-.flight-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 0; padding: 0; list-style: none; }
-.flight-steps li { display: grid; grid-template-columns: 29px 1fr; align-items: start; gap: 9px; }
-.flight-steps li > span { color: #8baaca; font: 10px var(--font-mono); }
-.flight-steps h3 { margin: 0 0 5px; color: #e0e8f0; font: 500 13px var(--font-display); }
-.flight-steps p { margin: 0; color: #94a2b2; font-size: 10px; line-height: 1.55; }
-.landing-bottom-cta { min-width: 180px; min-height: 46px; font-size: 11px; }
+
 .landing-footer { display: flex; min-height: 58px; align-items: center; justify-content: space-between; gap: 16px; color: #8593a4; font: 9px var(--font-mono); letter-spacing: .07em; }
 .landing-footer i, .landing-footer b { color: #91b1d2; font-style: normal; }
 .landing-footer i { padding: 0 5px; }
@@ -447,8 +400,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
   .landing-hero { min-height: 490px; grid-template-columns: minmax(0, .95fr) minmax(350px, 1.05fr); gap: 20px; }
   .landing-scene { min-height: 370px; }
   .flight-plan { grid-template-columns: 1fr; gap: 20px; }
-  .flight-plan-heading { max-width: 540px; }
-  .landing-bottom-cta { justify-self: start; }
+
 }
 @media (max-width: 700px) {
   .landing-page { padding-inline: 20px; }
@@ -476,15 +428,11 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
   .destination-name { align-self: end; margin: 4px 2px 0; font-size: 14px; }
   .destination-objective { min-height: 0; margin: 5px 2px; }
   .destination-orbit { margin: 3px 2px 2px; padding-top: 6px; font-size: 8px; }
-  .flight-steps { grid-template-columns: 1fr; gap: 15px; }
-  .flight-steps li { grid-template-columns: 33px 1fr; }
-  .flight-steps p { max-width: 440px; font-size: 11px; }
-  .landing-bottom-cta { width: 100%; justify-self: stretch; }
+
   .landing-footer { align-items: flex-start; flex-direction: column; justify-content: center; padding: 12px 0 18px; line-height: 1.5; }
 }
 
 @media (max-width: 390px) {
-  .landing-page { padding-inline: 14px; }
   .landing-nav { gap: 8px; }
   .landing-nav a { font-size: 10px; }
   .landing-nav a:first-child { display: none; }
@@ -497,14 +445,12 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 }
 
 @media (max-width: 900px) {
-  .app-shell { width: min(100% - 40px, 780px); }
   .design-layout { grid-template-columns: 1fr; }
   .right-column { grid-template-columns: 1fr 1fr; align-items: start; }
-  .spacecraft-preview { grid-column: 1 / -1; }
+
   .scenario-art { flex-basis: 54px; height: 60px; }
   .scenario-card { gap: 10px; padding: 10px; }
-  .quick-flight { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; padding: 12px; }
-  .quick-flight-mark { width: 32px; height: 32px; }
+
   .guide-panel { grid-template-columns: 42px minmax(0, 1fr) auto; gap: 12px; padding: 15px; }
   .guide-crest { width: 42px; height: 42px; }
   .guide-crest svg { width: 38px; height: 38px; }
@@ -513,26 +459,15 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
 }
 @media (max-width: 720px) {
   .scenario-grid { grid-template-columns: 1fr 1fr; }
-  .difficulty-row { align-items: stretch; flex-direction: column; gap: 10px; }
-  .difficulty-options { display: grid; grid-template-columns: 1fr 1fr; }
-  .difficulty-option { min-width: 0; }
   .right-column { grid-template-columns: 1fr; }
-  .spacecraft-preview { grid-column: auto; }
+
 }
 @media (max-width: 500px) { .solar-array-readouts { grid-template-columns: 1fr; } }
 @media (max-width: 500px) { .saved-design-row { flex-wrap: wrap; } .saved-design-row > div { flex-basis: 100%; } }
 @media (max-width: 500px) { .play-mode-row { grid-template-columns: 1fr; } .play-mode-row p { grid-column: 1; } }
 @media (max-width: 620px) {
-  .app-shell { width: calc(100% - 28px); }
-  .topbar { height: 62px; }
-  .topbar-right { gap: 8px; }
-  .guide-toggle { min-height: 44px; padding: 6px 8px; font-size: 9px; }
-  .pilot-badge { display: none; }
-  .save-state { display: none; }
   .page-intro { align-items: flex-start; flex-direction: column; gap: 20px; padding: 35px 0 26px; }
-  .step-status { width: 100%; }
-  .quick-flight { grid-template-columns: 34px minmax(0, 1fr); }
-  .quick-flight-button { grid-column: 2; width: 100%; }
+
   .guide-panel { grid-template-columns: 34px minmax(0, 1fr); gap: 10px; margin: -4px 0 22px; padding: 14px; }
   .guide-crest { width: 34px; height: 34px; }
   .guide-crest svg { width: 30px; height: 30px; }
@@ -541,12 +476,8 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
   .guide-actions { grid-column: 2; align-items: center; flex-direction: row; justify-content: flex-end; }
   .guide-next { min-height: 38px; }
   .scenario-grid { grid-template-columns: 1fr; gap: 8px; }
-  .difficulty-row { align-items: stretch; flex-direction: column; gap: 10px; }
-  .difficulty-options { display: grid; grid-template-columns: 1fr 1fr; }
-  .difficulty-option { min-width: 0; }
   .scenario-card { min-height: 78px; }
-  .scenario-art { flex-basis: 52px; height: 53px; }
-  .scenario-art { flex-basis: 58px; }
+  .scenario-art { flex-basis: 58px; height: 53px; }
   .scenario-copy { flex: 1; }
   .scenario-kicker { margin-bottom: 4px; font-size: 10px; }
   .objective-line { align-items: flex-start; flex-wrap: wrap; line-height: 1.5; }
@@ -565,8 +496,7 @@ h1 { margin: 0; font: 600 clamp(34px, 4vw, 48px)/1.08 var(--font-display); lette
   .orbit-option, .launcher-option { padding: 12px; }
   .orbit-option-meta, .launcher-option small { font-size: 10px; }
   .bus-option { min-height: auto; }
-  .right-column { grid-template-columns: 1fr; }
-  .spacecraft-preview { grid-column: auto; }
+
   .report-intro { align-items: flex-start; flex-direction: row; }
   .grade-badge { min-width: 82px; height: 65px; gap: 5px; }
   .grade-badge strong { font-size: 30px; }
@@ -617,45 +547,37 @@ body {
 .eyebrow { color: #d5b2e3; }
 .title-period,
 .landing-copy h1 span { color: #ffc36f; text-shadow: 0 0 28px rgba(255, 166, 90, .25); }
-
-.scenario-card,
-.difficulty-option,
-.bus-option,
-.propulsion-option,
-.orbit-option,
-.launcher-option,
-.instrument-option {
+  .scenario-card,
+  .difficulty-option,
+  .bus-option,
+  .propulsion-option,
+  .orbit-option,
+  .launcher-option {
   border-color: #3a2d41;
   background: rgba(20, 15, 25, .86);
 }
-
-.scenario-card:hover,
-.difficulty-option:hover,
-.bus-option:hover,
-.propulsion-option:hover,
-.orbit-option:hover,
-.launcher-option:hover,
-.instrument-option:hover {
+  .scenario-card:hover,
+  .difficulty-option:hover,
+  .bus-option:hover,
+  .propulsion-option:hover,
+  .orbit-option:hover,
+  .launcher-option:hover {
   border-color: #b77969;
   transform: translateY(-2px);
 }
-
-.scenario-card.is-selected,
-.difficulty-option.is-selected,
-.bus-option.is-selected,
-.propulsion-option.is-selected,
-.orbit-option.is-selected,
-.launcher-option.is-selected,
-.instrument-option.is-selected {
+  .scenario-card.is-selected,
+  .difficulty-option.is-selected,
+  .bus-option.is-selected,
+  .propulsion-option.is-selected,
+  .orbit-option.is-selected,
+  .launcher-option.is-selected {
   border-color: #ffc36f;
   background: linear-gradient(135deg, rgba(126, 75, 105, .3), rgba(183, 100, 56, .17));
   box-shadow: 0 0 0 1px rgba(255, 195, 111, .13), 0 11px 30px rgba(176, 97, 66, .12);
 }
-
-.selection-check,
-.destination-check,
-.radio-dot,
-.instrument-option input:checked { accent-color: #ffc36f; }
+  .selection-check,
+  .destination-check,
+  .radio-dot { accent-color: #ffc36f; }
 
 .launch-button,
 .landing-primary {
@@ -667,25 +589,12 @@ body {
 .launch-button:hover:not(:disabled),
 .landing-primary:hover { filter: saturate(1.2) brightness(1.08); transform: translateY(-2px); }
 
-.quick-flight {
-  border-color: #684758;
-  background: linear-gradient(105deg, rgba(96, 58, 105, .36), rgba(130, 73, 52, .2));
-}
-
-.quick-flight-mark,
-.live-indicator i,
-.status-pip {
+  .live-indicator i,
+  .status-pip {
   background: #ffc36f;
   box-shadow: 0 0 0 4px rgba(255, 195, 111, .1), 0 0 18px rgba(255, 173, 100, .55);
   animation: game-pulse 2.1s ease-in-out infinite;
 }
-
-.quick-flight-button {
-  background: linear-gradient(110deg, #4a3044, #302337);
-  border-color: #a47769;
-  color: #fff0df;
-}
-.quick-flight-button:hover:not(:disabled) { background: #664454; box-shadow: 0 7px 18px rgba(201, 125, 86, .2); }
 
 .metric { border-color: #403346; background: rgba(12, 10, 16, .66); }
 .meter-track,
@@ -744,10 +653,7 @@ body {
 .mission-tools-content { padding: 0 18px 18px; border-top: 1px solid #403346; }
 .mission-tools-content > * { margin-top: 16px; }
 
-.spacecraft-preview { box-shadow: inset 0 0 70px rgba(146, 171, 205, .055), 0 20px 42px rgba(0, 0, 0, .22); }
 .landing-scene { box-shadow: inset 0 0 70px rgba(146, 171, 205, .055), 0 20px 42px rgba(0, 0, 0, .22); }
-.spacecraft-art,
-.scene-craft { animation: craft-drift 6s ease-in-out infinite; }
 
 @keyframes game-pulse {
   50% { transform: scale(1.16); box-shadow: 0 0 0 7px rgba(103, 239, 208, 0), 0 0 26px rgba(103, 239, 208, .85); }
@@ -759,10 +665,7 @@ body {
 
 .landing-page { background: #0b0910 url('/assets/flight-nebula.svg') center top / cover fixed; }
 .landing-scene { border-color: #514354; background: radial-gradient(ellipse at 53% 60%, #3a3045 0, #211725 38%, #0c0a10 78%); }
-.scene-orbit { border-color: rgba(255, 195, 111, .4); }
-.scene-orbit-two { border-color: rgba(199, 151, 209, .26); }
-.scene-planet { border-color: rgba(192, 174, 204, .62); background: radial-gradient(circle at 37% 24%, #8a8290 0, #514457 31%, #302438 71%, #17121a 100%); box-shadow: 0 -14px 60px rgba(150, 127, 174, .22), inset 20px 28px 70px rgba(223, 210, 231, .13); }
-.planet-glow { background: #d7c5e2; box-shadow: 0 0 22px 8px rgba(174, 148, 198, .34); }
+
 .landing-nav-cta, .home-toggle { border-color: #594452; background: #211824; color: #f0dfd0; }
 .landing-nav-cta:hover, .home-toggle:hover { border-color: #c28a68; background: #342235; color: #fff3e5; }
 .guide-panel { border-color: #594452; background: radial-gradient(ellipse at 3% 50%, rgba(130, 83, 120, .24), transparent 45%), linear-gradient(110deg, #211722, #17111a 68%, #1d141a); box-shadow: inset 3px 0 #ffc36f, 0 10px 30px #0005; }
@@ -770,18 +673,19 @@ body {
 .guide-next:hover, .secondary-button:hover, .secondary-button:focus-visible { border-color: #ffc36f; background: #49303b; }
 .term-tip > summary { border-color: #665064; background: #271d2b; color: #f1d8c1; }
 .term-tip > summary:hover, .term-tip[open] > summary { border-color: #d39b70; background: #45303a; }
-.sound-toggle.is-on { border-color: #bd8c69; background: #2b202a; color: #ffebd6; }
 .live-indicator i { background: var(--success); box-shadow: 0 0 12px rgba(120, 217, 173, .55); }
-.spacecraft-preview { border-color: #39475a; background: radial-gradient(ellipse at 50% 55%, #273448 0, #172131 56%, #0d141e 100%); }
+
 .launch-button:hover:not(:disabled) { background: linear-gradient(105deg, #ffe09b, #f4b080 62%, #d2a4dd); box-shadow: 0 8px 24px rgba(224, 143, 84, .23); }
 .landing-nav-cta span, .landing-secondary span, .landing-footer i, .landing-footer b { color: #ffc36f; }
-.landing-primary, .landing-bottom-cta { border-color: #f1bc7b; background: linear-gradient(105deg, #ffd07b, #ef9e68 62%, #c694cc); color: #21120e; }
-.landing-primary:hover, .landing-bottom-cta:hover { background: linear-gradient(105deg, #ffe09b, #f4b080 62%, #d2a4dd); box-shadow: 0 10px 30px rgba(218, 139, 87, .24); }
+  .landing-primary { border-color: #f1bc7b; background: linear-gradient(105deg, #ffd07b, #ef9e68 62%, #c694cc); color: #21120e; }
+  .landing-primary:hover { background: linear-gradient(105deg, #ffe09b, #f4b080 62%, #d2a4dd); box-shadow: 0 10px 30px rgba(218, 139, 87, .24); }
 .destination-card.is-selected { border-color: #ffc36f; background: linear-gradient(155deg, #382536, #17121a); box-shadow: inset 0 0 0 1px rgba(255, 195, 111, .12); }
 .destination-card.is-selected .destination-check { border-color: #ffc36f; background: #ffc36f; color: #21120e; }
 .destination-image { background: radial-gradient(ellipse at 50% 68%, #3a3044, #100c12 74%); }
 .flight-plan { border-color: #3b2d3d; }
-.step-number, .subsection-index, .orbit-option-top span, .launcher-option-top span { color: var(--accent); }
+  .subsection-index,
+  .orbit-option-top span,
+  .launcher-option-top span { color: var(--accent); }
 .orbit-option.is-selected, .launcher-option.is-selected { background: linear-gradient(135deg, rgba(107, 62, 79, .34), rgba(36, 26, 37, .9)); }
 .orbit-option-meta .radiation-low { color: var(--success); }
 .orbit-option-meta .radiation-high { color: var(--warning); }
@@ -836,29 +740,13 @@ body {
 .orbit-view-toggle { display: flex; gap: 3px; padding: 3px; border: 1px solid #49394c; border-radius: 7px; background: #17121b; }
 .orbit-view-toggle button { min-width: 40px; min-height: 32px; border: 0; border-radius: 5px; background: transparent; color: #bbaabd; font: 10px var(--font-mono); cursor: pointer; }
 .orbit-view-toggle button[aria-pressed="true"] { background: #443044; color: #ffe1b5; box-shadow: inset 0 0 0 1px #8f6a70; }
-.orbit-3d-stage { position: relative; height: 235px; margin: 10px 0 2px; overflow: hidden; perspective: 700px; border: 1px solid #3e3047; border-radius: 9px; background: radial-gradient(ellipse at 50% 50%, #211927, #0d0b11 75%); }
-.orbit-3d-stars { position: absolute; inset: 0; opacity: .64; background-image: radial-gradient(#e4d8e9 1px, transparent 1.5px), radial-gradient(#b7a6c4 .8px, transparent 1.4px); background-position: 17px 23px, 51px 37px; background-size: 83px 71px, 127px 109px; }
-.orbit-3d-planet { position: absolute; top: 50%; left: 50%; width: 76px; height: 76px; border: 1px solid #baabc1; border-radius: 50%; background: radial-gradient(circle at 32% 27%, #9e94a2, #56485e 56%, #241b2a); box-shadow: 0 0 32px rgba(170, 140, 188, .23); transform: translate(-50%, -50%); }
-.orbit-3d-track { position: absolute; top: 50%; left: 50%; width: 74%; height: 42%; border: 1px solid rgba(207, 187, 220, .72); border-radius: 50%; transform-style: preserve-3d; transition: transform .3s ease; }
-.orbit-3d-satellite { position: absolute; inset: 0; border-radius: 50%; animation: orbit-satellite-spin 9s linear infinite; }
-.orbit-3d-satellite::before { position: absolute; top: -5px; left: calc(50% - 5px); width: 10px; height: 10px; border: 2px solid #f4e9d9; border-radius: 50%; background: #d9a979; box-shadow: 0 0 14px rgba(199, 163, 204, .65); content: ''; }
-.orbit-3d-craft { position: absolute; top: 25%; left: 28%; width: 38%; height: 48%; object-fit: contain; filter: drop-shadow(0 0 13px rgba(175, 151, 191, .3)); animation: flight-drift 5s ease-in-out infinite; }
-.orbit-3d-altitude { position: absolute; right: 12px; bottom: 10px; color: #d9cae0; font: 9px var(--font-mono); letter-spacing: .1em; }
-.orbit-tilt-control { display: flex; align-items: center; gap: 12px; margin-top: 8px; color: #d0bfd0; font-size: 10px; }
-.orbit-tilt-control input { flex: 1; accent-color: var(--accent); }
+
 @keyframes orbit-satellite-spin { to { transform: rotateZ(360deg); } }
 .flight-controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 15px; }
 .flight-skip { padding: 9px 0; border: 0; background: transparent; color: #c5b3c4; font-size: 11px; cursor: pointer; }
 .flight-skip:hover { color: #fff0df; text-decoration: underline; }
 .flight-advance { width: min(265px, 60%); margin: 0; }
-.launch-guidance { margin: 10px 0 0; padding: 10px 12px; border: 1px solid #64464f; border-left: 3px solid #eaa66e; border-radius: 7px; background: rgba(38, 25, 34, .92); color: #eadde5; font-size: 11px; line-height: 1.5; }
-.launch-guidance > b { color: #ffd49c; font: 600 10px var(--font-mono); letter-spacing: .07em; text-transform: uppercase; }
-.launch-guidance ul { display: grid; gap: 3px; margin: 6px 0 0; padding-left: 17px; }
-.launch-guidance li strong { color: #f4c3a0; }
-.launch-guidance .text-button { margin-top: 5px; color: #ffd49c; }
-.quick-flight-guidance { grid-column: 2 / -1; }
-.quick-flight-guidance .launch-guidance { margin: 0; }
-.quick-flight-guidance .launch-guidance ul { margin-top: 3px; }
+
 .crash-recovery { width: min(520px, calc(100% - 36px)); margin: 14vh auto; padding: 32px; border: 1px solid #5a4355; border-radius: 14px; background: linear-gradient(145deg, #241a28, #100d13); box-shadow: 0 25px 90px #0008; }
 
 /* A quieter flight deck: progressive controls, readable cold palette, clear game feedback. */
@@ -868,13 +756,29 @@ body { background-color: #08111b; }
 .topbar, .landing-header { border-color: rgba(115, 219, 231, .18); }
 .brand-light, .title-period, .landing-copy h1 span { color: #e38bce; text-shadow: 0 0 24px rgba(227, 139, 206, .2); }
 .eyebrow { color: #9fc7dc; }
-.scenario-card, .difficulty-option, .bus-option, .propulsion-option, .orbit-option, .launcher-option, .instrument-option { border-color: #293b50; background: rgba(12, 22, 35, .92); }
-.scenario-card:hover, .difficulty-option:hover, .bus-option:hover, .propulsion-option:hover, .orbit-option:hover, .launcher-option:hover, .instrument-option:hover { border-color: #6a9cac; }
-.scenario-card.is-selected, .difficulty-option.is-selected, .bus-option.is-selected, .propulsion-option.is-selected, .orbit-option.is-selected, .launcher-option.is-selected, .instrument-option.is-selected { border-color: #e38bce; background: linear-gradient(135deg, rgba(127, 62, 117, .28), rgba(31, 29, 53, .78)); box-shadow: 0 0 0 1px rgba(227, 139, 206, .13), 0 11px 30px rgba(160, 80, 154, .12); }
+  .scenario-card,
+  .difficulty-option,
+  .bus-option,
+  .propulsion-option,
+  .orbit-option,
+  .launcher-option { border-color: #293b50; background: rgba(12, 22, 35, .92); }
+  .scenario-card:hover,
+  .difficulty-option:hover,
+  .bus-option:hover,
+  .propulsion-option:hover,
+  .orbit-option:hover,
+  .launcher-option:hover { border-color: #6a9cac; }
+  .scenario-card.is-selected,
+  .difficulty-option.is-selected,
+  .bus-option.is-selected,
+  .propulsion-option.is-selected,
+  .orbit-option.is-selected,
+  .launcher-option.is-selected { border-color: #e38bce; background: linear-gradient(135deg, rgba(127, 62, 117, .28), rgba(31, 29, 53, .78)); box-shadow: 0 0 0 1px rgba(227, 139, 206, .13), 0 11px 30px rgba(160, 80, 154, .12); }
 .launch-button, .landing-primary { color: #1c1020; background: linear-gradient(110deg, #f4b3e3, #e38bce 58%, #aa9af0); box-shadow: 0 12px 26px rgba(190, 94, 174, .19); }
 .launch-button:hover:not(:disabled), .landing-primary:hover { filter: brightness(1.08); }
-.quick-flight-mark, .live-indicator i, .status-pip { background: #e38bce; box-shadow: 0 0 0 4px rgba(227, 139, 206, .1), 0 0 18px rgba(227, 139, 206, .4); }
-.quick-flight { border-color: #34566b; background: linear-gradient(105deg, rgba(24, 64, 81, .32), rgba(13, 26, 40, .84)); }
+  .live-indicator i,
+  .status-pip { background: #e38bce; box-shadow: 0 0 0 4px rgba(227, 139, 206, .1), 0 0 18px rgba(227, 139, 206, .4); }
+
 .meter-fill, .risk-fill, .score-item em { background: linear-gradient(90deg, #e38bce, #d39ce5, #aa9af0); }
 .flight-tuning { margin: 20px 0 16px; overflow: hidden; border: 1px solid #2b4057; border-radius: 9px; background: rgba(8, 18, 30, .7); }
 .flight-tuning > summary { display: flex; align-items: center; gap: 12px; min-height: 62px; padding: 10px 14px; cursor: pointer; list-style: none; }
@@ -887,20 +791,12 @@ body { background-color: #08111b; }
 .flight-tuning[open] .tuning-chevron { transform: rotate(45deg); }
 .flight-tuning-content { padding: 0 14px 14px; border-top: 1px solid #253a50; animation: enter-soft .25s ease-out both; }
 .flight-tuning-content > .subsection-heading:first-child { margin-top: 17px; }
-.launch-guidance { border-color: #4b5964; border-left-color: #e8d79c; background: rgba(22, 30, 39, .96); }
-.launch-guidance > b, .launch-guidance li strong { color: #f0dfa5; }
-.launch-guidance-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 7px; }
-.launch-guidance .text-button { color: #efb2e3; }
+
 .orbit-diagram-panel { border-color: #2c435a; }
 .orbit-view-toggle { border-color: #2b4358; background: #0d1b29; }
 .orbit-view-toggle button { color: #9aafc1; }
 .orbit-view-toggle button[aria-pressed="true"] { background: #38253e; color: #f5cfef; box-shadow: inset 0 0 0 1px #9d6c9b; }
-.orbit-3d-stage { border-color: #2d5067; background: radial-gradient(ellipse at 50% 50%, #173246, #08111c 75%); }
-.orbit-3d-stars { background-image: radial-gradient(#d5f4fc 1px, transparent 1.5px), radial-gradient(#8ab9d0 .8px, transparent 1.4px); }
-.orbit-3d-planet { border-color: #9bcddd; background: radial-gradient(circle at 32% 27%, #9fc5d0, #456b7d 56%, #172b3e); box-shadow: 0 0 32px rgba(89, 178, 206, .22); }
-.orbit-3d-track { border-color: rgba(227, 139, 206, .78); }
-.orbit-3d-satellite::before { border-color: #fff0fc; background: #e38bce; box-shadow: 0 0 14px rgba(227, 139, 206, .68); }
-.orbit-3d-craft { filter: drop-shadow(0 0 13px rgba(227, 139, 206, .36)); }
+
 .flight-scene { border-color: #31526a; background-color: #0a1622; }
 .flight-planet { background: radial-gradient(circle at 35% 22%, #91c2d1, #40687d 39%, #1d3448 72%, #0b111a 100%); box-shadow: 0 -10px 70px rgba(88, 173, 207, .2), inset 18px 24px 60px rgba(213, 242, 249, .12); }
 .flight-orbit { border-color: rgba(142, 220, 236, .54); }
@@ -920,12 +816,9 @@ body { background-color: #08111b; }
 .learning-check-answers button:hover:not(:disabled) { border-color: #75cad6; background: #173040; }
 .landing-page { background-color: #08111b; }
 .landing-scene { border-color: #35526b; background: radial-gradient(ellipse at 53% 60%, #213d52 0, #112538 38%, #09121d 78%); }
-.scene-orbit { border-color: rgba(115, 219, 231, .38); }
-.scene-orbit-two { border-color: rgba(142, 165, 221, .26); }
-.scene-planet { border-color: rgba(148, 204, 220, .58); background: radial-gradient(circle at 37% 24%, #9abdc7 0, #536e84 31%, #283c52 71%, #121c29 100%); box-shadow: 0 -14px 60px rgba(97, 174, 201, .2), inset 20px 28px 70px rgba(214, 242, 248, .13); }
-.planet-glow { background: #c4f4f0; box-shadow: 0 0 22px 8px rgba(115, 219, 231, .32); }
-.landing-primary, .landing-bottom-cta { border-color: #efaddd; background: linear-gradient(105deg, #f4b3e3, #e38bce 62%, #aa9af0); color: #1c1020; }
-.landing-primary:hover, .landing-bottom-cta:hover { background: linear-gradient(105deg, #ffd2ef, #eda6db 62%, #beb0fa); box-shadow: 0 10px 30px rgba(190, 94, 174, .24); }
+
+  .landing-primary { border-color: #efaddd; background: linear-gradient(105deg, #f4b3e3, #e38bce 62%, #aa9af0); color: #1c1020; }
+  .landing-primary:hover { background: linear-gradient(105deg, #ffd2ef, #eda6db 62%, #beb0fa); box-shadow: 0 10px 30px rgba(190, 94, 174, .24); }
 .destination-card.is-selected { border-color: #e38bce; background: linear-gradient(155deg, #35243e, #111827); box-shadow: inset 0 0 0 1px rgba(227, 139, 206, .14); }
 .destination-image { background: radial-gradient(ellipse at 50% 68%, #233e53, #09131e 74%); }
 .landing-footer i, .landing-footer b, .landing-nav-cta span, .landing-secondary span { color: #e38bce; }
@@ -933,7 +826,7 @@ body { background-color: #08111b; }
 @media (max-width: 700px) {
   .flight-tuning-content { padding-right: 9px; padding-left: 9px; }
   .flight-tuning > summary { min-height: 58px; }
-  .launch-guidance-actions { gap: 5px 12px; }
+
 }
 
 /* Keep supporting copy readable on both landing and in-flight screens. */
@@ -945,13 +838,26 @@ body { background-color: #08111b; }
 .app-shell .intro-copy, .landing-page .landing-lede { font-size: 16px; }
 .app-shell .scenario-kicker, .app-shell .parts-count, .app-shell .selection-note, .app-shell .flight-hud span, .app-shell .flight-phase-row span, .app-shell .flight-telemetry small, .app-shell .seed-label, .app-shell .score-total > span, .app-shell .flight-event small, .app-shell .reason-count small { font-size: 12px; }
 .app-shell .objective-line, .app-shell .selection-note, .app-shell .difficulty-copy strong, .app-shell .play-mode-row, .app-shell .difficulty-option b { font-size: 14px; }
-.app-shell .difficulty-option small, .app-shell .scenario-copy small, .app-shell .subsection-heading p, .app-shell .part-spec, .app-shell .model-note, .app-shell .catalog-note, .app-shell .schedule-total, .app-shell .solar-array-readouts span { font-size: 13px; }
-.app-shell .bus-copy b, .app-shell .instrument-copy b, .app-shell .propulsion-copy b, .app-shell .section-heading h2, .app-shell .subsection-heading h3 { font-size: 16px; }
-.app-shell .bus-copy small, .app-shell .instrument-copy small, .app-shell .propulsion-copy small { font-size: 14px; line-height: 1.5; }
+  .app-shell .difficulty-option small,
+  .app-shell .scenario-copy small,
+  .app-shell .subsection-heading p,
+  .app-shell .part-spec,
+  .app-shell .schedule-total,
+  .app-shell .solar-array-readouts span { font-size: 13px; }
+  .app-shell .bus-copy b,
+  .app-shell .propulsion-copy b,
+  .app-shell .section-heading h2,
+  .app-shell .subsection-heading h3 { font-size: 16px; }
+  .app-shell .bus-copy small,
+  .app-shell .propulsion-copy small { font-size: 14px; line-height: 1.5; }
 .app-shell .metric-heading, .app-shell .risk-heading, .app-shell .why-intro, .app-shell .reason-card > p, .app-shell .flight-event p, .app-shell .all-clear p, .app-shell .report-actions p, .app-shell .report-section-heading > p:last-child, .app-shell .score-item { font-size: 14px; }
 .app-shell .metric-limit, .app-shell .score-total small, .app-shell .score-item b small, .app-shell .launch-hint, .app-shell .reason-detail, .app-shell .report-reasons .all-clear { font-size: 13px; }
 .app-shell .score-item b, .app-shell .flight-event h3, .app-shell .all-clear b { font-size: 15px; }
-.app-shell .guide-content p, .app-shell .guide-cue, .app-shell .guide-dismiss, .app-shell .guide-next, .app-shell .text-button, .app-shell .launch-guidance { font-size: 14px; }
+  .app-shell .guide-content p,
+  .app-shell .guide-cue,
+  .app-shell .guide-dismiss,
+  .app-shell .guide-next,
+  .app-shell .text-button { font-size: 14px; }
 .app-shell .flight-telemetry b { font-size: 19px; }
 .landing-page .landing-nav a, .landing-page .scene-coordinate, .landing-page .scene-readout span, .landing-page .scene-readout strong, .landing-page .destination-index, .landing-page .destination-objective, .landing-page .destination-orbit, .landing-page .landing-footer { font-size: 13px; }
 .landing-page .scenario-kicker { font-size: 12px; }
@@ -960,24 +866,9 @@ body { background-color: #08111b; }
 .report-section-heading .eyebrow { margin-bottom: 5px; }
 .report-section-heading h2 { margin: 0; color: #e8f4f8; font: 500 23px var(--font-display); }
 .report-section-heading > p:last-child { margin: 6px 0 0; color: #aabccc; }
-.launch-guidance li { padding: 2px 0; }
-.launch-guidance-intro { margin: 4px 0; color: #b5c1cd; font-size: 13px; }
-.blocker-fix { display: inline-flex; min-height: 36px; align-items: center; gap: 6px; margin: 5px 0 2px; padding: 5px 10px; border: 1px solid #68496f; border-radius: 6px; background: #2a1e35; color: #f5d5ef; cursor: pointer; }
-.blocker-fix:hover { border-color: #e38bce; background: #3b2948; }
-.blocker-fix span { color: #efaddd; }
-.online-room-controls, .online-room-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.online-room-controls input { min-width: 130px; min-height: 42px; flex: 1; padding: 0 11px; border: 1px solid #3f3851; border-radius: 6px; background: #11121f; color: #f2e9f4; letter-spacing: .12em; }
-.online-room-actions { margin-top: 9px; }
-.online-room-actions code { min-width: 92px; padding: 8px 10px; border: 1px dashed #79537b; border-radius: 6px; background: #211729; color: #f0b8e5; font: 600 15px var(--font-mono); letter-spacing: .14em; text-align: center; }
-.online-room-actions .text-button { min-height: 40px; padding: 7px 9px; }
-.status-key { display: flex; flex-wrap: wrap; gap: 7px 14px; margin: 12px 0 2px; color: #b6c3d0; font-size: 12px; }
-.status-key span { display: inline-flex; align-items: center; gap: 6px; }
-.status-key i { display: grid; width: 19px; height: 19px; place-items: center; border-radius: 50%; font-size: 12px; font-style: normal; font-weight: 700; }
-.status-key .key-good { background: rgba(227, 139, 206, .16); color: #e38bce; }
-.status-key .key-watch { background: rgba(232, 215, 156, .16); color: #e8d79c; }
-.status-key .key-stop { background: rgba(255, 132, 156, .16); color: #ff849c; }
+
 .metric-hint { min-height: 38px; margin: 6px 0 0; color: #aab8c7; font-size: 12px !important; line-height: 1.4 !important; }
-.control-hint { margin: 5px 0 10px; color: #aab8c7; font-size: 13px !important; line-height: 1.45 !important; }
+
 .metric-limit { margin-top: 4px; }
 .risk-summary p { font-size: 13px !important; }
 .solar-array-readouts span { font-size: 13px !important; }
@@ -1742,36 +1633,6 @@ body { background-color: #08111b; }
 /* ==========================================================================
    NASA MISSION HUB & DATA ARCHIVE MODAL
    ========================================================================== */
-.nasa-hub-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 8, 15, 0.85);
-  backdrop-filter: blur(8px);
-  z-index: 9999;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-}
-.nasa-hub-modal {
-  width: 100%;
-  max-width: 960px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  background: #0d1322;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.15);
-  overflow: hidden;
-}
-.nasa-hub-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: #090e1a;
-}
 .nasa-meatball-tag {
   display: inline-block;
   padding: 3px 8px;
@@ -1806,14 +1667,6 @@ body { background-color: #08111b; }
   border-color: #ef4444;
   color: #fff;
 }
-.nasa-hub-tabs {
-  display: flex;
-  gap: 8px;
-  padding: 10px 24px;
-  background: #0a1120;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  overflow-x: auto;
-}
 .nasa-tab {
   padding: 8px 16px;
   border: 1px solid transparent;
@@ -1834,11 +1687,6 @@ body { background-color: #08111b; }
   background: rgba(56, 189, 248, 0.15);
   border-color: #38bdf8;
   color: #38bdf8;
-}
-.nasa-hub-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
 }
 .pane-intro p {
   color: #cbd5e1;
@@ -2179,16 +2027,6 @@ body { background-color: #08111b; }
   margin: 2px 0 0;
 }
 
-.nasa-hub-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 24px;
-  background: #090e1a;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  flex-wrap: wrap;
-  gap: 10px;
-}
 .nasa-hub-footer p {
   margin: 0;
   font-size: 12px;
@@ -2208,129 +2046,6 @@ body { background-color: #08111b; }
 .nasa-hub-done-btn:hover {
   background: #0369a1;
   transform: translateY(-1px);
-}
-
-/* ==========================================================================
-   LANDING PAGE SYSTEMS ENGINEERING ARC & 3D HERO
-   ========================================================================== */
-.landing-scene-3d {
-  position: relative;
-  min-height: 340px;
-  overflow: hidden;
-  border-radius: 14px;
-}
-.hero-3d-overlay-tag {
-  position: absolute;
-  padding: 5px 12px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: #e2e8f0;
-  z-index: 2;
-}
-.hero-3d-overlay-tag.top-left {
-  top: 14px;
-  left: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.hero-3d-overlay-tag.top-left b {
-  color: #38bdf8;
-}
-.hero-3d-overlay-tag.bottom-right {
-  bottom: 14px;
-  right: 14px;
-  color: #94a3b8;
-}
-.hero-3d-status-badge {
-  position: absolute;
-  bottom: 14px;
-  left: 14px;
-  z-index: 2;
-}
-.hero-3d-status-badge span {
-  display: block;
-  font-size: 10px;
-  color: #64748b;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-}
-.hero-3d-status-badge strong {
-  display: block;
-  font-size: 12px;
-  color: #38bdf8;
-  letter-spacing: 0.06em;
-}
-
-.story-flow-section {
-  margin: 60px 0 40px;
-  text-align: center;
-}
-.story-header h2 {
-  font-size: 28px;
-  margin: 6px 0 10px;
-  color: #f8fafc;
-}
-.story-header p {
-  max-width: 650px;
-  margin: 0 auto 32px;
-  color: #94a3b8;
-  font-size: 15px;
-  line-height: 1.6;
-}
-.story-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  text-align: left;
-}
-.story-step-card {
-  position: relative;
-  padding: 22px 18px;
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  transition: all 0.2s ease;
-}
-.story-step-card:hover {
-  border-color: rgba(56, 189, 248, 0.4);
-  background: rgba(30, 41, 59, 0.8);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-.step-badge {
-  display: inline-block;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-  font-size: 11px;
-  font-weight: 800;
-  margin-bottom: 12px;
-}
-.step-icon {
-  font-size: 26px;
-  margin-bottom: 10px;
-}
-.story-step-card h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-  color: #f8fafc;
-}
-.story-step-card p {
-  margin: 0 0 14px;
-  font-size: 13px;
-  color: #94a3b8;
-  line-height: 1.5;
-}
-.step-tag {
-  display: inline-block;
-  font-size: 11px;
-  color: #a78bfa;
-  font-weight: 600;
 }
 
 /* ==========================================================================
@@ -2495,6 +2210,8 @@ body { background-color: #08111b; }
   padding: 14px 24px;
   background: #060a14;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .fleet-controls-bar {
   display: flex;
@@ -2587,12 +2304,7 @@ body { background-color: #08111b; }
   text-align: center;
   transition: all 0.3s ease;
 }
-.world-emoji-avatar {
-  display: block;
-  font-size: 48px;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.35));
-}
+
 .world-hero-visual h3 {
   margin: 0;
   font-size: 22px;
@@ -3228,7 +2940,8 @@ body { background-color: #08111b; }
 .app-shell .panel, .app-shell .mission-tools, .landing-page .system-feature-box { padding: 24px; }
 .app-shell .metric-hint { font-size: 13px !important; }
 .app-shell .section-heading h2, .app-shell .subsection-heading h3 { font-size: 18px; }
-.app-shell .bus-copy b, .app-shell .instrument-copy b, .app-shell .propulsion-copy b { font-size: 17px; }
+  .app-shell .bus-copy b,
+  .app-shell .propulsion-copy b { font-size: 17px; }
 .landing-page .landing-lede { max-width: 510px; font-size: 18px; line-height: 1.6; }
 .landing-page .landing-nav a { font-size: 14px; }
 .landing-page .landing-nav-cta { min-height: 46px; font-size: 14px; }
@@ -3245,7 +2958,8 @@ html { scroll-padding-top: 16px; }
 body { overflow-x: clip; }
 .pilot-page { min-height: 100svh; }
 .landing-page { min-height: 100svh; }
-.landing-scene, .flight-scene, .orbit-3d-stage, .spacecraft-preview { min-width: 0; }
+  .landing-scene,
+  .flight-scene { min-width: 0; }
 .nasa-hub-overlay { padding: clamp(10px, 3vw, 24px); }
 
 @media (max-width: 900px) {
@@ -3278,7 +2992,7 @@ body { overflow-x: clip; }
   .comparator-vs-divider { padding: 0; }
   .world-select-wrap { flex-wrap: wrap; }
   .world-select-wrap label { width: 100%; }
-  .flight-steps { grid-template-columns: minmax(0, 1fr); }
+
   .nasa-hub-overlay { padding: 8px; }
   .nasa-hub-modal { width: 100%; height: 94svh; max-height: 94svh; border-radius: 12px; }
   .nasa-hub-header, .nasa-hub-tabs { padding-inline: 14px; }
@@ -3292,7 +3006,7 @@ body { overflow-x: clip; }
   .app-shell { width: calc(100% - 28px); }
   .topbar { height: auto; min-height: 62px; flex-wrap: wrap; gap: 8px; padding: 9px 0; }
   .topbar-right { min-width: 0; flex: 1; justify-content: flex-end; flex-wrap: wrap; gap: 6px; }
-  .nasa-fleet-btn, .home-toggle, .guide-toggle, .sound-toggle { min-height: 42px; padding-inline: 9px; font-size: 12px; }
+  .nasa-fleet-btn, .home-toggle, .guide-toggle { min-height: 42px; padding-inline: 9px; font-size: 12px; }
   .nasa-fleet-btn { max-width: 100%; }
   .guide-panel { grid-template-columns: 34px minmax(0, 1fr); }
   .guide-actions { grid-column: 2; }
@@ -3301,7 +3015,6 @@ body { overflow-x: clip; }
   .metric-hint { min-height: 0; }
   .right-column, .score-items, .report-columns { grid-template-columns: minmax(0, 1fr); }
   .mission-score-panel { grid-template-columns: minmax(0, 1fr); }
-  .flight-telemetry { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .flight-event-card { grid-template-columns: 32px minmax(0, 1fr); }
   .report-intro { flex-wrap: wrap; }
 }
@@ -3319,18 +3032,24 @@ body { overflow-x: clip; }
   .app-shell { width: calc(100% - 24px); }
   .topbar-right { gap: 4px; }
   .nasa-fleet-btn { font-size: 11px; }
-  .sound-toggle { gap: 4px; }
   .difficulty-options { grid-template-columns: minmax(0, 1fr); }
   .score-items { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .scenario-card, .difficulty-option, .orbit-option, .launcher-option,
-  .bus-option, .instrument-option, .propulsion-option, .destination-card,
-  .stepper-tab, .learning-check-answers button {
+    .scenario-card,
+  .difficulty-option,
+  .orbit-option,
+  .launcher-option,
+  .bus-option,
+  .propulsion-option,
+  .destination-card,
+  .stepper-tab,
+  .learning-check-answers button {
     min-height: 48px;
   }
-  .destination-card:hover, .landing-primary:hover, .landing-bottom-cta:hover { transform: none; }
+    .destination-card:hover,
+  .landing-primary:hover { transform: none; }
 }
 
 /* One consistent line-icon language across game controls and learning cards. */
@@ -3374,6 +3093,48 @@ body { overflow-x: clip; }
   .bus-glyph { width: 32px; height: 32px; flex-basis: 32px; }
   .world-planet { width: 66px; height: 66px; }
   .nasa-tab { gap: 5px; }
+}
+
+/* Flight play loop: readable phase state, live telemetry, and optional pacing. */
+.flight-phase-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+.flight-phase-track li { display: flex; min-width: 0; align-items: center; gap: 8px; color: #8295a7; }
+.flight-phase-track li > span { display: grid; width: 25px; height: 25px; flex: 0 0 25px; place-items: center; border: 1px solid #3b4c60; border-radius: 50%; background: #111d2a; font: 10px var(--font-mono); }
+.flight-phase-track small { overflow: hidden; font: 10px var(--font-mono); letter-spacing: .04em; text-overflow: ellipsis; white-space: nowrap; }
+.flight-phase-track li.is-current { color: #f2dcf0; }
+.flight-phase-track li.is-current > span { border-color: #e38bce; background: #3a2740; color: #ffe9fa; box-shadow: 0 0 14px rgba(227, 139, 206, .2); }
+.flight-phase-track li.is-complete > span { border-color: #70b89e; background: #19352f; color: #a9f1d2; }
+.flight-event-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+.flight-status-tag { display: inline-flex; min-height: 24px; align-items: center; padding: 2px 8px; border: 1px solid #42624f; border-radius: 99px; background: rgba(78, 147, 111, .12); color: #a7e4c2; font-size: 11px; }
+.flight-status-tag.status-warn { border-color: #7a684b; background: rgba(183, 145, 82, .13); color: #f0d99e; }
+.flight-status-tag.status-fail { border-color: #804b58; background: rgba(159, 76, 91, .14); color: #ffb3c0; }
+.flight-playback-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.flight-autoplay, .flight-speed { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 8px 12px; border: 1px solid #51415a; border-radius: 8px; background: #1d1926; color: #ead5e8; font-size: 13px; cursor: pointer; }
+.flight-autoplay[aria-pressed="true"] { border-color: #b879aa; background: #372640; color: #ffe7f8; }
+.flight-speed { border-color: #3f5364; background: #14202b; color: #d2e0e8; }
+.flight-body-earth .flight-planet { background: radial-gradient(circle at 35% 22%, #91c2d1, #40687d 39%, #1d3448 72%, #0b111a 100%); }
+.flight-body-moon .flight-planet { background: radial-gradient(circle at 35% 22%, #ccd1d7, #747e8a 39%, #343d4c 72%, #0b111a 100%); }
+.flight-body-mars .flight-planet { background: radial-gradient(circle at 35% 22%, #bd8e91, #735b6d 42%, #353143 73%, #0b111a 100%); }
+.flight-body-venus .flight-planet { background: radial-gradient(circle at 35% 22%, #b9b5cb, #6d6b86 42%, #39334c 73%, #0b111a 100%); }
+.flight-phase-0 .flight-craft { top: 55%; left: 16%; width: min(26%, 170px); }
+.flight-phase-1 .flight-craft { top: 43%; left: 25%; }
+.flight-phase-2 .flight-craft { top: 34%; left: 37%; }
+.flight-phase-3 .flight-craft { top: 28%; left: 48%; }
+.flight-phase-4 .flight-craft { top: 22%; left: 59%; }
+.flight-phase-0 .flight-orbit { opacity: .3; }
+.flight-phase-1 .flight-orbit { opacity: .55; }
+.flight-phase-2 .flight-orbit, .flight-phase-3 .flight-orbit, .flight-phase-4 .flight-orbit { opacity: .9; }
+.flight-telemetry > div { min-width: 0; }
+.flight-telemetry small { line-height: 1.25; }
+
+@media (max-width: 700px) {
+  .flight-phase-track { grid-template-columns: repeat(5, minmax(76px, 1fr)); overflow-x: auto; padding-bottom: 5px; scrollbar-width: thin; }
+  .flight-phase-track li { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .flight-phase-track small { max-width: 100%; }
+  .flight-event-card { align-items: start; }
+  .flight-controls { align-items: stretch; flex-direction: column; }
+  .flight-playback-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flight-playback-controls .flight-skip { grid-column: 1 / -1; min-height: 42px; }
+  .flight-advance { width: 100%; }
 }
 
 /* Mission menu, responsive sidebar, and touch-ready 3D controls. */
@@ -3420,11 +3181,9 @@ body { overflow-x: clip; }
 .sidebar-footnote { margin-top: auto; padding: 18px 4px 4px; font-size: 9px; }
 .sidebar-footnote span { color: #e38bce; }
 .sidebar-backdrop { display: none; }
-.main-pilot-chip, .pilot-identification { display: flex; width: fit-content; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid #51405a; border-radius: 10px; background: rgba(31, 23, 39, .74); color: #d9c7da; }
-.main-pilot-chip { margin-top: 17px; }
-.main-pilot-chip > span { display: grid; gap: 2px; }
-.main-pilot-chip small { color: #a99bb0; font: 9px var(--font-mono); letter-spacing: .1em; }
-.main-pilot-chip b, .pilot-identification b { color: #f4d8ee; }
+  .pilot-identification { display: flex; width: fit-content; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid #51405a; border-radius: 10px; background: rgba(31, 23, 39, .74); color: #d9c7da; }
+
+  .pilot-identification b { color: #f4d8ee; }
 .pilot-identification { margin: 13px 0 0; font-size: 14px; }
 .canvas-3d-viewport { height: clamp(320px, 40vw, 440px) !important; min-height: 300px; overflow: hidden; border-radius: 0 0 13px 13px; }
 .canvas-3d-orbit { height: clamp(290px, 36vw, 390px) !important; min-height: 280px; overflow: hidden; }
@@ -3446,7 +3205,7 @@ body { overflow-x: clip; }
   .app-sidebar.is-collapsed { display: flex; }
   .app-sidebar.is-mobile-open { transform: translateX(0); }
   .sidebar-backdrop { position: fixed; z-index: 1000; inset: 0; display: block; width: 100%; height: 100%; border: 0; background: rgba(3, 5, 10, .68); backdrop-filter: blur(3px); }
-  .main-pilot-chip { margin-top: 14px; }
+
   .holo-bay-header { align-items: flex-start; }
   .holo-tabs { display: grid; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .holo-tab { display: flex; min-width: 0; min-height: 48px; justify-content: center; gap: 6px; padding: 7px; font-size: 12px; line-height: 1.2; }
@@ -3466,7 +3225,6 @@ body { overflow-x: clip; }
   .topbar > .brand { order: 1; margin-right: auto; }
   .topbar > .topbar-right { order: 2; flex-basis: 100%; justify-content: stretch; }
   .topbar-right > button { flex: 1 1 auto; justify-content: center; }
-  .topbar-right .sound-toggle { flex: 0 0 auto; }
   .canvas-3d-viewport { height: clamp(320px, 92vw, 390px) !important; }
   .canvas-3d-orbit { height: clamp(300px, 84vw, 360px) !important; }
   .viewport-overlay-top { top: 8px; right: 8px; left: 8px; gap: 6px; }
@@ -3484,4 +3242,51 @@ body { overflow-x: clip; }
   .cad-btn { font-size: 12px; }
   .preset-pill { min-height: 44px; font-size: 12px; }
   .layer-pill { padding-inline: 7px; font-size: 12px; }
+}
+
+/* Flight scene motion layers: quiet detail that keeps telemetry readable. */
+.flight-starfield {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(1px 1px at 13% 24%, #fff 55%, transparent 100%), radial-gradient(1.5px 1.5px at 42% 18%, #d9e9ff 55%, transparent 100%), radial-gradient(1px 1px at 70% 34%, #fff 55%, transparent 100%), radial-gradient(1px 1px at 83% 14%, #e3ccff 55%, transparent 100%), radial-gradient(1px 1px at 58% 72%, #fff 55%, transparent 100%), radial-gradient(1px 1px at 23% 83%, #cde4ff 55%, transparent 100%);
+  background-size: 230px 180px;
+  opacity: .62;
+  animation: flight-stars 34s linear infinite;
+}
+.flight-scanline {
+  position: absolute;
+  z-index: 3;
+  inset: -35% 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 44%, rgba(188, 224, 255, .055) 50%, transparent 56%);
+  animation: flight-scan 8s linear infinite;
+}
+.flight-engine-plume {
+  position: absolute;
+  z-index: 1;
+  top: 68%;
+  left: 13%;
+  width: 90px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, rgba(121, 211, 255, .62), rgba(236, 207, 255, .85), transparent);
+  filter: blur(7px);
+  opacity: 0;
+  transform: rotate(-8deg);
+  transition: opacity .45s ease;
+  animation: flight-thrust .18s ease-in-out infinite alternate;
+}
+.flight-phase-0 .flight-engine-plume { opacity: .85; }
+.flight-scene-label { z-index: 4; padding: 7px 9px; border: 1px solid rgba(191, 211, 232, .22); border-radius: 99px; background: rgba(7, 12, 22, .68); backdrop-filter: blur(6px); }
+.flight-orbit b { animation: flight-orbit-dot 5s linear infinite; }
+.flight-planet span { animation: flight-horizon 7s ease-in-out infinite alternate; }
+@keyframes flight-stars { to { background-position: 115px -90px; } }
+@keyframes flight-scan { from { transform: translateY(-35%); } to { transform: translateY(35%); } }
+@keyframes flight-thrust { from { opacity: .48; scale: .88 1; } to { opacity: 1; scale: 1.08 1.2; } }
+@keyframes flight-orbit-dot { to { transform: rotate(360deg) translateX(7px); } }
+@keyframes flight-horizon { from { opacity: .55; filter: blur(1px); } to { opacity: 1; filter: blur(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .flight-starfield, .flight-scanline, .flight-engine-plume, .flight-orbit b, .flight-planet span { animation: none !important; }
 }
