@@ -39,7 +39,7 @@ An item is checked only when the work exists in the project. Local implementatio
 
 ## Learning, report, and presentation
 
-- [x] Add NASA/ESA mission field notes for Terra, LRO, MRO, and Venus Express with direct source links.
+- [x] Add NASA mission field notes for Terra, LRO, MRO, and Magellan/VERITAS with source links.
 - [x] Provide switchable 2D and CSS-perspective 3D-style orbit views with an interactive tilt control.
 - [x] Print or save the flight report through the browser’s PDF print flow.
 - [x] Add optional original sound, reduced-motion-aware animation, and per-run achievements.
