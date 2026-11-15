@@ -550,11 +550,13 @@ function DesignSummary({ evaluation }: { evaluation: DesignEvaluation }) {
 
 function MissionReport({
   result,
+  pilotName,
   onEdit,
   onAnotherFlight,
   onLearningAnswer,
 }: {
   result: MissionSimulation
+  pilotName: string
   onEdit: () => void
   onAnotherFlight: () => void
   onLearningAnswer: (correct: boolean) => void
@@ -573,7 +575,7 @@ function MissionReport({
   }, [])
 
   return (
-    <section className="mission-report">
+    <section className="mission-report" id="mission-report">
       <div className="page-intro report-intro">
         <div>
           <p className="eyebrow">
@@ -586,6 +588,7 @@ function MissionReport({
           <p className="intro-copy">
             {result.returnedGb.toFixed(1)} GB returned over {result.missionDurationDays} mission days.
           </p>
+          <p className="pilot-identification"><SpaceIcon symbol="🛰️" size={16} /> Pilot: <b>{pilotName || 'Pilot'}</b></p>
         </div>
         <div className="grade-badge">
           <strong>{result.grade}</strong>
@@ -735,6 +738,8 @@ export default function App() {
   const [missionResult, setMissionResult] = useState<MissionSimulation | null>(null)
   const [flightStep, setFlightStep] = useState<number | null>(null)
   const [soundEnabled, setSoundEnabled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [desktopSidebarVisible, setDesktopSidebarVisible] = useState(true)
   const [guideOpen, setGuideOpen] = useState(false)
   const [nasaModalOpen, setNasaModalOpen] = useState(false)
   const [viewerTab, setViewerTab] = useState<'spacecraft' | 'orbit' | 'mel'>('spacecraft')
@@ -944,6 +949,27 @@ export default function App() {
     }
   }, [missionResult, screen])
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [mobileMenuOpen])
+
+  function toggleNavigation() {
+    if (window.matchMedia('(max-width: 760px)').matches) {
+      setMobileMenuOpen((open) => !open)
+      return
+    }
+    setDesktopSidebarVisible((visible) => !visible)
+  }
+
+  function closeNavigation() {
+    setMobileMenuOpen(false)
+  }
+
   if (screen === 'landing') {
     return (
       <LandingPage
@@ -979,6 +1005,16 @@ export default function App() {
       </a>
       <div className="app-shell">
         <header className="topbar">
+          <button
+            type="button"
+            className="menu-toggle"
+            onClick={toggleNavigation}
+            aria-label="Toggle mission navigation"
+            aria-controls="mission-sidebar"
+            aria-expanded={window.matchMedia('(max-width: 760px)').matches ? mobileMenuOpen : desktopSidebarVisible}
+          >
+            <span /><span /><span />
+          </button>
           <a
             className="brand"
             href="#landing-top"
@@ -1040,6 +1076,28 @@ export default function App() {
           </div>
         </header>
 
+        {mobileMenuOpen && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={closeNavigation} />}
+        <div className="app-workspace">
+        <aside
+          id="mission-sidebar"
+          className={`app-sidebar${desktopSidebarVisible ? '' : ' is-collapsed'}${mobileMenuOpen ? ' is-mobile-open' : ''}`}
+          aria-label="Mission navigation"
+        >
+          <div className="sidebar-pilot"><span className="sidebar-avatar"><SpaceIcon symbol="🛰️" size={20} /></span><span><small>SOLO PILOT</small><b>{pilotName || 'Pilot'}</b></span></div>
+          <nav>
+            <a href={flightStep !== null ? '#flight-title' : missionResult ? '#mission-report' : '#top'} onClick={closeNavigation}>
+              <SpaceIcon name={missionResult ? 'clipboard' : 'planet'} /><span>{missionResult ? 'Flight report' : 'Mission control'}</span>
+            </a>
+            {!missionResult && <>
+              <a href="#holo-bay" onClick={closeNavigation}><SpaceIcon symbol="🛰️" /><span>3D mission lab</span></a>
+              <a href="#hardware-title" onClick={closeNavigation}><SpaceIcon symbol="🔬" /><span>Build spacecraft</span></a>
+              <button type="button" onClick={() => { setGuideOpen(true); closeNavigation() }}><SpaceIcon symbol="📋" /><span>Flight guide</span></button>
+            </>}
+            <button type="button" onClick={() => { setNasaModalOpen(true); closeNavigation() }}><SpaceIcon symbol="📡" /><span>NASA data</span></button>
+          </nav>
+          <div className="sidebar-footnote">GALAXY RUN <span>·</span> SOLO FLIGHT</div>
+        </aside>
+
         <main id="main-content" tabIndex={-1}>
           {missionResult ? (
             flightStep !== null ? (
@@ -1059,6 +1117,7 @@ export default function App() {
             ) : (
               <MissionReport
                 result={missionResult}
+                pilotName={pilotName}
                 onEdit={() => {
                   setMissionResult(null)
                   setFlightStep(null)
@@ -1083,6 +1142,7 @@ export default function App() {
                       Target <b>{scenario.name}</b> in {scenario.destination}. Adjust your spacecraft in live 3D, balance
                       systems, and launch.
                     </p>
+                    <p className="pilot-identification"><SpaceIcon symbol="🛰️" size={16} /> Solo pilot: <b>{pilotName || 'Pilot'}</b></p>
                   </div>
                   <button
                     type="button"
@@ -1101,7 +1161,7 @@ export default function App() {
               {guideOpen && <FirstMissionGuide onDismiss={dismissGuide} />}
 
               {/* 3D Interactive Cockpit Stage */}
-              <section className="holo-bay-section" aria-label="3D Interactive Mission Lab">
+              <section className="holo-bay-section" id="holo-bay" aria-label="3D Interactive Mission Lab">
                 <div className="holo-bay-header">
                   <div className="holo-tabs" role="tablist">
                     <button
@@ -1789,6 +1849,7 @@ export default function App() {
             </>
           )}
         </main>
+        </div>
 
         <footer className="page-footer">
           <span>GALAXY RUN <i>·</i> NASA SPACE APPS CHALLENGE 2026</span>

@@ -3375,3 +3375,113 @@ body { overflow-x: clip; }
   .world-planet { width: 66px; height: 66px; }
   .nasa-tab { gap: 5px; }
 }
+
+/* Mission menu, responsive sidebar, and touch-ready 3D controls. */
+.menu-toggle {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  place-content: center;
+  gap: 5px;
+  border: 1px solid #4a3b52;
+  border-radius: 10px;
+  background: #191524;
+  color: #f3d9ed;
+  cursor: pointer;
+}
+.menu-toggle span { display: block; width: 19px; height: 2px; border-radius: 2px; background: currentColor; }
+.app-workspace { display: grid; grid-template-columns: 224px minmax(0, 1fr); align-items: start; gap: 24px; min-width: 0; }
+.app-workspace > main { min-width: 0; }
+.app-sidebar {
+  position: sticky;
+  top: 18px;
+  display: flex;
+  min-width: 0;
+  min-height: min(620px, calc(100vh - 110px));
+  flex-direction: column;
+  margin: 18px 0 26px;
+  padding: 14px;
+  border: 1px solid #352b41;
+  border-radius: 16px;
+  background: linear-gradient(165deg, rgba(25, 22, 37, .96), rgba(11, 16, 27, .98));
+  box-shadow: 0 16px 42px #0003;
+}
+.app-sidebar.is-collapsed { display: none; }
+.sidebar-pilot { display: flex; min-width: 0; align-items: center; gap: 11px; padding: 8px 5px 17px; border-bottom: 1px solid #302b3b; }
+.sidebar-avatar { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border: 1px solid #755073; border-radius: 13px; background: #302239; color: #f0bce4; }
+.sidebar-pilot > span:last-child { display: grid; min-width: 0; gap: 3px; }
+.sidebar-pilot small, .sidebar-footnote { color: #9b91a6; font: 10px var(--font-mono); letter-spacing: .08em; }
+.sidebar-pilot b { overflow: hidden; color: #f4e9f2; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+.app-sidebar nav { display: grid; gap: 6px; margin-top: 16px; }
+.app-sidebar nav a, .app-sidebar nav button { display: flex; width: 100%; min-height: 46px; align-items: center; gap: 11px; padding: 9px 10px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: #c5c0ce; font: inherit; font-size: 14px; text-align: left; text-decoration: none; cursor: pointer; }
+.app-sidebar nav a:hover, .app-sidebar nav button:hover { border-color: #594461; background: #2a2033; color: #fff2fc; }
+.app-sidebar nav .space-icon { color: #e4a9d7; }
+.sidebar-footnote { margin-top: auto; padding: 18px 4px 4px; font-size: 9px; }
+.sidebar-footnote span { color: #e38bce; }
+.sidebar-backdrop { display: none; }
+.main-pilot-chip, .pilot-identification { display: flex; width: fit-content; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid #51405a; border-radius: 10px; background: rgba(31, 23, 39, .74); color: #d9c7da; }
+.main-pilot-chip { margin-top: 17px; }
+.main-pilot-chip > span { display: grid; gap: 2px; }
+.main-pilot-chip small { color: #a99bb0; font: 9px var(--font-mono); letter-spacing: .1em; }
+.main-pilot-chip b, .pilot-identification b { color: #f4d8ee; }
+.pilot-identification { margin: 13px 0 0; font-size: 14px; }
+.canvas-3d-viewport { height: clamp(320px, 40vw, 440px) !important; min-height: 300px; overflow: hidden; border-radius: 0 0 13px 13px; }
+.canvas-3d-orbit { height: clamp(290px, 36vw, 390px) !important; min-height: 280px; overflow: hidden; }
+.viewport-overlay-top { min-width: 0; gap: 10px; }
+.viewport-badge { min-width: 0; max-width: min(66%, 620px); flex-wrap: wrap; }
+.viewport-controls-row { flex-wrap: wrap; justify-content: flex-end; }
+.cad-btn, .preset-pill, .speed-pill, .layer-pill { min-height: 42px; }
+.viewport-camera-presets { max-width: calc(100% - 28px); flex-wrap: wrap; }
+.holo-bay-header { min-width: 0; }
+.holo-tabs { min-width: 0; max-width: 100%; flex-wrap: wrap; }
+.holo-tab { min-height: 44px; }
+
+@media (max-width: 1100px) {
+  .app-workspace { grid-template-columns: 196px minmax(0, 1fr); gap: 18px; }
+}
+@media (max-width: 760px) {
+  .app-workspace { display: block; }
+  .app-sidebar { position: fixed; z-index: 1001; top: 0; bottom: 0; left: 0; display: flex; width: min(310px, calc(100vw - 54px)); height: 100dvh; min-height: 0; margin: 0; padding: 18px; border-radius: 0 18px 18px 0; transform: translateX(-105%); transition: transform .22s ease; }
+  .app-sidebar.is-collapsed { display: flex; }
+  .app-sidebar.is-mobile-open { transform: translateX(0); }
+  .sidebar-backdrop { position: fixed; z-index: 1000; inset: 0; display: block; width: 100%; height: 100%; border: 0; background: rgba(3, 5, 10, .68); backdrop-filter: blur(3px); }
+  .main-pilot-chip { margin-top: 14px; }
+  .holo-bay-header { align-items: flex-start; }
+  .holo-tabs { display: grid; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .holo-tab { display: flex; min-width: 0; min-height: 48px; justify-content: center; gap: 6px; padding: 7px; font-size: 12px; line-height: 1.2; }
+  .holo-status { width: 100%; }
+  .viewport-overlay-top { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .viewport-badge { max-width: min(100%, 500px); }
+  .viewport-controls-row { justify-content: flex-start; }
+  .viewport-camera-presets { right: 14px; bottom: 38px; left: 14px; max-width: none; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+  .preset-pill { flex: 0 0 auto; padding-inline: 12px; }
+  .orbit-hud-bottom { bottom: 8px; align-items: stretch; flex-direction: column; gap: 6px; }
+  .orbit-speed-controls, .orbit-layer-toggles { flex-wrap: wrap; }
+  .orbit-telemetry-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .topbar { display: flex; align-items: center; }
+  .topbar > .menu-toggle { order: 0; }
+  .topbar > .brand { order: 1; margin-right: auto; }
+  .topbar > .topbar-right { order: 2; flex-basis: 100%; justify-content: stretch; }
+  .topbar-right > button { flex: 1 1 auto; justify-content: center; }
+  .topbar-right .sound-toggle { flex: 0 0 auto; }
+  .canvas-3d-viewport { height: clamp(320px, 92vw, 390px) !important; }
+  .canvas-3d-orbit { height: clamp(300px, 84vw, 360px) !important; }
+  .viewport-overlay-top { top: 8px; right: 8px; left: 8px; gap: 6px; }
+  .viewport-badge { gap: 5px; padding: 5px 7px; font-size: 10px; letter-spacing: .04em; }
+  .cad-spec { flex-basis: 100%; }
+  .cad-btn { min-height: 40px; padding-inline: 9px; }
+  .viewport-camera-presets { right: 8px; bottom: 38px; left: 8px; }
+  .holo-tabs { grid-template-columns: minmax(0, 1fr); }
+  .holo-tab { justify-content: flex-start; }
+  .holo-status { font-size: 10px; }
+}
+@media (max-width: 400px) {
+  .topbar-right > button { min-width: 43%; }
+  .viewport-controls-row { gap: 4px; }
+  .cad-btn { font-size: 12px; }
+  .preset-pill { min-height: 44px; font-size: 12px; }
+  .layer-pill { padding-inline: 7px; font-size: 12px; }
+}
