@@ -1,6 +1,13 @@
 # Contributing
 
-This is a three person hackathon project, so the rules are short.
+Galaxy Run is a four-person hackathon project maintained by:
+
+- Kiran Shams
+- Hadeed Ahsan
+- Rimsha Younis
+- Mariam
+
+The rules are short so everyone can contribute consistently.
 
 ## Branches
 
@@ -23,6 +30,7 @@ This runs lint, type check, tests and a production build. The same steps run in 
 ## Rules for the code
 
 - The engine (`src/engine`) has no React and no browser code. It takes data in and returns data out.
+- The game currently runs locally in the browser; do not reintroduce a remote service or runtime AI dependency without documenting and reviewing the change.
 - Every formula gets a unit test with an answer that can be checked by hand.
 - Every warning the player sees must come from the engine as a reason (status, cause, effect, fix). The UI does not write its own explanations.
 - Keep units in the names, for example `massKg`, `powerW`, `costMillionUsd`.
@@ -34,10 +42,12 @@ If you add any outside resource, add it to [docs/CREDITS.md](docs/CREDITS.md) in
 
 If AI tools helped with code, text or images, add a line to [docs/AI_USE.md](docs/AI_USE.md). The hackathon submission asks us to say where and how AI was used.
 
+The current architecture and data-flow notes are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Keep them in sync when changing application layers, storage, data sources, or AI integration.
+
 ## Safety
 
 - No secrets in the repo. Use `.env` locally (it is ignored by git).
-- No personal information, and no names or faces of people under 18.
+- Only publish team names with the members' agreement; do not add private personal information or names/faces of people under 18.
 - No NASA logos and no copyrighted music or images.
 
 ## Commit messages
