@@ -1,12 +1,14 @@
 <div align="center">
 
+<img src="public/assets/galaxy-run-mark.svg" width="88" alt="Galaxy Run">
+
 # Galaxy Run
 
 **Design a space mission. Launch it. Find out why it worked or failed.**
 
 A browser game about balancing spacecraft choices and learning from their consequences.
 
-[How it works](#how-it-works) · [Architecture](docs/ARCHITECTURE.md) · [Run locally](#run-locally) · [Contributing](CONTRIBUTING.md)
+[Problem](#problem) · [Features](#features) · [Architecture](#architecture) · [Project structure](#project-structure) · [Run locally](#run-locally) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -51,19 +53,21 @@ flowchart TD
 
 ## Features
 
-- Four destination scenarios; Easy, Normal, Hard, and resource-unbounded Sandbox modes.
-- A catalog of spacecraft buses, instruments, launch vehicles, propulsion systems, and orbit options.
-- Live mass, power, eclipse battery, budget, data, science, reliability, thermal, delta-v, and schedule checks.
-- Cause/effect/fix explanations and repeatable seeded flight events.
-- Local design saving and comparison, NASA mission field notes, interactive orbit/spacecraft views, and a print-to-PDF flight report.
-- Original project artwork and optional synthesized sound, first-flight guidance, contextual definitions, keyboard support, and reduced-motion handling.
+| Area | Features |
+| :--- | :--- |
+| Mission setup | Earth, Moon, Mars, and Venus scenarios; Easy, Normal, Hard, and Sandbox modes |
+| Spacecraft design | Choose a bus, three to five instruments, launcher, propulsion, orbit, propellant, solar-panel area, and schedule |
+| Live analysis | Track mass, power, eclipse energy, cost, data return, science, reliability, thermal risk, delta-v, and schedule |
+| Seeded flight | Replay the same design and seed to compare timelines, events, science return, score, and awards |
+| Learn and report | Cause/effect/fix explanations, NASA mission field notes, interactive orbit and spacecraft views, printable flight report |
+| Experience | Local design saves and comparison, first-flight guidance, contextual definitions, keyboard support, reduced motion, original artwork, optional synthesized sound |
 
 ## Mission checks
 
-Limits are calculated from the selected destination, orbit, difficulty, and hardware; the game does not use a medical-style fixed reference range. A failed limit blocks a Mission-mode launch. Sandbox allows the flight while still showing the checks.
+Mission limits are calculated from the selected destination, orbit, difficulty, and hardware. A failed limit blocks a Mission-mode launch; Sandbox allows the flight while still showing the checks.
 
-| Check | What the game compares | If the limit is exceeded |
-| --- | --- | --- |
+| Check | What the game compares | Result when outside target |
+| :--- | :--- | :--- |
 | Mass | Spacecraft mass versus launcher payload capacity for the destination and orbit | Blocks launch |
 | Power | System power demand versus estimated solar-array output | Blocks launch |
 | Eclipse energy | Energy needed during eclipse versus spacecraft-bus battery capacity | Blocks launch |
@@ -101,7 +105,7 @@ The current app has no public API endpoints, backend service, or in-game machine
 ## Team and contributions
 
 | Team member | Contribution |
-| --- | --- |
+| :--- | :--- |
 | Kiran Shams | Project lead |
 | Hadeed Ahsan | Development |
 | Rimsha Younis | Data research and resources |
@@ -119,11 +123,13 @@ Planetary radii, gravitational parameters, and solar irradiance values are bundl
 
 The following sources inform bundled physical values and learning content; Galaxy Run does not fetch live data from these sites.
 
-- **NASA/JPL planetary data:** [physical parameters](https://ssd.jpl.nasa.gov/planets/phys_par.html), [astrodynamic parameters](https://ssd.jpl.nasa.gov/astro_par.html), and [satellite physical parameters](https://ssd.jpl.nasa.gov/sats/phys_par/).
-- **NASA NSSDC solar-system fact sheets:** [Earth](https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html), [Moon](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html), [Mars](https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html), and [Venus](https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html).
-- **NASA mission references:** [Terra](https://terra.nasa.gov/about/mission), [Lunar Reconnaissance Orbiter](https://science.nasa.gov/mission/lro/), [Mars Reconnaissance Orbiter](https://science.nasa.gov/mission/mars-reconnaissance-orbiter/science-instruments/), and [Magellan](https://science.nasa.gov/mission/magellan/).
-- **NASA Space Apps Challenge:** [Space Mission Design Game challenge](https://github.com/NASA-SPACEAPP-2026/Space-Mission-Design-Game).
-- **ESA historical reference:** [Venus Express](https://www.esa.int/Science_Exploration/Space_Science/Venus_Express) is credited as an earlier project source; the current Venus learning reference is NASA's Magellan mission.
+| Organization / resource | Reference | How Galaxy Run uses it |
+| :--- | :--- | :--- |
+| NASA/JPL Solar System Dynamics | [Planetary physical parameters](https://ssd.jpl.nasa.gov/planets/phys_par.html), [astrodynamic parameters](https://ssd.jpl.nasa.gov/astro_par.html), [satellite physical parameters](https://ssd.jpl.nasa.gov/sats/phys_par/) | Bundled planetary radii and gravitational parameters |
+| NASA NSSDC | [Earth](https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html), [Moon](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html), [Mars](https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html), [Venus](https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html) fact sheets | Solar irradiance inputs for the scenarios |
+| NASA mission pages | [Terra](https://terra.nasa.gov/about/mission), [Lunar Reconnaissance Orbiter](https://science.nasa.gov/mission/lro/), [Mars Reconnaissance Orbiter](https://science.nasa.gov/mission/mars-reconnaissance-orbiter/science-instruments/), [Magellan](https://science.nasa.gov/mission/magellan/) | Mission and instrument learning references |
+| NASA Space Apps Challenge | [Space Mission Design Game challenge](https://github.com/NASA-SPACEAPP-2026/Space-Mission-Design-Game) | Challenge brief |
+| European Space Agency (ESA), historical reference | [Venus Express](https://www.esa.int/Science_Exploration/Space_Science/Venus_Express) | Credited as an earlier project source; current Venus learning content refers to NASA's Magellan mission |
 
 See [docs/CREDITS.md](docs/CREDITS.md) for retrieval dates, exact values, software licenses, and project-created assets.
 
@@ -160,7 +166,7 @@ npm run dev
 Open the local address printed by Vite, usually `http://localhost:5173`.
 
 | Command | Purpose |
-| --- | --- |
+| :--- | :--- |
 | `npm run dev` | Start the development server |
 | `npm run check` | Run lint, typecheck, tests, and a production build |
 | `npm run test` | Run formula and engine tests |
@@ -169,20 +175,18 @@ Open the local address printed by Vite, usually `http://localhost:5173`.
 
 ## Project structure
 
-```text
-src/
-  components/  Landing page, designer, 3D views, field notes, report panels
-  data/        Mission scenarios, spacecraft catalog, NASA references, glossary
-  engine/      Pure calculations, design evaluation, seeded simulation, tests
-  learn/       Learning notes and worked examples
-  ui/          UI-layer responsibilities
-  utils/       Browser-local design and guide storage, sound effects
-  App.tsx      Main screens and mission interactions
-  store.ts     In-memory mission design state
-public/assets/ Original SVG artwork and launch sound
-docs/          Architecture, credits, AI use, checklists
-.github/       CI workflow and pull-request template
-```
+| Path | Purpose |
+| :--- | :--- |
+| `src/App.tsx`, `src/main.tsx` | Compose the application screens, interactions, and React entry point |
+| `src/components/` | Landing page, mission designer, guidance, views, field notes, and report UI |
+| `src/data/` | Mission scenarios, spacecraft catalog, NASA references, and glossary |
+| `src/engine/` | Pure calculations, design evaluation, seeded simulation, and tests |
+| `src/learn/`, `src/ui/` | Learning notes and UI-layer documentation |
+| `src/store.ts`, `src/utils/` | In-memory mission state, browser-local saves, guide state, and sound effects |
+| `public/assets/` | Original project illustrations, emblems, and sound |
+| `docs/` | Architecture, credits, AI use, and project checklists |
+| `.github/` | CI workflow and pull-request template |
+| `package.json`, `vite.config.ts`, `tsconfig*.json` | Dependencies, scripts, build, and TypeScript configuration |
 
 For the complete file tree and component responsibilities, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
